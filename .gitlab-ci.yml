@@ -11,7 +11,7 @@ test-job1:
 test-job-node:
   stage: test
   script:
-    - node Main.js
+    - node /home/watts/git/webappazuremanagement/Main.js
 
 test-job2:
   stage: test
