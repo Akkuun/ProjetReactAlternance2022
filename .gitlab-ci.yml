@@ -8,6 +8,11 @@ test-job1:
   script:
     - echo "This job tests something"
 
+test-job-node:
+  stage: test
+  script:
+    - node Main.js
+
 test-job2:
   stage: test
   script:
