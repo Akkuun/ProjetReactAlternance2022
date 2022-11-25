@@ -9,8 +9,6 @@ test-job1:
     - echo "This job tests something"
 
 
-
-
 test-job-node2:
   stage: test
   script:
