@@ -8,10 +8,21 @@ test-job1:
   script:
     - echo "This job tests something"
 
+
+
+
+test-job-node2:
+  stage: test
+  script:
+    - node /home/dubanm/pipelineFolder/test.js
+
+    
 test-job-node:
   stage: test
   script:
     - node /home/watts/git/webappazuremanagement/Main.js
+
+
 
 test-job2:
   stage: test
