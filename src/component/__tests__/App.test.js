@@ -1,5 +1,5 @@
 import { render, screen ,cleanup} from '@testing-library/react';
-import App from '../App';
+import App from '../../App';
 import ComponentUserManaging from "../componentUserManaging";
 
 test('true test', () => {
