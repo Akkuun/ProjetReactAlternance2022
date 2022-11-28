@@ -1,9 +1,13 @@
 import React from "react"
+import DataGrid from "./DataGrid"
 
 const pageDeviceData = ()=> {
     return (
 
-        <div> je suis data device </div>
+        <div>
+
+            <DataGrid/>
+        </div>
 
     )
 

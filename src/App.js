@@ -9,8 +9,8 @@ function App() {
             <DrawerSections/>
             <Routes>
 
-                <Route path="/pageDeviceData" element={<PageUserData/>}/>
-                <Route path="/pageUserData" element={<PageDeviceData/>}/>
+                <Route path="/pageDeviceData" element={<PageDeviceData/>}/>
+                <Route path="/pageUserData" element={<PageUserData/>}/>
 
             </Routes>
 
