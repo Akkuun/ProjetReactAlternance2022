@@ -1,12 +1,12 @@
 import React from "react"
-import DataGrid from "./DataGrid"
+
 
 const pageDeviceData = ()=> {
     return (
 
         <div>
 
-            <DataGrid/>
+ttoto
         </div>
 
     )
