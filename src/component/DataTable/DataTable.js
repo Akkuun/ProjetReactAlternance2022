@@ -1,6 +1,13 @@
 import * as React from 'react';
-import {DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
+import {
+    DataGrid, gridPageCountSelector, gridPageSelector,
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarQuickFilter, useGridApiContext,
+    useGridSelector
+} from '@mui/x-data-grid';
 import {useState} from "react";
+import {LinearProgress, Pagination} from "@mui/material";
 
 
 function CustomToolbar() {
@@ -13,10 +20,26 @@ function CustomToolbar() {
                 quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                 debounceMs={200} // time before applying the new quick filter value
             />
-            <GridToolbarExport />
+            <GridToolbarExport/>
         </GridToolbarContainer>
     );
 }
+
+function CustomPagination() {
+    const apiRef = useGridApiContext();
+    const page = useGridSelector(apiRef, gridPageSelector);
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+    return (
+        <Pagination
+            color="primary"
+            count={pageCount}
+            page={page + 1}
+            onChange={(event, value) => apiRef.current.setPage(value - 1)}
+        />
+    );
+}
+
 
 const DataTable = ({
                        rows,
@@ -25,7 +48,7 @@ const DataTable = ({
                        sx
                    }) => {
 
-    const [pageSize,setPageSize] = useState(10)
+    const [pageSize, setPageSize] = useState(10)
 
     return (
 
@@ -38,7 +61,8 @@ const DataTable = ({
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}
-            components={{Toolbar : CustomToolbar}}
+            components={{Toolbar: CustomToolbar,Pagination: CustomPagination,  LoadingOverlay: LinearProgress,}}
+
         />
     )
 }
