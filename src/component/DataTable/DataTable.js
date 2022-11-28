@@ -1,6 +1,15 @@
 import * as React from 'react';
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridToolbarContainer, GridToolbarExport} from '@mui/x-data-grid';
 import {useState} from "react";
+
+
+function CustomToolbar() {
+    return (
+        <GridToolbarContainer>
+            <GridToolbarExport />
+        </GridToolbarContainer>
+    );
+}
 
 const DataTable = ({
                        rows,
@@ -22,7 +31,7 @@ const DataTable = ({
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}
-
+            components={{Toolbar : CustomToolbar}}
         />
     )
 }
