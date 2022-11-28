@@ -1,11 +1,18 @@
 import * as React from 'react';
-import {DataGrid, GridToolbarContainer, GridToolbarExport} from '@mui/x-data-grid';
+import {DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarQuickFilter} from '@mui/x-data-grid';
 import {useState} from "react";
 
 
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
+            <GridToolbarQuickFilter
+                quickFilterParser={(searchInput) =>
+                    searchInput.split(',').map((value) => value.trim())
+                }
+                quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                debounceMs={200} // time before applying the new quick filter value
+            />
             <GridToolbarExport />
         </GridToolbarContainer>
     );
