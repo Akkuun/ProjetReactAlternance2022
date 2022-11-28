@@ -14,7 +14,7 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import PersonIcon from '@mui/icons-material/Person';
 import Divider from '@mui/material/Divider';
 import {Link} from "react-router-dom"
-import {colors} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import pageDeviceData from "./pageDeviceData";
 import pageUserData from "./pageUserData";
 const ListItems = ({ items, onClick }) =>
@@ -24,9 +24,11 @@ const ListItems = ({ items, onClick }) =>
 
             <ListItem button key={i} disabled={disabled}     onClick={onClick(label)}>
                 <ListItemIcon>
+
                     <Icon />
                 </ListItemIcon>
-                 <Link  to={`/${lien}`} style={{textDecoration : "none", color : "black"}} >  <ListItemText>{label}</ListItemText> </Link>            </ListItem>
+                 <Link  to={`/${lien}`} style={{textDecoration : "none", color : "black"}} >  <ListItemText>{label}</ListItemText> </Link>
+            </ListItem>
         ));
 
 const DrawerSections = ({ classes }) => {
@@ -38,8 +40,10 @@ const DrawerSections = ({ classes }) => {
             { label: 'User data', Icon: PersonIcon, lien: 'pageUserData' },
         ],
         Clouds: [
-            { label: 'Watts', Icon:CloudIcon },
-            { label: 'Deltacalor', Icon: CloudIcon },
+            { label: 'Watts Dev', Icon:CloudIcon },
+            { label: 'Watts Prod', Icon: CloudIcon },
+            { label: 'Fenix', Icon: CloudIcon },
+            { label: 'Gkp', Icon: CloudIcon },
         ]
     });
     const onClick = (content) => () => {
@@ -70,7 +74,7 @@ const DrawerSections = ({ classes }) => {
             </Grid>
             <Grid item>
                 <Button onClick={() => setOpen(!open)}>
-                    {open ? 'Hide' : 'Show'} Drawer
+                    <MenuIcon/>
                 </Button>
             </Grid>
         </Grid>

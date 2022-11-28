@@ -1,10 +1,11 @@
 import React from "react"
-
+import UserTable from "./UserTable/UserTable"
 const pageUserData = ()=> {
 
     return (
 
-        <div> je suis data user </div>
+        <div style={{ height: 300, width: '100%' }}>
+             <UserTable/> </div>
 
     )
 
