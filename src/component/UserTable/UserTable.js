@@ -4,10 +4,10 @@ import axios from "axios";
 import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {GridActionsCellItem} from "@mui/x-data-grid";
-
+import Cookies from 'universal-cookie';
 
 const columns = [
-    {field: 'id', headerName: 'User ID', width: 250},
+    {field: 'id', headerName: 'A1', width: 250},
     {field: 'name', headerName: 'Name', width: 250},
     {field: 'userName', headerName: 'Mail', width: 305},
     {
@@ -54,20 +54,21 @@ const UserTable = () => {
         })
         userListResult.then(function (result) {
             const toto = result.data;
-            console.log(toto)
             setUsers(toto);
+            const cookies = new Cookies();
+            cookies.set('sizeUser',toto.length)
+            console.log(cookies.get('sizeUser'));
         })
     }
 
     const [users, setUsers] = useState([]);
-
     useEffect(() => {
         getAllUser();
     }, []);
 
     return (
 
-        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles}/>
+        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles}    />
 
     )
 

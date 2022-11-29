@@ -1,6 +1,5 @@
-
 import * as React from 'react';
-import  '../../styleComponent/JsonButton.css';
+import '../../styleComponent/JsonButton.css';
 import {
     DataGrid, gridFilteredSortedRowIdsSelector, gridPageCountSelector, gridPageSelector,
     GridToolbarContainer,
@@ -9,9 +8,8 @@ import {
     useGridSelector
 } from '@mui/x-data-grid';
 import {useState} from "react";
-import {LinearProgress, MenuItem, Pagination} from "@mui/material";
-
-
+import {LinearProgress, MenuItem, Pagination, Tooltip} from "@mui/material";
+import Cookies from "universal-cookie";
 
 
 const exportBlob = (blob, filename) => {
@@ -51,7 +49,11 @@ const getJson = (apiRef) => {
 
 function CustomToolbar() {
 
+    const cookies = new Cookies();
+
+    let toto =cookies.get('sizeUser')
     return (
+
         <GridToolbarContainer>
             <GridToolbarQuickFilter
                 quickFilterParser={(searchInput) =>
@@ -60,19 +62,20 @@ function CustomToolbar() {
                 quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                 debounceMs={200} // time before applying the new quick filter value
             />
+            <Tooltip title={"users : "+toto} placement="right-end">
                 <GridToolbarExportContainer>
 
-                    <GridToolbarExport printOptions={{ disableToolbarButton: true }}/>
+                    <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
                     <div className="JsonButton">
 
-                    <JsonExportMenuItem />
+                        <JsonExportMenuItem/>
                     </div>
+
                 </GridToolbarExportContainer>
-
-
-
+            </Tooltip>
 
         </GridToolbarContainer>
+
     );
 }
 
@@ -82,6 +85,7 @@ function CustomPagination() {
     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
     return (
+
         <Pagination
             color="primary"
             count={pageCount}
@@ -90,10 +94,11 @@ function CustomPagination() {
         />
     );
 }
+
 const JsonExportMenuItem = (props) => {
     const apiRef = useGridApiContext();
 
-    const { hideMenu } = props;
+    const {hideMenu} = props;
 
     return (
         <MenuItem
@@ -109,17 +114,19 @@ const JsonExportMenuItem = (props) => {
                 hideMenu?.();
             }}
         >
-           JSON
+            JSON
         </MenuItem>
     );
 };
+
+
 
 
 const DataTable = ({
                        rows,
                        columns,
                        loading,
-                       sx
+                       sx,
                    }) => {
 
     const [pageSize, setPageSize] = useState(13)
@@ -131,6 +138,7 @@ const DataTable = ({
             rows={rows}
             loading={loading}
             sx={sx}
+
             checkboxSelection={true}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -141,6 +149,7 @@ const DataTable = ({
                 , Pagination: CustomPagination,
                 LoadingOverlay: LinearProgress,
             }}
+
 
         />
     )
