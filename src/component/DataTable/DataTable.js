@@ -1,16 +1,56 @@
+
 import * as React from 'react';
+import  '../../styleComponent/JsonButton.css';
 import {
-    DataGrid, gridPageCountSelector, gridPageSelector,
+    DataGrid, gridFilteredSortedRowIdsSelector, gridPageCountSelector, gridPageSelector,
     GridToolbarContainer,
-    GridToolbarExport,
-    GridToolbarQuickFilter, useGridApiContext,
+    GridToolbarExport, GridToolbarExportContainer,
+    GridToolbarQuickFilter, gridVisibleColumnFieldsSelector, useGridApiContext,
     useGridSelector
 } from '@mui/x-data-grid';
 import {useState} from "react";
-import {LinearProgress, Pagination} from "@mui/material";
+import {LinearProgress, MenuItem, Pagination} from "@mui/material";
+
+
+
+
+const exportBlob = (blob, filename) => {
+    // Save the blob in a json file
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    });
+};
+
+
+const getJson = (apiRef) => {
+    // Select rows and columns
+    const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+    const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+
+    // Format the data. Here we only keep the value
+    const data = filteredSortedRowIds.map((id) => {
+        const row = {};
+        visibleColumnsField.forEach((field) => {
+            row[field] = apiRef.current.getCellParams(id, field).value;
+        });
+        return row;
+    });
+
+    // Stringify with some indentation
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
+    return JSON.stringify(data, null, 2);
+};
 
 
 function CustomToolbar() {
+
     return (
         <GridToolbarContainer>
             <GridToolbarQuickFilter
@@ -20,7 +60,18 @@ function CustomToolbar() {
                 quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                 debounceMs={200} // time before applying the new quick filter value
             />
-            <GridToolbarExport/>
+                <GridToolbarExportContainer>
+
+                    <GridToolbarExport printOptions={{ disableToolbarButton: true }}/>
+                    <div className="JsonButton">
+
+                    <JsonExportMenuItem />
+                    </div>
+                </GridToolbarExportContainer>
+
+
+
+
         </GridToolbarContainer>
     );
 }
@@ -39,6 +90,29 @@ function CustomPagination() {
         />
     );
 }
+const JsonExportMenuItem = (props) => {
+    const apiRef = useGridApiContext();
+
+    const { hideMenu } = props;
+
+    return (
+        <MenuItem
+            onClick={() => {
+                const jsonString = getJson(apiRef);
+                const blob = new Blob([jsonString], {
+                    type: 'text/json',
+                });
+
+                exportBlob(blob, 'List_User.json');
+
+                // Hide the export menu after the export
+                hideMenu?.();
+            }}
+        >
+           JSON
+        </MenuItem>
+    );
+};
 
 
 const DataTable = ({
@@ -48,7 +122,7 @@ const DataTable = ({
                        sx
                    }) => {
 
-    const [pageSize, setPageSize] = useState(10)
+    const [pageSize, setPageSize] = useState(13)
 
     return (
 
@@ -61,7 +135,12 @@ const DataTable = ({
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}
-            components={{Toolbar: CustomToolbar,Pagination: CustomPagination,  LoadingOverlay: LinearProgress,}}
+            //on peut envelever la pagination pour envlever les ronds et revenir sur les carré à selectionner
+            components={{
+                Toolbar: CustomToolbar
+                , Pagination: CustomPagination,
+                LoadingOverlay: LinearProgress,
+            }}
 
         />
     )
