@@ -15,8 +15,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import Divider from '@mui/material/Divider';
 import {Link} from "react-router-dom"
 import MenuIcon from '@mui/icons-material/Menu';
-import pageDeviceData from "./pageDeviceData";
-import pageUserData from "./pageUserData";
+import pageDeviceData from "../pageDeviceData";
+import pageUserData from "../pageUserData";
 const ListItems = ({ items, onClick }) =>
     items
         .filter(({ hidden }) => !hidden)
