@@ -4,26 +4,29 @@ import axios from "axios";
 import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {GridActionsCellItem} from "@mui/x-data-grid";
+
+
 const columns = [
-    {field: 'id', headerName: 'User ID', width: 150},
-    {field: 'name', headerName: 'Name', width: 150},
-    {field: 'userName', headerName: 'User name', width: 150},
+    {field: 'id', headerName: 'User ID', width: 250},
+    {field: 'name', headerName: 'Name', width: 250},
+    {field: 'userName', headerName: 'Mail', width: 305},
     {
         field: 'actions',
         type: 'actions',
         getActions: (params) => [
             <GridActionsCellItem icon={<MarkEmailReadOutlinedIcon/>} label="renvoyer mail d'activation" showInMenu/>,
             <GridActionsCellItem icon={<SendOutlinedIcon/>}  label="forcer activation du compte"  showInMenu />,
-        ]
+        ],
+        width: 225
     }
-
+// note pour plus tard, go to https://mui.com/material-ui/react-chip/ pour signaler si le mec a son compte validé / bloquer ect ..
 ];
 
 const userTableStyles = {
 flexGrow : 1,
-    height: 800,
-    width: '40%',
-
+    height: 850,
+    width: '60%',
+marginLeft : '20%',
 
 }
 
@@ -60,8 +63,6 @@ const UserTable = () => {
 
     useEffect(() => {
         getAllUser();
-
-
     }, []);
 
     return (

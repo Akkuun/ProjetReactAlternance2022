@@ -1,0 +1,9 @@
+.JsonButton{
+
+    font-size: 85%;
+    color: #5298dd;
+    display :flex;
+    width: auto;
+    height: auto;
+    flex-direction: row;
+}
