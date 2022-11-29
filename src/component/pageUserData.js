@@ -6,7 +6,8 @@ const pageUserData = () => {
     return (
 
         <div >
-            <UserTable/></div>
+            <UserTable/>
+        </div>
 
     )
 
