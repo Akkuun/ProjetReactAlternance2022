@@ -31,7 +31,7 @@ const ListItems = ({ items, onClick }) =>
 
                     <Icon />
                 </ListItemIcon>
-                <Link  to={`/${lien}`} style={{textDecoration : "none", color : "black"}} >  <ListItemText>{label}</ListItemText> </Link>
+                <Link  to={`${lien}`} style={{textDecoration : "none", color : "black"}} >  <ListItemText>{label}</ListItemText> </Link>
             </ListItem>
         ));
 
@@ -41,22 +41,22 @@ const DrawerSections = ({ classes }) => {
 
     const [itemsWattsProd] = useState({
         Clouds: [
-            { label: 'Watts Prod', Icon:CloudIcon,lien : 'wattsProd'  },
+            { label: 'Watts Prod', Icon:CloudIcon,lien : '/wattsProd'  },
         ],
         Pages: [
-            { label: 'User Data', Icon:CloudIcon,lien: 'pageUserDataWattsProd'  },
-            { label: 'Device Data', Icon: CloudIcon,lien: 'pageDeviceDataWattsProd' },
+            { label: 'User Data', Icon:PersonIcon,lien: '/wattsProd/pageUserData'  },
+            { label: 'Device Data', Icon: DeviceHubIcon,lien: '/wattsProd/pageDeviceData' },
         ]
     });
 
 
     const [itemsWattsDev] = useState({
         Clouds: [
-            { label: 'Watts Prod', Icon:CloudIcon,  },
+            { label: 'Watts Dev', Icon:CloudIcon,lien : '/wattsDev'  },
         ],
         Pages: [
-            { label: 'User Data', Icon:CloudIcon,lien: 'pageUserDataWattsDev'  },
-            { label: 'Device Data', Icon: CloudIcon,lien: 'pageDeviceDataWattsDev' },
+            { label: 'User Data', Icon:PersonIcon,lien: '/wattsDev/pageUserData'  },
+            { label: 'Device Data', Icon: DeviceHubIcon,lien: '/wattsDev/pageDeviceData' },
         ]
     });
 
@@ -76,13 +76,7 @@ const DrawerSections = ({ classes }) => {
             <Grid item>
                 <Drawer open={open} onClose={() => setOpen(false)}>
                     <List>
-                        {/*<ListSubheader>Pages</ListSubheader>
-                        <ListItems items={items.Clouds} onClick={onClick}>
-                        </ListItems>
-                        <Divider/>
-                        <ListSubheader>Clouds</ListSubheader>
-                        <ListItems items={items.Pages} onClick={onClick}>
-                        </ListItems>*/}
+
                         <div>
                         <Accordion>
                             <AccordionSummary
