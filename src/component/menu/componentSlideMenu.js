@@ -7,16 +7,12 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
 import Typography from '@mui/material/Typography';
 import CloudIcon from '@mui/icons-material/Cloud';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import PersonIcon from '@mui/icons-material/Person';
-import Divider from '@mui/material/Divider';
 import {Link} from "react-router-dom"
 import MenuIcon from '@mui/icons-material/Menu';
-import pageDeviceData from "../pageDeviceData";
-import pageUserData from "../pageUserData";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
