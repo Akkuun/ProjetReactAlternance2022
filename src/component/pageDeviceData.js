@@ -1,12 +1,14 @@
 import React from "react"
+import DeviceTable from "./DeviceTable/DeviceTable"
+
+const pageDeviceData = () => {
 
 
-const pageDeviceData = ()=> {
     return (
 
         <div>
 
-ttoto
+            <DeviceTable/>
         </div>
 
     )
