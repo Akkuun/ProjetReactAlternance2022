@@ -5,6 +5,7 @@ import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {GridActionsCellItem} from "@mui/x-data-grid";
 import Cookies from 'universal-cookie';
+import {useParams} from "react-router-dom"
 
 const columns = [
     {field: 'id', headerName: 'A1', width: 250},
@@ -32,8 +33,11 @@ marginLeft : '20%',
 
 
 const UserTable = () => {
-
+    const {cloud} = useParams();
+    console.log({cloud})
     const getAllUser = async () => {
+
+
         let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
             'grant_type': 'client_credentials',
             'scope': 'https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/schemas/user_impersonation https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/firmware/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation',
