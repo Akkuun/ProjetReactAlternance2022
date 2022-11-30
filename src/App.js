@@ -1,13 +1,9 @@
 import './styleComponent/App.css';
 import {Route, Router, Routes} from "react-router-dom";
-import DrawerSections from "./component/menu/componentSideMenu";
 import PageUserData from "./component/pageUserData";
 import PageDeviceData from "./component/pageDeviceData";
-import RouterBreadcrumbs from "./component/menu/componentSlideMenuVariante"
-import PageDeviceDataWattsProd from "./component/pageDeviceDataWattsProd";
-import PageUserDataWattsProd from "./component/pageUserDataWattsProd";
-import PageDeviceDataWattsDev from "./component/pageDeviceDataWattsDev";
-import PageUserDataWattsDev from "./component/pageUserDataWattsDev";
+import RouterBreadcrumbs from "./component/menu/componentSlideMenu"
+import PageHome from "./component/pages/pageHome";
 
 
 function App() {
@@ -17,15 +13,22 @@ function App() {
 
 
         <div className="App">
-            {/*<DrawerSections/>*/}
             <RouterBreadcrumbs/>
             <Routes>
-                <Route path="/pageDeviceData" element={<PageDeviceData/>}/>
-                <Route path="/pageUserData" element={<PageUserData/>}/>
-                <Route path="/pageDeviceDataWattsProd" element={<PageDeviceDataWattsProd/>}/>
-                <Route path="/pageUserDataWattsProd" element={<PageUserDataWattsProd/>}/>
-                <Route path="/pageDeviceDataWattsDev" element={<PageDeviceDataWattsDev/>}/>
-                <Route path="/pageUserDataWattsDev" element={<PageUserDataWattsDev/>}/>
+                {<Route path="/" element={<PageHome/>}/>}
+                <Route path="/wattsProd" element={<PageHome/>} />
+                <Route path="/wattsDev" element={<PageHome/>} />
+
+                <Route path="/wattsProd/pageDeviceData" element={<PageDeviceData/>}/>
+                <Route path="/wattsProd/pageUserData" element={<PageUserData/>}/>
+
+                <Route path="/wattsDev/pageDeviceData" element={<PageDeviceData/>}/>
+                <Route path="/wattsDev/pageUserData" element={<PageUserData/>}/>
+
+
+
+
+
             </Routes>
 
         </div>

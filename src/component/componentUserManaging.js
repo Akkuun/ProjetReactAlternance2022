@@ -1,5 +1,4 @@
 import React from "react";
-import ComponentSideMenu from "./menu/componentSideMenu";
 
 function render() {
 
