@@ -31,6 +31,7 @@ const ListItems = ({items, onClick}) =>
                     <Icon/>
                 </ListItemIcon>
                 {label}
+
             </ListItem>
         ));
 
@@ -45,12 +46,11 @@ const DeviceDataComponent = ({classes}) => {
 
     const[itemsInstallationName] =useState({
         installations: [
-            { label: 'Installation.name 1', Icon :CottageIcon  },
-            { label: 'Installation.name 2', Icon :CottageIcon  },
+            { label: 'Installation.name', Icon :CottageIcon  },
         ],
-        devices: [
-            { label: 'Name Device 1',Icon :CottageIcon  },
-            { label: 'Name Device 2' ,Icon :CottageIcon },
+        Pages: [
+            { label: 'User Data', Icon:PersonIcon },
+            { label: 'Device Data', Icon: DeviceHubIcon },
         ]
     });
 
@@ -85,8 +85,7 @@ const DeviceDataComponent = ({classes}) => {
                         </AccordionSummary>
                         <AccordionDetails>
                             <Typography>
-                                <ListItems items={itemsInstallationName.devices} onClick={onClick}/>
-
+                            Component contenant les nom des devices / rooms
                             </Typography>
                         </AccordionDetails>
                     </Accordion>
