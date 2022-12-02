@@ -20,7 +20,7 @@ import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import {random} from "@mui/x-data-grid-generator";
 import {Icon} from "@mui/material";
-
+import {DataGrid} from "@mui/x-data-grid"
 
 const ListItems = ({items, onClick}) =>
     items
@@ -36,6 +36,20 @@ const ListItems = ({items, onClick}) =>
 
             </ListItem>
         ));
+
+
+
+const rows: GridRowsProp = [
+    { id: 1, col1: 'Hello', col2: 'World' },
+    { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
+    { id: 3, col1: 'MUI', col2: 'is Amazing' },
+];
+
+const columns: GridColDef[] = [
+    { field: 'col1', headerName: 'Column 1', width: 150 },
+    { field: 'col2', headerName: 'Column 2', width: 150 },
+];
+
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -59,7 +73,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
     var statios = [
-        {installation: 'installation one', devices: ['000', '0001']},
+        {installation: 'installation one', devices: [['000'], ['0001']]},
         {installation: 'installation two', devices: ['000', '0002']},
     ];
     const onClick = (content) => () => {
@@ -100,7 +114,7 @@ const DeviceDataComponent = ({classes}) => {
                                 >
 
 
-                                    <ListItem button key={random(0, 1000)} onClick={onClick(this)}>
+                                    <ListItem button key={random(0, 1000)}>
                                         <ListItemIcon>
 
                                             <Icon/>
@@ -113,8 +127,12 @@ const DeviceDataComponent = ({classes}) => {
                                 </AccordionSummary>
                                     <AccordionDetails>
                                         <Accordion>
-
-                                            <ListItem button key={random(0, 1000)} onClick={onClick(this)}>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon/>}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                            >
+                                            <ListItem button key={random(0, 1000)}>
                                                 <ListItemIcon>
 
                                                     <Icon/>
@@ -123,7 +141,13 @@ const DeviceDataComponent = ({classes}) => {
                                                 {station.devices}
 
                                             </ListItem>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <div style={{ height: 300, width: '100%' }}>
+                                                    <DataGrid rows={rows} columns={columns} />
+                                                </div>
 
+                                            </AccordionDetails>
                                         </Accordion>
 
 
