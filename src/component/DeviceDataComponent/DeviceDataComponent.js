@@ -26,184 +26,139 @@ const ListItems = ({items, onClick}) =>
     items
         .filter(({hidden}) => !hidden)
         .map(({label, disabled, Icon}, i) => (
-
-            <ListItem button key={i} disabled={disabled} onClick={onClick(label)}>
+            
+            <ListItem key={i} disabled={disabled} onClick={onClick(label)}>
                 <ListItemIcon>
-
                     <Icon/>
                 </ListItemIcon>
                 {label}
-
             </ListItem>
         ));
 
-
-const rows: GridRowsProp = [
-    {id: 1, col1: 'Hello', col2: 'World'},
-    {id: 2, col1: 'DataGridPro', col2: 'is Awesome'},
-    {id: 3, col1: 'MUI', col2: 'is Amazing'},
-];
-
 const columns: GridColDef[] = [
-    {field: 'col1', headerName: 'Column 1', width: 150},
-    {field: 'col2', headerName: 'Column 2', width: 150},
+    {field: 'col1', headerName: 'WattsType', width: 150},
+    {field: 'col2', headerName: 'Value', width: 150},
 ];
 
 
 const DeviceDataComponent = ({classes}) => {
-
-
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('');
-
-    const [itemsInstallationName] = useState({
-        installations: [
-            {label: 'Installation 1 .name', Icon: CottageIcon},
-
-
+    
+    const [icons] = useState({
+        installation: [
+            {Icon: CottageIcon},
         ],
-
-        devices: [
-            {label: 'rooms 1 ', Icon: PersonIcon},
-            {label: 'rooms 2', Icon: DeviceHubIcon},
+        
+        device: [
+            {Icon: DeviceHubIcon},
         ]
     });
-
-
+    
     var statios = [
-        {installation: 'installation one', devices: [['device 1 1 '], ['device 1 2 ']]},
-        {installation: 'installation two', devices: ['device 2 2 ', 'device 2 2 ']},
+        {
+            installation: 'installation one', devices: [
+                {
+                    roomName: 'room1',
+                    deviceName: 'device 1 1 ',
+                    wattsType: [{id: 1, col1: 'At', col2: '670'}, {id: 2, col1: 'Uc', col2: '1'}]
+                },
+                {
+                    roomName: 'room2',
+                    deviceName: 'device 1 2 ',
+                    wattsType: [{id: 1, col1: 'At', col2: '999'}, {id: 2, col1: 'Uc', col2: '0'}]
+                }
+            ]
+        },
+        {
+            installation: 'installation two', devices: [
+                {
+                    roomName: 'room1',
+                    deviceName: 'device 2 1 ',
+                    wattsType: [{id: 1, col1: 'At', col2: '456'}, {id: 2, col1: 'Uc', col2: '1'}]
+                },
+                {
+                    roomName: 'room2',
+                    deviceName: 'device 2 2 ',
+                    wattsType: [{id: 1, col1: 'At', col2: '656'}, {id: 2, col1: 'Uc', col2: '1'}]
+                }
+            ]
+        },
     ];
+    
     const onClick = (content) => () => {
         setOpen(false);
         setContent(content);
     };
-
-function titi(){
-    console.log("titi")
-}
-    function getComponent(tree) {
-        return tree.map(value => (
-            <button key={value} onClick={() => {
-                alert("button " + value + " is clicked")
-            }}>{value} </button>
-        ))
-    }
-
-    statios.map(value => console.log(value))
+    
     return (
-
-
-        <Grid container justify='space-between' marginLeft="45%" marginTop="3%">
-            <Grid item>
-                <Typography>
-
-
-                </Typography>
-            </Grid>
-            <Grid item>
+        <Grid container spacing={3} marginLeft="10%" marginTop="0%">
+            <Grid item xs={9}>
                 <List>
                     <div>
-                        <>
-                            {/*iteration avec map permettant d'afficher tous les bouttons ect ..*/}
-                            {statios.map(station => (
-                                // permier acordion pour les noms des installations
-                                <Accordion>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon/>}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-
-
-                                        <ListItem button key={station.installation}>
-                                            <ListItemIcon>
-
-                                                <Icon/>
-                                            </ListItemIcon>
-
-                                            {station.installation}
-
-                                        </ListItem>
-
-                                    </AccordionSummary>
-                                   {/* ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
-                                    <AccordionDetails>
+                        {/*iteration avec map permettant d'afficher tous les bouttons ect ..*/}
+                        {statios.map(station => (
+                            // permier acordion pour les noms des installations
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    
+                                    <Typography>
+                                        <ListItems items={icons.installation}
+                                                   onClick={onClick}/>
+                                    </Typography>
+                                    
+                                    <ListItem key={station.installation}>
+                                        <ListItemIcon>
+                                            
+                                            <Icon/>
+                                        </ListItemIcon>
+                                        
+                                        {station.installation}
+                                    
+                                    </ListItem>
+                                </AccordionSummary>
+                                {/* ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
+                                <AccordionDetails>
+                                    {station.devices.map(device => (
                                         <Accordion>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon/>}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                             >
-                                                {/* TEST autre map iterant sur les devices pour crer un bouton accordion pour chaque device present sur l'installation en coours*/}
-                                                {statios.map(deviceID => (
-                                                <ListItem button key={deviceID.devices}  onClick={titi}>
+                                                <Typography>
+                                                    <ListItems items={icons.device}
+                                                               onClick={onClick}/>
+                                                </Typography>
+                                                <ListItem key={device.deviceName}>
                                                     <ListItemIcon>
-
                                                         <Icon/>
                                                     </ListItemIcon>
-
-                                                    {deviceID.devices}
+                                                    {`${device.roomName} - ${device.deviceName}`}
+                                                
                                                 </ListItem>
-                                                        ))}
-
-
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
-                                                    <DataGrid rows={rows} columns={columns}/>
+                                                    <DataGrid rows={device.wattsType} columns={columns}/>
                                                 </div>
-
+                                            
                                             </AccordionDetails>
                                         </Accordion>
-
-
-                                    </AccordionDetails>
-                                </Accordion>
-
-                            ))}
-                        </>
-                    </div>
-
-                    <div>
-                        <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon/>}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography><ListItems items={itemsInstallationName.installations}
-                                                       onClick={onClick}/></Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Accordion>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon/>}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-
-                                        <Typography><ListItems items={itemsInstallationName.devices}
-                                                               onClick={onClick}/></Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>etejoeeo </AccordionDetails>
-                                </Accordion>
-
-                            </AccordionDetails>
-                        </Accordion>
-
-
+                                    ))}
+                                </AccordionDetails>
+                            </Accordion>
+                        ))}
                     </div>
                 </List>
             </Grid>
-
         </Grid>
-
-
     );
-
-
 }
 
 export default DeviceDataComponent
