@@ -39,22 +39,27 @@ const ListItems = ({items, onClick}) =>
 const DeviceDataComponent = ({classes}) => {
 
 
-
-
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('');
 
-    const[itemsInstallationName] =useState({
+    const [itemsInstallationName] = useState({
         installations: [
-            { label: 'Installation.name', Icon :CottageIcon  },
+            {label: 'Installation 1 .name', Icon: CottageIcon},
+
+
         ],
-        Pages: [
-            { label: 'User Data', Icon:PersonIcon },
-            { label: 'Device Data', Icon: DeviceHubIcon },
+
+        devices: [
+            {label: 'rooms 1 ', Icon: PersonIcon},
+            {label: 'rooms 2', Icon: DeviceHubIcon},
         ]
     });
 
 
+    var statios = [
+        {installation: 'installation one', devices: ['000','0001']},
+        {installation: 'installation two', devices: ['010','0011']},
+    ];
     const onClick = (content) => () => {
         setOpen(false);
         setContent(content);
@@ -62,55 +67,71 @@ const DeviceDataComponent = ({classes}) => {
 
 
 
-
     return (
-        <Grid container justify='space-between' marginLeft="25%" marginTop="3%">
+
+
+        <Grid container justify='space-between' marginLeft="45%" marginTop="3%">
             <Grid item>
                 <Typography>
+
 
                 </Typography>
             </Grid>
             <Grid item>
                 <List>
+                    <div>
+
+                            {statios.map(station => (
 
 
-                <div>
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon/>}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                        >
-                            <Typography><ListItems items={itemsInstallationName.installations} onClick={onClick}/></Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Typography>
-                            Component contenant les nom des devices / rooms
-                            </Typography>
-                        </AccordionDetails>
-                    </Accordion>
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon/>}
-                            aria-controls="panel2a-content"
-                            id="panel2a-header"
-                        >
-                            <Typography>Accordion 2</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Typography>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                malesuada lacus ex, sit amet blandit leo lobortis eget.
-                            </Typography>
-                        </AccordionDetails>
-                    </Accordion>
-                </div>
+
+
+
+
+                                    <div key={station.call} className='station'>{station.installation}</div>
+
+                                    ))}
+
+                    </div>
+
+                    <div>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon/>}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography><ListItems items={itemsInstallationName.installations}
+                                                       onClick={onClick}/></Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon/>}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+
+                                        <Typography><ListItems items={itemsInstallationName.devices}
+                                                               onClick={onClick}/></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>etejoeeo </AccordionDetails>
+                                </Accordion>
+
+                            </AccordionDetails>
+                        </Accordion>
+
+
+                    </div>
                 </List>
             </Grid>
 
         </Grid>
-    );
-}
 
+
+    );
+
+
+}
 
 export default DeviceDataComponent
