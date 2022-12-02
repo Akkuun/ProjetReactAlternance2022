@@ -38,18 +38,16 @@ const ListItems = ({items, onClick}) =>
         ));
 
 
-
 const rows: GridRowsProp = [
-    { id: 1, col1: 'Hello', col2: 'World' },
-    { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-    { id: 3, col1: 'MUI', col2: 'is Amazing' },
+    {id: 1, col1: 'Hello', col2: 'World'},
+    {id: 2, col1: 'DataGridPro', col2: 'is Awesome'},
+    {id: 3, col1: 'MUI', col2: 'is Amazing'},
 ];
 
 const columns: GridColDef[] = [
-    { field: 'col1', headerName: 'Column 1', width: 150 },
-    { field: 'col2', headerName: 'Column 2', width: 150 },
+    {field: 'col1', headerName: 'Column 1', width: 150},
+    {field: 'col2', headerName: 'Column 2', width: 150},
 ];
-
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -73,15 +71,17 @@ const DeviceDataComponent = ({classes}) => {
 
 
     var statios = [
-        {installation: 'installation one', devices: [['000'], ['0001']]},
-        {installation: 'installation two', devices: ['000', '0002']},
+        {installation: 'installation one', devices: [['device 1 1 '], ['device 1 2 ']]},
+        {installation: 'installation two', devices: ['device 2 2 ', 'device 2 2 ']},
     ];
     const onClick = (content) => () => {
         setOpen(false);
         setContent(content);
     };
 
-
+function titi(){
+    console.log("titi")
+}
     function getComponent(tree) {
         return tree.map(value => (
             <button key={value} onClick={() => {
@@ -105,26 +105,29 @@ const DeviceDataComponent = ({classes}) => {
                 <List>
                     <div>
                         <>
+                            {/*iteration avec map permettant d'afficher tous les bouttons ect ..*/}
                             {statios.map(station => (
+                                // permier acordion pour les noms des installations
                                 <Accordion>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon/>}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
 
 
-                                    <ListItem button key={random(0, 1000)}>
-                                        <ListItemIcon>
+                                        <ListItem button key={station.installation}>
+                                            <ListItemIcon>
 
-                                            <Icon/>
-                                        </ListItemIcon>
+                                                <Icon/>
+                                            </ListItemIcon>
 
-                                        {station.installation}
+                                            {station.installation}
 
-                                    </ListItem>
+                                        </ListItem>
 
-                                </AccordionSummary>
+                                    </AccordionSummary>
+                                   {/* ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
                                     <AccordionDetails>
                                         <Accordion>
                                             <AccordionSummary
@@ -132,24 +135,28 @@ const DeviceDataComponent = ({classes}) => {
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                             >
-                                            <ListItem button key={random(0, 1000)}>
-                                                <ListItemIcon>
+                                                {/* TEST autre map iterant sur les devices pour crer un bouton accordion pour chaque device present sur l'installation en coours*/}
+                                                {statios.map(deviceID => (
+                                                <ListItem button key={deviceID.devices}  onClick={titi}>
+                                                    <ListItemIcon>
 
-                                                    <Icon/>
-                                                </ListItemIcon>
+                                                        <Icon/>
+                                                    </ListItemIcon>
 
-                                                {station.devices}
+                                                    {deviceID.devices}
+                                                </ListItem>
+                                                        ))}
 
-                                            </ListItem>
+
                                             </AccordionSummary>
+                                            {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
-                                                <div style={{ height: 300, width: '100%' }}>
-                                                    <DataGrid rows={rows} columns={columns} />
+                                                <div style={{height: 300, width: '100%'}}>
+                                                    <DataGrid rows={rows} columns={columns}/>
                                                 </div>
 
                                             </AccordionDetails>
                                         </Accordion>
-
 
 
                                     </AccordionDetails>
