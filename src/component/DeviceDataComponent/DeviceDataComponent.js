@@ -18,6 +18,8 @@ import CloudIcon from "@mui/icons-material/Cloud";
 import PersonIcon from "@mui/icons-material/Person";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
+import {random} from "@mui/x-data-grid-generator";
+import {Icon} from "@mui/material";
 
 
 const ListItems = ({items, onClick}) =>
@@ -57,8 +59,8 @@ const DeviceDataComponent = ({classes}) => {
 
 
     var statios = [
-        {installation: 'installation one', devices: ['000','0001']},
-        {installation: 'installation two', devices: ['010','0011']},
+        {installation: 'installation one', devices: ['000', '0001']},
+        {installation: 'installation two', devices: ['000', '0002']},
     ];
     const onClick = (content) => () => {
         setOpen(false);
@@ -66,7 +68,15 @@ const DeviceDataComponent = ({classes}) => {
     };
 
 
+    function getComponent(tree) {
+        return tree.map(value => (
+            <button key={value} onClick={() => {
+                alert("button " + value + " is clicked")
+            }}>{value} </button>
+        ))
+    }
 
+    statios.map(value => console.log(value))
     return (
 
 
@@ -80,18 +90,49 @@ const DeviceDataComponent = ({classes}) => {
             <Grid item>
                 <List>
                     <div>
-
+                        <>
                             {statios.map(station => (
+                                <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+
+
+                                    <ListItem button key={random(0, 1000)} onClick={onClick(this)}>
+                                        <ListItemIcon>
+
+                                            <Icon/>
+                                        </ListItemIcon>
+
+                                        {station.installation}
+
+                                    </ListItem>
+
+                                </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Accordion>
+
+                                            <ListItem button key={random(0, 1000)} onClick={onClick(this)}>
+                                                <ListItemIcon>
+
+                                                    <Icon/>
+                                                </ListItemIcon>
+
+                                                {station.devices}
+
+                                            </ListItem>
+
+                                        </Accordion>
 
 
 
+                                    </AccordionDetails>
+                                </Accordion>
 
-
-
-                                    <div key={station.call} className='station'>{station.installation}</div>
-
-                                    ))}
-
+                            ))}
+                        </>
                     </div>
 
                     <div>
