@@ -5,7 +5,7 @@ import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {GridActionsCellItem} from "@mui/x-data-grid";
 import Cookies from 'universal-cookie';
-import {useParams} from "react-router-dom"
+import {useParams} from "react-router-dom";
 
 const columns = [
     {field: 'id', headerName: 'A1', width: 250},
@@ -16,7 +16,7 @@ const columns = [
         type: 'actions',
         getActions: (params) => [
             <GridActionsCellItem icon={<MarkEmailReadOutlinedIcon/>} label="renvoyer mail d'activation" showInMenu/>,
-            <GridActionsCellItem icon={<SendOutlinedIcon/>}  label="forcer activation du compte"  showInMenu />,
+            <GridActionsCellItem icon={<SendOutlinedIcon/>} label="forcer activation du compte" showInMenu/>,
         ],
         width: 225
     }
@@ -24,20 +24,17 @@ const columns = [
 ];
 
 const userTableStyles = {
-flexGrow : 1,
+    flexGrow: 1,
     height: 850,
     width: '60%',
-marginLeft : '20%',
-
+    marginLeft: '20%',
 }
-
 
 const UserTable = () => {
     const {cloud} = useParams();
     console.log({cloud})
     const getAllUser = async () => {
-
-
+        console.log("get all users")
         let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
             'grant_type': 'client_credentials',
             'scope': 'https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/schemas/user_impersonation https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/firmware/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation',
@@ -48,7 +45,7 @@ const UserTable = () => {
                 'Content-Type': 'application/x-www-form-urlencoded',
             }
         });
-
+        
         let userListResult = axios.get("https://visionsystem2-identity-dev.azurewebsites.net/api/v1.0/Users", {
             headers: {
                 'Authorization': 'Bearer ' + tokenResult.data["access_token"],
@@ -56,28 +53,26 @@ const UserTable = () => {
                 'Ocp-Apim-Subscription-Key': ''
             }
         })
+        
         userListResult.then(function (result) {
             const toto = result.data;
             setUsers(toto);
             const cookies = new Cookies();
-            cookies.set('sizeUser',toto.length)
+            cookies.set('sizeUser', toto.length)
             console.log(cookies.get('sizeUser'));
         })
     }
-
+    
     const [users, setUsers] = useState([]);
     useEffect(() => {
         getAllUser();
     }, []);
-
+    
     return (
-
-        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles}    />
-
+        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles}/>
     )
-
+    
 }
-
 
 
 export default UserTable;
