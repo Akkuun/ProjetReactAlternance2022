@@ -132,7 +132,6 @@ const DataTable = ({
     const [pageSize, setPageSize] = useState(13)
 
     return (
-
         <DataGrid
             columns={columns}
             rows={rows}
@@ -149,8 +148,6 @@ const DataTable = ({
                 , Pagination: CustomPagination,
                 LoadingOverlay: LinearProgress,
             }}
-
-
         />
     )
 }
