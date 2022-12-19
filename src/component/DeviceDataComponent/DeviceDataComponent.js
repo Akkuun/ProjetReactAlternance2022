@@ -67,8 +67,7 @@ const DeviceDataComponent = ({classes}) => {
     }, []);
 
     const a1Handler = async (a1) => {
-        // setA1(a1);
-        console.log("bite: " + a1)
+
         if (a1.length===12) {
             setA1(a1);
             await getToken(a1);
@@ -79,8 +78,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
     const getToken = async (a1) => {
-        console.log("debut")
-        console.log(a1)
+
 
         try {
 
@@ -148,7 +146,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
         setInstallationsList(installationsList);
-            console.log("try")
+        
         } catch(e) {
             console.error(e);
         }
