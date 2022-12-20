@@ -51,7 +51,7 @@ function CustomToolbar() {
 
     const cookies = new Cookies();
 
-    let toto =cookies.get('sizeUser')
+    let toto = cookies.get('sizeUser')
     return (
 
         <GridToolbarContainer>
@@ -62,7 +62,7 @@ function CustomToolbar() {
                 quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                 debounceMs={200} // time before applying the new quick filter value
             />
-            <Tooltip title={"users : "+toto} placement="right-end">
+            <Tooltip title={"users : " + toto} placement="right-end">
                 <GridToolbarExportContainer>
 
                     <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
@@ -72,6 +72,8 @@ function CustomToolbar() {
                     </div>
 
                 </GridToolbarExportContainer>
+
+
             </Tooltip>
 
         </GridToolbarContainer>
@@ -120,8 +122,6 @@ const JsonExportMenuItem = (props) => {
 };
 
 
-
-
 const DataTable = ({
                        rows,
                        columns,
@@ -138,7 +138,7 @@ const DataTable = ({
             loading={loading}
             sx={sx}
 
-            checkboxSelection={true}
+            checkboxSelection={false}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}

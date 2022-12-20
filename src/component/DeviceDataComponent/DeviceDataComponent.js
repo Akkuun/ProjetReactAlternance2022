@@ -68,7 +68,7 @@ const DeviceDataComponent = ({classes}) => {
 
     const a1Handler = async (a1) => {
 
-        if (a1.length===12) {
+        if (a1.length === 12) {
             setA1(a1);
             await getToken(a1);
         } else {
@@ -83,7 +83,7 @@ const DeviceDataComponent = ({classes}) => {
         try {
 
 
-           let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
+            let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
                 'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
                 'client_id': '2b64fa79-35c3-418f-8a78-3ef6f9df9c53',
@@ -128,13 +128,19 @@ const DeviceDataComponent = ({classes}) => {
                     let added = 0;
                     for (const [key, value] of Object.entries(configurationResult.data)) {
                         added++;
-                        deviceConfigurationData.push({id: added, 'col1': value.timestamp, 'col2': key, 'col3': value.value})
+                        deviceConfigurationData.push({
+                            id: added,
+                            'col1': value.timestamp,
+                            'col2': key,
+                            'col3': value.value
+                        })
                     }
 
                     devices.push({
                         roomName: room.Rn,
                         deviceName: room.devices[0].Id_deviceId,
-                        wattsType: deviceConfigurationData
+                        wattsType: deviceConfigurationData,
+                        Il:installationResult.data.Il
                     })
                 }
 
@@ -142,12 +148,13 @@ const DeviceDataComponent = ({classes}) => {
                     installation: install,
                     devices: devices
                 });
+
             }
 
-
             setInstallationsList(installationsList);
-
-        } catch(e) {
+            console.log("installation")
+            console.log(installationsList)
+        } catch (e) {
             console.error(e);
         }
     }
@@ -169,7 +176,7 @@ const DeviceDataComponent = ({classes}) => {
                                onChange={(e) => a1Handler(e.target.value)}/>
                 </form>
 
-                {a1.length===12? ( <List>
+                {a1.length === 12 ? (<List>
                     <div>
                         {/*iteration avec map permettant d'afficher tous les bouttons ect ..*/}
                         {installationsList.map(station => (
@@ -186,7 +193,7 @@ const DeviceDataComponent = ({classes}) => {
                                     </Typography>
 
                                     <ListItem>
-                                        {station.installation}
+                                        {station.devices[0].Il}
                                     </ListItem>
                                     <Button onClick={onClick} startIcon={<AssessmentIcon/>}></Button>
                                 </AccordionSummary>
@@ -208,7 +215,8 @@ const DeviceDataComponent = ({classes}) => {
                                                     <ListItemIcon>
                                                         <Icon/>
                                                     </ListItemIcon>
-                                                    {`${device.roomName} - ${device.deviceName}`}
+                                                    {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
+
                                                 </ListItem>
                                                 <Button onClick={onClick} startIcon={<AssessmentIcon/>}></Button>
                                             </AccordionSummary>
@@ -224,7 +232,7 @@ const DeviceDataComponent = ({classes}) => {
                             </Accordion>
                         ))}
                     </div>
-                </List>): (<div> rien</div>)}
+                </List>) : (<div> rien</div>)}
 
             </Grid>
         </Grid>
