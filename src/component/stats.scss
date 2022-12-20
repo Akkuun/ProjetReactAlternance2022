@@ -108,6 +108,11 @@ body {
   }
 }
 
+.switch-button {
+  text-align: center;
+  padding: 5px 0;
+}
+
 .graph-card {
   position: relative;
   @extend %gradient-bg;
