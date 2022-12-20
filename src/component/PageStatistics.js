@@ -7,6 +7,7 @@ import 'chart.js/auto'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from "axios";
 import moment from "moment";
+import 'moment/locale/fr';
 
 import {
     Chart as ChartJS,
@@ -26,6 +27,8 @@ ChartJS.register(
     Legend,
     ChartDataLabels
 );
+
+
 
 export const options = {
     responsive: true,
@@ -93,19 +96,6 @@ export const data = {
     ]
 };
 
-// export const dataConso = {
-//     labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
-//     datasets: [
-//         {
-//             label: 'Consommation',
-//             data: [990, 1000, 0, 850, 200, 995, 364],
-//             fill: false,
-//             borderColor: 'rgba(255, 255, 255, 0.2)',
-//             borderWidth: 2,
-//         }
-//     ]
-// };
-
 export const optionsConso = {
     responsive: true,
     maintainAspectRatio: false,
@@ -114,7 +104,7 @@ export const optionsConso = {
             right: 0,
             left: 0,
             top: 20,
-            bottom: 20
+            bottom: -50
         }
     },
     plugins: {
@@ -128,20 +118,13 @@ export const optionsConso = {
             font: {
                 weight: 'bold'
             },
-        }
+        },
+        tooltip: {
+            enabled: false
+        },
     },
     legend: {
         display: false,
-    },
-    tooltips: {
-        backgroundColor: 'transparent',
-        displayColors: false,
-        bodyFontSize: 14,
-        callbacks: {
-            label: function(tooltipItems, data) {
-                return tooltipItems.yLabel + '°C';
-            }
-        }
     },
     scales: {
         x: {
@@ -153,8 +136,6 @@ export const optionsConso = {
         y: {
             display: false,
             ticks: {
-                suggestedMin: 15,
-                suggestedMax: 25,
                 beginAtZero: true,
             },
         }
@@ -202,25 +183,40 @@ export default function PageStatistics() {
             });
     
             console.log(resApi.data)
-    
-    
-            setAxis((<div className="tick">
-                <span className="day-number">1</span>
-                <span className="day-name">LUN</span>
-            </div>))
-    
-            setGraphDataConso(<Bar options={optionsConso} data={{
-                labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
+            
+            let listChildren = [];
+            let dataConso = {
+                labels: [],
                 datasets: [
                     {
                         label: 'Consommation',
-                        data: [990, 1000, 0, 850, 200, 995, 455],
+                        data: [],
                         fill: false,
                         borderColor: 'rgba(255, 255, 255, 0.2)',
                         borderWidth: 2,
                     }
                 ]
-            }} />)
+            };
+    
+            for(let elem of resApi.data.reverse()) {
+                console.log(elem)
+                
+                // Axis
+                let timeDataStart = moment(elem.startDateOfMetric)
+                timeDataStart.add(2, 'h')
+                listChildren.push(<div className="tick" key={timeDataStart.format('hh')}>
+                    <span className="day-number">{`${timeDataStart.format('h')}H`}</span>
+                    <span className="day-name">{timeDataStart.format('dddd')}</span>
+                </div>)
+    
+                // Graph
+                dataConso.labels.push(timeDataStart.format('h'))
+                dataConso.datasets[0].data.push(elem.sum)
+    
+            }
+            setAxis(React.createElement('div', {className: 'axis'}, listChildren))
+    
+            setGraphDataConso(<Bar options={optionsConso} data={dataConso} />)
         }
     }
     
