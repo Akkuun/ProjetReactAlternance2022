@@ -63,7 +63,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
     useEffect(() => {
-      getToken();
+        getToken();
     }, []);
 
     const a1Handler = async (a1) => {
@@ -83,11 +83,11 @@ const DeviceDataComponent = ({classes}) => {
         try {
 
 
-            let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
+           let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
-                'scope': 'https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
-                'client_id': 'f7065c95-6c66-4225-b4a1-c8fae2e3ead5',
-                'client_secret': 'B4B296AE320D3DDD447D7AAE5256814933831A1050F1EE459331F82C74956398'
+                'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
+                'client_id': '2b64fa79-35c3-418f-8a78-3ef6f9df9c53',
+                'client_secret': 'EB44AA55C51AD31B87D139528CD5DE7E89BE925B301A4351B918E4CB568B3252'
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -103,20 +103,10 @@ const DeviceDataComponent = ({classes}) => {
                 }
             })
 
-        let installationsList = [];
-        for (let install of installationsListResult.data) {
-            // Get rooms name list
-            let installationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/businessmodule/v1/installations/EC9A8BDDBEEE/${install}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
-                }
-            })
-
-            let devices = [];
-            for (let room of installationResult.data.rooms) {
-                let configurationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/configuration/${room.devices[0].Id_deviceId}/${room.devices[0].Id_deviceId}/v1/content/`, {
+            let installationsList = [];
+            for (let install of installationsListResult.data) {
+                // Get rooms name list
+                let installationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/businessmodule/v1/installations/${a1}/${install}`, {
                     headers: {
                         'Authorization': 'Bearer ' + tokenResult.data["access_token"],
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -124,29 +114,39 @@ const DeviceDataComponent = ({classes}) => {
                     }
                 })
 
-                let deviceConfigurationData = [];
-                let added = 0;
-                for (const [key, value] of Object.entries(configurationResult.data)) {
-                    added++;
-                    deviceConfigurationData.push({id: added, 'col1': value.timestamp, 'col2': key, 'col3': value.value})
+                let devices = [];
+                for (let room of installationResult.data.rooms) {
+                    let configurationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/configuration/${room.devices[0].Id_deviceId}/${room.devices[0].Id_deviceId}/v1/content/`, {
+                        headers: {
+                            'Authorization': 'Bearer ' + tokenResult.data["access_token"],
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
+                        }
+                    })
+
+                    let deviceConfigurationData = [];
+                    let added = 0;
+                    for (const [key, value] of Object.entries(configurationResult.data)) {
+                        added++;
+                        deviceConfigurationData.push({id: added, 'col1': value.timestamp, 'col2': key, 'col3': value.value})
+                    }
+
+                    devices.push({
+                        roomName: room.Rn,
+                        deviceName: room.devices[0].Id_deviceId,
+                        wattsType: deviceConfigurationData
+                    })
                 }
 
-                devices.push({
-                    roomName: room.Rn,
-                    deviceName: room.devices[0].Id_deviceId,
-                    wattsType: deviceConfigurationData
-                })
+                installationsList.push({
+                    installation: install,
+                    devices: devices
+                });
             }
 
-            installationsList.push({
-                installation: install,
-                devices: devices
-            });
-        }
 
+            setInstallationsList(installationsList);
 
-        setInstallationsList(installationsList);
-        
         } catch(e) {
             console.error(e);
         }
