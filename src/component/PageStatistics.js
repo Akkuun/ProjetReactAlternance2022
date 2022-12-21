@@ -23,6 +23,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+import Popup from "./popupComponent/popup";
 
 ChartJS.register(
     CategoryScale,
@@ -147,8 +148,7 @@ export const optionsConso = {
     }
 };
 
-
-export default function PageStatistics() {
+const PageStatistics = ({classes}) => {
     const [active, setActive] = useState("");
     const [axis, setAxis] = useState((<div></div>));
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
@@ -428,3 +428,5 @@ export default function PageStatistics() {
             </div>
         </div>)
 }
+
+export default PageStatistics;

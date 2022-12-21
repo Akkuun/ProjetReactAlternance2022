@@ -10,20 +10,13 @@ import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {Link} from "react-router-dom";
-import ListItemText from "@mui/material/ListItemText";
 import {useEffect, useState} from "react";
-import CloudIcon from "@mui/icons-material/Cloud";
-import PersonIcon from "@mui/icons-material/Person";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {random} from "@mui/x-data-grid-generator";
 import {Icon, TextField} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid"
-import Button from "@mui/material/Button";
 import {AccountCircle} from "@mui/icons-material";
-import DeviceTable from "../DeviceTable/DeviceTable";
 import Popup from "../popupComponent/popup";
 const ListItems = ({items, onClick}) =>
     items
@@ -140,7 +133,7 @@ const DeviceDataComponent = ({classes}) => {
                         roomName: room.Rn,
                         deviceName: room.devices[0].Id_deviceId,
                         wattsType: deviceConfigurationData,
-                        Il:installationResult.data.Il
+                        Il: installationResult.data.Il
                     })
                 }
 
@@ -202,7 +195,7 @@ const DeviceDataComponent = ({classes}) => {
                                     <ListItem>
                                         {station.devices[0].Il}
                                     </ListItem>
-                                    <Button onClick={onClick} startIcon={<AssessmentIcon/>}></Button>
+                                    <Popup/>
                                 </AccordionSummary>
 
                                 {/*ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
@@ -225,17 +218,8 @@ const DeviceDataComponent = ({classes}) => {
                                                     {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
 
                                                 </ListItem>
-                                                <Button onClick={togglePopup}  startIcon={<AssessmentIcon/>}></Button>
-                                                <div id="popup">
 
-                                                     {isOpen && <Popup
-                                                        content={<>
-
-
-                                                        </>}
-                                                        handleClose={togglePopup}
-                                                    />}
-                                                </div>
+                                                <Popup/>
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
@@ -254,7 +238,6 @@ const DeviceDataComponent = ({classes}) => {
             </Grid>
 
         </Grid>
-
 
 
     )
