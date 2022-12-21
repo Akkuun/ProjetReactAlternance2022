@@ -13,8 +13,6 @@ function MyApp() {
     return (
         <Box
             sx={{
-
-
                 bgcolor: 'background.default',
                 color: 'text.primary',
                 borderRadius: 1,
