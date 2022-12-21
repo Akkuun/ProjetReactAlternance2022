@@ -160,8 +160,6 @@ const PageStatistics = ({classes}) => {
     
     async function getStats(dataInterval) {
         if(dataInterval != undefined) {
-    
-            console.log(dataInterval)
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
                 'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
@@ -172,7 +170,13 @@ const PageStatistics = ({classes}) => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            let now = moment();
+            
+            let headers = {
+                'Authorization': 'Bearer ' + tokenResult.data["access_token"],
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Ocp-Apim-Subscription-Key': ''
+            };
+
             let realDataInterval;
             let listChildren = [];
     
@@ -191,12 +195,8 @@ const PageStatistics = ({classes}) => {
             
             if (dataInterval == "Day") {
                 realDataInterval = "Hour";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/2022-12-19/2022-12-21`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Ocp-Apim-Subscription-Key': ''
-                    }
+                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                    headers: headers
                 });
                 
                 resApi.data = resApi.data.reverse();
@@ -219,12 +219,8 @@ const PageStatistics = ({classes}) => {
             } else if (dataInterval == "Week") {
                 realDataInterval = "Day";
     
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/2022-12-14/2022-12-21`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Ocp-Apim-Subscription-Key': ''
-                    }
+                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(8, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                    headers: headers
                 });
     
                 resApi.data = resApi.data.reverse();
@@ -245,19 +241,16 @@ const PageStatistics = ({classes}) => {
                     dataConso.labels.push(timeDataStart.format('h'))
                     dataConso.datasets[0].data.push(elem.sum)
                 }
-            } else if (dataInterval == "Year") {
-                realDataInterval = "Year";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/2020-10-18/2022-12-21`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Ocp-Apim-Subscription-Key': ''
-                    }
+            } else if (dataInterval == "Month") {
+                realDataInterval = "Month";
+                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(366, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                    headers: headers
                 });
     
+                console.log(resApi)
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>5) i = resApi.data.length-5;
+                if(resApi.data.length>12) i = resApi.data.length-12;
     
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
@@ -273,19 +266,15 @@ const PageStatistics = ({classes}) => {
                     dataConso.labels.push(timeDataStart.format('h'))
                     dataConso.datasets[0].data.push(elem.sum)
                 }
-            } else if (dataInterval == "Month") {
-                realDataInterval = "Month";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/2022-10-18/2022-12-21`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Ocp-Apim-Subscription-Key': ''
-                    }
+            } else if (dataInterval == "Year") {
+                realDataInterval = "Year";
+                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(365*5, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                    headers: headers
                 });
-                
+    
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>12) i = resApi.data.length-12;
+                if(resApi.data.length>5) i = resApi.data.length-5;
     
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
