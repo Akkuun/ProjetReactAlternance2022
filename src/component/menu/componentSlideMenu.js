@@ -17,6 +17,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+// creation des objets web par rapport a drawerSections
 const ListItems = ({ items, onClick }) =>
     items
         .filter(({ hidden }) => !hidden)
@@ -31,6 +33,7 @@ const ListItems = ({ items, onClick }) =>
             </ListItem>
         ));
 
+// contenu  des boutons pour redirection
 const DrawerSections = ({ classes }) => {
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('Home');

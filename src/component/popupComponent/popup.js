@@ -17,13 +17,30 @@ const style = {
     p: 4,
 };
 
-export default function Popup() {
+const Popup = ({classes,value})=> {
     const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
     const handleOpenPopupComponent = () => {
-        console.log("clic popup")
+        if (classes==="PopupStatInstall"){
+            document.cookie = `install=${value}`;
+            document.cookie = "device= ";
+            console.log("cool")
+            console.log(document.cookie)
+        }
+        if (classes==="PopupStatDevice"){
+            document.cookie = "install=";
+            document.cookie = `device=${value}`;
+        }
+
         setOpenPopupComponent(true)
     };
-    const handleClosePopupComponent = () => setOpenPopupComponent(false);
+    const handleClosePopupComponent = () => {
+
+        setOpenPopupComponent(false);
+    }
+
+
+
+
 
     return (
         <div>
@@ -35,9 +52,11 @@ export default function Popup() {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
+                    {/*component stats*/}
                     <PageStatistics/>
                 </Box>
             </Modal>
         </div>
     );
 }
+export default Popup;
