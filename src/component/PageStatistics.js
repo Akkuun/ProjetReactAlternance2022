@@ -154,7 +154,6 @@ const PageStatistics = ({classes}) => {
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
     
     const handleClick = event => {
-        console.log("clic page statistiques")
         setActive(event.target.id);
         getStats(event.target.innerHTML);
     };
@@ -192,7 +191,6 @@ const PageStatistics = ({classes}) => {
             
             if (dataInterval == "Day") {
                 realDataInterval = "Hour";
-    
                 let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/2022-12-19/2022-12-21`, {
                     headers: {
                         'Authorization': 'Bearer ' + tokenResult.data["access_token"],
@@ -322,7 +320,7 @@ const PageStatistics = ({classes}) => {
                 color: '#fff',
                 transform: 'translateX(22px)',
                 '& .MuiSwitch-thumb:before': {
-                    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+                    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="27" width="27" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
                         '#fff',
                     )}" d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/></svg>')`,
                 },
@@ -345,7 +343,7 @@ const PageStatistics = ({classes}) => {
                 top: 0,
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="27" width="27" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
                     '#fff',
                 )}" d="M15 13V5c0-1.66-1.34-3-3-3S9 3.34 9 5v8c-1.21.91-2 2.37-2 4 0 2.76 2.24 5 5 5s5-2.24 5-5c0-1.63-.79-3.09-2-4zm-4-2V5c0-.55.45-1 1-1s1 .45 1 1v1h-1v1h1v2h-1v1h1v1h-2z"/></svg>')`,
             },
