@@ -154,6 +154,7 @@ const PageStatistics = ({classes}) => {
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
     
     const handleClick = event => {
+        console.log("clic page statistiques")
         setActive(event.target.id);
         getStats(event.target.innerHTML);
     };

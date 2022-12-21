@@ -18,11 +18,11 @@ import {Icon, TextField} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid"
 import {AccountCircle} from "@mui/icons-material";
 import Popup from "../popupComponent/popup";
-const ListItems = ({items, onClick}) =>
+const ListItems = ({items}) =>
     items
         .filter(({hidden}) => !hidden)
         .map(({label, disabled, Icon}, i) => (
-            <ListItem key={i} disabled={disabled} onClick={onClick(label)}>
+            <ListItem key={i}>
                 <ListItemIcon>
                     <Icon/>
                 </ListItemIcon>
@@ -38,8 +38,9 @@ const columns: GridColDef[] = [
 
 
 const DeviceDataComponent = ({classes}) => {
-    const [open, setOpen] = useState(false);
-    const [content, setContent] = useState('');
+    // const [open, setOpen] = useState(false);
+    // const [isOpenPopup, setIsOpenPopup] = useState(false);
+    // const [content, setContent] = useState('');
     const [a1, setA1] = useState('');
 
     const [icons] = useState({
@@ -60,7 +61,6 @@ const DeviceDataComponent = ({classes}) => {
     }, []);
 
     const a1Handler = async (a1) => {
-
         if (a1.length === 12) {
             setA1(a1);
             await getToken(a1);
@@ -71,11 +71,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
     const getToken = async (a1) => {
-
-
         try {
-
-
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
                 'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
@@ -151,20 +147,8 @@ const DeviceDataComponent = ({classes}) => {
             console.error(e);
         }
     }
-
-    const onClick = (content) => () => {
-        console.log("click!")
-        setOpen(false);
-        setContent(content);
-    };
-
+    
     const [installationsList, setInstallationsList] = useState([]);
-
-
-    const togglePopup = () => {
-        setIsOpen(!isOpen);
-    }
-    const [isOpen, setIsOpen] = useState(false);
 
     return (
 
@@ -188,8 +172,7 @@ const DeviceDataComponent = ({classes}) => {
                                     id="panel1a-header"
                                 >
                                     <Typography component={'span'}>
-                                        <ListItems items={icons.installation}
-                                                   onClick={onClick}/>
+                                        <ListItems items={icons.installation}/>
                                     </Typography>
 
                                     <ListItem>
@@ -208,8 +191,7 @@ const DeviceDataComponent = ({classes}) => {
                                                 id="panel1a-header"
                                             >
                                                 <Typography component={'span'}>
-                                                    <ListItems items={icons.device}
-                                                               onClick={onClick}/>
+                                                    <ListItems items={icons.device}/>
                                                 </Typography>
                                                 <ListItem>
                                                     <ListItemIcon>
