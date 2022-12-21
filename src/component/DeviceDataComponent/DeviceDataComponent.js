@@ -18,6 +18,7 @@ import {Icon, TextField} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid"
 import {AccountCircle} from "@mui/icons-material";
 import Popup from "../popupComponent/popup";
+
 const ListItems = ({items}) =>
     items
         .filter(({hidden}) => !hidden)
@@ -56,6 +57,7 @@ const DeviceDataComponent = ({classes}) => {
     });
 
 
+
     useEffect(() => {
         getToken();
     }, []);
@@ -69,7 +71,7 @@ const DeviceDataComponent = ({classes}) => {
         }
     }
 
-
+// recuperation data
     const getToken = async (a1) => {
         try {
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
@@ -147,9 +149,10 @@ const DeviceDataComponent = ({classes}) => {
             console.error(e);
         }
     }
-    
+
     const [installationsList, setInstallationsList] = useState([]);
 
+    // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
 
         <Grid container spacing={3} marginLeft="10%" marginTop="0%">
@@ -178,7 +181,9 @@ const DeviceDataComponent = ({classes}) => {
                                     <ListItem>
                                         {station.devices[0].Il}
                                     </ListItem>
-                                    <Popup/>
+
+                                        <Popup classes="PopupStatInstall" value={station.installation}/>
+
                                 </AccordionSummary>
 
                                 {/*ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
@@ -201,7 +206,8 @@ const DeviceDataComponent = ({classes}) => {
 
                                                 </ListItem>
 
-                                                <Popup/>
+                                                    <Popup classes="PopupStatDevice" value={device.deviceName} />
+
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
