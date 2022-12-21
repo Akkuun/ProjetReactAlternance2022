@@ -34,128 +34,19 @@ ChartJS.register(
     ChartDataLabels
 );
 
-
-
-export const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-        padding: {
-            right: 25,
-            left: 25,
-            top: 50,
-            bottom: 0
-        }
-    },
-    elements: {
-        point: {
-            radius: 8,
-            hitRadius: 8,
-            hoverRadius: 8
-        }
-    },
-    plugins: {
-        legend: {
-            display: false
-        },
-        tooltip: {
-            enabled: false
-        },
-        datalabels: {
-            color: 'white',
-            clamp: true,
-            align: -45,
-            font: {
-                weight: 'bold'
-            },
-        }
-    },
-    scales: {
-        x: {
-            display: false,
-        },
-        y: {
-            display: false,
-            ticks: {
-                beginAtZero: true,
-            },
-        }
-    }
-};
-
-export const data = {
-    labels: ["LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM", "DIM"],
-    datasets: [
-        {
-            label: 'Temperature',
-            data: [20, 22, 19, 19.5, 21, 20.5, 18, 20, 22, 19, 19.5, 21, 20.5, 18, 20, 22, 19, 19.5, 21, 20.5, 18],
-            fill: false,
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 2,
-            pointBackgroundColor: 'transparent',
-            pointBorderColor: '#FFFFFF',
-            pointBorderWidth: 3,
-            pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
-            pointHoverBorderWidth: 10,
-            lineTension: 0,
-        }
-    ]
-};
-
-export const optionsConso = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-        padding: {
-            right: 0,
-            left: 0,
-            top: 20,
-            bottom: -50
-        }
-    },
-    plugins: {
-        legend: {
-            display: false
-        },
-        datalabels: {
-            color: 'white',
-            anchor: 'center',
-            clamp: true,
-            font: {
-                weight: 'bold'
-            },
-        },
-        tooltip: {
-            enabled: false
-        },
-    },
-    legend: {
-        display: false,
-    },
-    scales: {
-        x: {
-            display: false,
-            ticks: {
-                backdropPadding: 0,
-            }
-        },
-        y: {
-            display: false,
-            ticks: {
-                beginAtZero: true,
-            },
-        }
-    }
-};
-
 const PageStatistics = ({classes}) => {
     const [active, setActive] = useState("");
     const [axis, setAxis] = useState((<div></div>));
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
+    const [checked, setChecked] = React.useState(true);
     
     const handleClick = event => {
         setActive(event.target.id);
         getStats(event.target.innerHTML);
+    };
+    
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
     };
     
     async function getStats(dataInterval) {
@@ -170,16 +61,62 @@ const PageStatistics = ({classes}) => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            
+    
             let headers = {
                 'Authorization': 'Bearer ' + tokenResult.data["access_token"],
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Ocp-Apim-Subscription-Key': ''
             };
-
+    
             let realDataInterval;
             let listChildren = [];
-    
+            
+            const optionsConso = {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        right: 0,
+                        left: 0,
+                        top: 20,
+                        bottom: -50
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        color: 'white',
+                        anchor: 'center',
+                        clamp: true,
+                        font: {
+                            weight: 'bold'
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                },
+                legend: {
+                    display: false,
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        ticks: {
+                            backdropPadding: 0,
+                        }
+                    },
+                    y: {
+                        display: false,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    }
+                }
+            };
+            
             let dataConso = {
                 labels: [],
                 datasets: [
@@ -193,16 +130,93 @@ const PageStatistics = ({classes}) => {
                 ]
             };
             
+            let dataTemp = {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Temperature',
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'transparent',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 3,
+                        pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
+                        pointHoverBorderWidth: 10,
+                        lineTension: 0,
+                    }
+                ]
+            };
+    
+            const optionsTemp = {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        right: 25,
+                        left: 25,
+                        top: 50,
+                        bottom: 0
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 8,
+                        hitRadius: 8,
+                        hoverRadius: 8
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    datalabels: {
+                        color: 'white',
+                        clamp: true,
+                        align: -45,
+                        font: {
+                            weight: 'bold'
+                        },
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                    },
+                    y: {
+                        display: false,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    }
+                }
+            };
+    
+            let data;
+            let options;
+    
+            if (checked) { // Consommation
+                data = dataConso;
+                options = optionsConso;
+            } else { // Temperature
+                data = dataTemp;
+                options = optionsTemp;
+            }
+            
             if (dataInterval == "Day") {
                 realDataInterval = "Hour";
                 let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                     headers: headers
                 });
-                
+        
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>24) i = resApi.data.length-24;
-                
+                if (resApi.data.length > 24) i = resApi.data.length - 24;
+        
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
                     // Axis
@@ -213,20 +227,24 @@ const PageStatistics = ({classes}) => {
                         <span className="day-name">{timeDataStart.format('ddd')}</span>
                     </div>)
                     // Graph
-                    dataConso.labels.push(timeDataStart.format('h'))
-                    dataConso.datasets[0].data.push(elem.sum)
+                    data.labels.push(timeDataStart.format('h'))
+                    if(checked) { // Consommation
+                        data.datasets[0].data.push(elem.sum)
+                    } else { // Temperature
+                        data.datasets[0].data.push(elem.avg)
+                    }
                 }
             } else if (dataInterval == "Week") {
                 realDataInterval = "Day";
-    
+        
                 let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(8, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                     headers: headers
                 });
-    
+        
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>7) i = resApi.data.length-7;
-    
+                if (resApi.data.length > 7) i = resApi.data.length - 7;
+        
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
                     console.log(elem)
@@ -238,20 +256,24 @@ const PageStatistics = ({classes}) => {
                         <span className="day-name">{timeDataStart.format('ddd')}</span>
                     </div>)
                     // Graph
-                    dataConso.labels.push(timeDataStart.format('h'))
-                    dataConso.datasets[0].data.push(elem.sum)
+                    data.labels.push(timeDataStart.format('h'))
+                    if(checked) { // Consommation
+                        data.datasets[0].data.push(elem.sum)
+                    } else { // Temperature
+                        data.datasets[0].data.push(elem.avg)
+                    }
                 }
             } else if (dataInterval == "Month") {
                 realDataInterval = "Month";
                 let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(366, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                     headers: headers
                 });
-    
+        
                 console.log(resApi)
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>12) i = resApi.data.length-12;
-    
+                if (resApi.data.length > 12) i = resApi.data.length - 12;
+        
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
                     console.log(elem)
@@ -263,19 +285,23 @@ const PageStatistics = ({classes}) => {
                         <span className="day-name">{timeDataStart.format('YYYY')}</span>
                     </div>)
                     // Graph
-                    dataConso.labels.push(timeDataStart.format('h'))
-                    dataConso.datasets[0].data.push(elem.sum)
+                    data.labels.push(timeDataStart.format('h'))
+                    if(checked) { // Consommation
+                        data.datasets[0].data.push(elem.sum)
+                    } else { // Temperature
+                        data.datasets[0].data.push(elem.avg)
+                    }
                 }
             } else if (dataInterval == "Year") {
                 realDataInterval = "Year";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(365*5, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(365 * 5, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                     headers: headers
                 });
-    
+        
                 resApi.data = resApi.data.reverse();
                 let i = 0;
-                if(resApi.data.length>5) i = resApi.data.length-5;
-    
+                if (resApi.data.length > 5) i = resApi.data.length - 5;
+        
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
                     console.log(elem)
@@ -287,13 +313,21 @@ const PageStatistics = ({classes}) => {
                         <span className="day-name">{timeDataStart.format('YYYY')}</span>
                     </div>)
                     // Graph
-                    dataConso.labels.push(timeDataStart.format('h'))
-                    dataConso.datasets[0].data.push(elem.sum)
+                    data.labels.push(timeDataStart.format('h'))
+                    if(checked) { // Consommation
+                        data.datasets[0].data.push(elem.sum)
+                    } else { // Temperature
+                        data.datasets[0].data.push(elem.avg)
+                    }
                 }
             }
-    
+        
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
-            setGraphDataConso(<Bar options={optionsConso} data={dataConso}/>)
+            if(checked) { // Consommation
+                setGraphDataConso(<Bar options={options} data={data}/>)
+            } else { // Temperature
+                setGraphDataConso(<Line options={options} data={data}/>)
+            }
         }
     }
     
@@ -345,7 +379,6 @@ const PageStatistics = ({classes}) => {
     }));
     
     
-    
     useEffect(() => {
         async function fetchData() {
             const response = await getStats();
@@ -361,7 +394,7 @@ const PageStatistics = ({classes}) => {
                 <p className="lead">DEVICE_ID</p>
                 <FormGroup className="switch-button">
                     <FormControlLabel
-                        control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
+                        control={<MaterialUISwitch sx={{ m: 1 }} checked={checked} onChange={handleChange}/>}
                     />
                 </FormGroup>
                 <div>
@@ -415,6 +448,10 @@ const PageStatistics = ({classes}) => {
                     {axis}
             </div>
         </div>)
+}
+
+function convertFahrenheitToCelsius(degrees) {
+    return Math.floor(5 / 9 * (degrees - 32));
 }
 
 export default PageStatistics;
