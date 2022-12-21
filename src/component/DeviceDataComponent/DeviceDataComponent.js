@@ -24,7 +24,7 @@ import {DataGrid} from "@mui/x-data-grid"
 import Button from "@mui/material/Button";
 import {AccountCircle} from "@mui/icons-material";
 import DeviceTable from "../DeviceTable/DeviceTable";
-
+import Popup from "../popupComponent/popup";
 const ListItems = ({items, onClick}) =>
     items
         .filter(({hidden}) => !hidden)
@@ -167,7 +167,14 @@ const DeviceDataComponent = ({classes}) => {
 
     const [installationsList, setInstallationsList] = useState([]);
 
+
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    }
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
+
         <Grid container spacing={3} marginLeft="10%" marginTop="0%">
             <Grid item xs={9}>
                 <form>
@@ -218,7 +225,17 @@ const DeviceDataComponent = ({classes}) => {
                                                     {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
 
                                                 </ListItem>
-                                                <Button onClick={onClick} startIcon={<AssessmentIcon/>}></Button>
+                                                <Button onClick={togglePopup}  startIcon={<AssessmentIcon/>}></Button>
+                                                <div id="popup">
+
+                                                     {isOpen && <Popup
+                                                        content={<>
+
+
+                                                        </>}
+                                                        handleClose={togglePopup}
+                                                    />}
+                                                </div>
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
@@ -235,7 +252,11 @@ const DeviceDataComponent = ({classes}) => {
                 </List>) : (<div> rien</div>)}
 
             </Grid>
+
         </Grid>
+
+
+
     )
 }
 
