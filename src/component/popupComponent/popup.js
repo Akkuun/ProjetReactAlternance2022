@@ -10,24 +10,27 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '70%',
-    height:'50%',
+    height:'375px',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    'border-radius': '10px',
+    boxShadow: '24',
     p: 4,
 };
 
 export default function Popup() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
+    const handleOpenPopupComponent = () => {
+        console.log("clic popup")
+        setOpenPopupComponent(true)
+    };
+    const handleClosePopupComponent = () => setOpenPopupComponent(false);
 
     return (
         <div>
-            <Button onClick={handleOpen}>   <AssessmentIcon/> </Button>
+            <Button onClick={handleOpenPopupComponent}>   <AssessmentIcon/> </Button>
             <Modal
-                open={open}
-                onClose={handleClose}
+                open={openPopupComponent}
+                onClose={handleClosePopupComponent}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
