@@ -4,6 +4,7 @@ import PageUserData from "./component/pageUserData";
 import PageDeviceData from "./component/pageDeviceData";
 import RouterBreadcrumbs from "./component/menu/componentSlideMenu"
 import PageHome from "./component/pages/pageHome";
+import PageStatistics from "./component/PageStatistics";
 
 function App() {
     return (
