@@ -34,22 +34,31 @@ ChartJS.register(
     ChartDataLabels
 );
 
-const PageStatistics = ({classes}) => {
+let popupData;
+let intervalClicked;
+let switchChecked = false;
+
+const PageStatistics = ({classes, value})=> {
     const [active, setActive] = useState("");
     const [axis, setAxis] = useState((<div></div>));
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
-    const [checked, setChecked] = React.useState(true);
+    
+    if (classes==="popupData"){
+        popupData = value;
+    }
     
     const handleClick = event => {
         setActive(event.target.id);
-        getStats(event.target.innerHTML);
+        intervalClicked = event.target.innerHTML
+        getStats(intervalClicked);
     };
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
+        getStats(intervalClicked, event.target.checked);
+        switchChecked = !switchChecked;
     };
     
-    async function getStats(dataInterval) {
+    async function getStats(dataInterval, stateSwitch) {
         if(dataInterval != undefined) {
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
@@ -199,7 +208,7 @@ const PageStatistics = ({classes}) => {
             let data;
             let options;
     
-            if (checked) { // Consommation
+            if (stateSwitch) { // Consommation
                 data = dataConso;
                 options = optionsConso;
             } else { // Temperature
@@ -209,6 +218,7 @@ const PageStatistics = ({classes}) => {
             
             if (dataInterval == "Day") {
                 realDataInterval = "Hour";
+                // let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${popupData.statsInstallation[1]}/${popupData.statsInstallation[0]}/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                 let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
                     headers: headers
                 });
@@ -228,7 +238,7 @@ const PageStatistics = ({classes}) => {
                     </div>)
                     // Graph
                     data.labels.push(timeDataStart.format('h'))
-                    if(checked) { // Consommation
+                    if(stateSwitch) { // Consommation
                         data.datasets[0].data.push(elem.sum)
                     } else { // Temperature
                         data.datasets[0].data.push(elem.avg)
@@ -257,7 +267,7 @@ const PageStatistics = ({classes}) => {
                     </div>)
                     // Graph
                     data.labels.push(timeDataStart.format('h'))
-                    if(checked) { // Consommation
+                    if(stateSwitch) { // Consommation
                         data.datasets[0].data.push(elem.sum)
                     } else { // Temperature
                         data.datasets[0].data.push(elem.avg)
@@ -273,7 +283,7 @@ const PageStatistics = ({classes}) => {
                 resApi.data = resApi.data.reverse();
                 let i = 0;
                 if (resApi.data.length > 12) i = resApi.data.length - 12;
-        
+                
                 for (i; i < resApi.data.length; i++) {
                     let elem = resApi.data[i];
                     console.log(elem)
@@ -286,7 +296,7 @@ const PageStatistics = ({classes}) => {
                     </div>)
                     // Graph
                     data.labels.push(timeDataStart.format('h'))
-                    if(checked) { // Consommation
+                    if(stateSwitch) { // Consommation
                         data.datasets[0].data.push(elem.sum)
                     } else { // Temperature
                         data.datasets[0].data.push(elem.avg)
@@ -314,7 +324,7 @@ const PageStatistics = ({classes}) => {
                     </div>)
                     // Graph
                     data.labels.push(timeDataStart.format('h'))
-                    if(checked) { // Consommation
+                    if(stateSwitch) { // Consommation
                         data.datasets[0].data.push(elem.sum)
                     } else { // Temperature
                         data.datasets[0].data.push(elem.avg)
@@ -323,11 +333,13 @@ const PageStatistics = ({classes}) => {
             }
         
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
-            if(checked) { // Consommation
+            if(stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
             } else { // Temperature
                 setGraphDataConso(<Line options={options} data={data}/>)
             }
+        } else {
+            console.log("ERREUR : dataInterval undefined ")
         }
     }
     
@@ -394,7 +406,7 @@ const PageStatistics = ({classes}) => {
                 <p className="lead">DEVICE_ID</p>
                 <FormGroup className="switch-button">
                     <FormControlLabel
-                        control={<MaterialUISwitch sx={{ m: 1 }} checked={checked} onChange={handleChange}/>}
+                        control={<MaterialUISwitch sx={{ m: 1 }} checked={switchChecked} onChange={handleChange}/>}
                     />
                 </FormGroup>
                 <div>
