@@ -181,8 +181,8 @@ const DeviceDataComponent = ({classes}) => {
                                     <ListItem>
                                         {station.devices[0].Il}
                                     </ListItem>
-
-                                        <Popup classes="PopupStatInstall" value={station.installation}/>
+    
+                                    <Popup classes="popupData" value={{"statsInstallation": [a1, station.installation]}}/>
 
                                 </AccordionSummary>
 
@@ -205,8 +205,8 @@ const DeviceDataComponent = ({classes}) => {
                                                     {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
 
                                                 </ListItem>
-
-                                                    <Popup classes="PopupStatDevice" value={device.deviceName} />
+    
+                                                <Popup classes="popupData" value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
 
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
