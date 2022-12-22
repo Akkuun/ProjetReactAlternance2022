@@ -50,7 +50,7 @@ const PageStatistics = ({classes, value})=> {
     const handleClick = event => {
         setActive(event.target.id);
         intervalClicked = event.target.innerHTML
-        getStats(intervalClicked);
+        getStats(intervalClicked, switchChecked);
     };
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +59,7 @@ const PageStatistics = ({classes, value})=> {
     };
     
     async function getStats(dataInterval, stateSwitch) {
+        console.log("dataInterval = " + dataInterval + " state switch = " + stateSwitch)
         if(dataInterval != undefined) {
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
