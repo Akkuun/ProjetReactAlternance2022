@@ -75,8 +75,8 @@ const optionsTemp = {
     maintainAspectRatio: false,
     layout: {
         padding: {
-            right: 25,
-            left: 25,
+            right: 30,
+            left: 30,
             top: 50,
             bottom: 0
         }
@@ -219,7 +219,7 @@ const PageStatistics = ({classes, value}) => {
                     statsTimePeriodUnit = 'months';
                     realDataInterval = "Month";
                     statsApiMinIntervalTime = 366;
-                    xAxisDayNumberFormat = "MM";
+                    xAxisDayNumberFormat = "MMMM";
                     xAxisDayNameFormat = "YYYY";
                     break;
                 case "Year":
@@ -227,8 +227,8 @@ const PageStatistics = ({classes, value}) => {
                     statsTimePeriodUnit = 'year';
                     realDataInterval = "Year";
                     statsApiMinIntervalTime = 366 * 5;
-                    xAxisDayNumberFormat = "MM";
-                    xAxisDayNameFormat = "YYYY";
+                    xAxisDayNumberFormat = "YYYY";
+                    xAxisDayNameFormat = " ";
                     break;
             }
             
@@ -241,7 +241,7 @@ const PageStatistics = ({classes, value}) => {
                 let elem = statsResult.data[i];
                 // Axis
                 let timeDataStart = moment(elem.startDateOfMetric).add(2, 'h')
-                if (timeDataStart.unix() > lastStatTime) {
+                if (timeDataStart.unix() >= lastStatTime) {
                     listChildren.push(<div className="tick" key={timeDataStart}>
                         <span className="day-number">{`${timeDataStart.format(xAxisDayNumberFormat)}`}</span>
                         <span className="day-name">{timeDataStart.format(xAxisDayNameFormat)}</span>
@@ -257,6 +257,14 @@ const PageStatistics = ({classes, value}) => {
             }
             
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
+            
+            console.log(data.datasets[0].data.length)
+            if (data.datasets[0].data.length == 1) {
+                data.datasets[0].data.unshift("NaN")
+                data.datasets[0].data.push("NaN")
+                data.labels.unshift("")
+                data.labels.push("")
+            }
             console.log("UPDATE GRAPH")
             if (stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
