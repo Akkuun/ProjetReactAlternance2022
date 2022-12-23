@@ -1,26 +1,27 @@
-import axios from "axios";
-
 import * as React from 'react';
-import Accordion from '@mui/material/Accordion';
+
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import {useEffect, useState} from "react";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import {Icon, TextField} from "@mui/material";
-import {DataGrid} from "@mui/x-data-grid"
 import {AccountCircle} from "@mui/icons-material";
+import moment from "moment";
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ListItemIcon from "@mui/material/ListItemIcon";
+import {useEffect, useState} from "react";
+import {DataGrid} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
 import {Tooltip} from "@mui/material";
-import moment from "moment";
+import {getTokenAPI, getListInstallation, getListOfRommByInstallation, getDataByRoomID} from "../../services/Api";
+import Accordion from '@mui/material/Accordion';
 
+//creation item par rapport à une liste de données
 const ListItems = ({items}) =>
     items
         .filter(({hidden}) => !hidden)
@@ -32,13 +33,15 @@ const ListItems = ({items}) =>
                 {label}
             </ListItem>
         ));
-
+//definition colonne de DataGrid
 const columns: GridColDef[] = [
-    {field: 'col1',
+    {
+        field: 'col1',
         headerName: 'Last Updated',
         width: 150,
-        renderCell: (params: any) =>  (
-            <Tooltip title={moment.unix(params.value).format("YYYY-MM-DD HH:mm:ss")} >
+        //hover effect on Last Updated -> timestamp conversion
+        renderCell: (params: any) => (
+            <Tooltip title={moment.unix(params.value).format("YYYY-MM-DD HH:mm:ss")}>
                 <span className="table-cell-trucate">{params.value}</span>
             </Tooltip>
         ),
@@ -50,9 +53,7 @@ const columns: GridColDef[] = [
 
 
 const DeviceDataComponent = ({classes}) => {
-    // const [open, setOpen] = useState(false);
-    // const [isOpenPopup, setIsOpenPopup] = useState(false);
-    // const [content, setContent] = useState('');
+
     const [a1, setA1] = useState('');
 
     const [icons] = useState({
@@ -68,11 +69,12 @@ const DeviceDataComponent = ({classes}) => {
     });
 
 
-
     useEffect(() => {
         getToken();
     }, []);
 
+
+//recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
             setA1(a1);
@@ -85,49 +87,25 @@ const DeviceDataComponent = ({classes}) => {
 // recuperation data
     const getToken = async (a1) => {
         try {
-            let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
-                'grant_type': 'client_credentials',
-                'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
-                'client_id': '2b64fa79-35c3-418f-8a78-3ef6f9df9c53',
-                'client_secret': 'EB44AA55C51AD31B87D139528CD5DE7E89BE925B301A4351B918E4CB568B3252'
-            }, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                }
-            });
+            let token = await getTokenAPI("device");
 
-            // Get installations names list
-            let installationsListResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/security/v1/security/getInstallationsByUser/${a1}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
-                }
-            })
+            // Get the list of installation by a A1
+            let installationsListResult = await getListInstallation(token, a1)
 
             let installationsList = [];
             for (let install of installationsListResult.data) {
-                // Get rooms name list
-                let installationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/businessmodule/v1/installations/${a1}/${install}`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
-                    }
-                })
+
+                let installationResult = await getListOfRommByInstallation(token, a1, install)
 
                 let devices = [];
+                //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-                    let configurationResult = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/configuration/${room.devices[0].Id_deviceId}/${room.devices[0].Id_deviceId}/v1/content/`, {
-                        headers: {
-                            'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
-                        }
-                    })
+                    let configurationResult = await getDataByRoomID(token, room.devices[0].Id_deviceId);
+
 
                     let deviceConfigurationData = [];
                     let added = 0;
+                    // for each data of the configuration, insert the correct data in the list
                     for (const [key, value] of Object.entries(configurationResult.data)) {
                         added++;
                         deviceConfigurationData.push({
@@ -137,7 +115,7 @@ const DeviceDataComponent = ({classes}) => {
                             'col3': value.value
                         })
                     }
-
+                    //devices data
                     devices.push({
                         roomName: room.Rn,
                         deviceName: room.devices[0].Id_deviceId,
@@ -145,14 +123,14 @@ const DeviceDataComponent = ({classes}) => {
                         Il: installationResult.data.Il
                     })
                 }
-
+//installation data
                 installationsList.push({
                     installation: install,
                     devices: devices
                 });
 
             }
-
+            //udate the installationList
             setInstallationsList(installationsList);
             console.log("installation")
             console.log(installationsList)
@@ -176,9 +154,9 @@ const DeviceDataComponent = ({classes}) => {
 
                 {a1.length === 12 ? (<List>
                     <div>
-                        {/*iteration avec map permettant d'afficher tous les bouttons ect ..*/}
+                        {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
                         {installationsList.map(station => (
-                            // permier acordion pour les noms des installations
+                            // permier accordion pour les noms des installations
                             <Accordion key={station.installation}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon/>}
@@ -193,11 +171,11 @@ const DeviceDataComponent = ({classes}) => {
                                         {station.devices[0].Il}
                                     </ListItem>
 
-                                        <Popup classes="PopupStatInstall" value={station.installation}/>
+                                    <Popup classes="PopupStatInstall" value={station.installation}/>
 
                                 </AccordionSummary>
 
-                                {/*ce que va avoir quand on va clicker sur laccordion de l'installation donc les devices*/}
+                                {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
                                 <AccordionDetails>
                                     {station.devices.map(device => (
                                         <Accordion key={device.deviceName}>
@@ -217,7 +195,7 @@ const DeviceDataComponent = ({classes}) => {
 
                                                 </ListItem>
 
-                                                    <Popup classes="PopupStatDevice" value={device.deviceName} />
+                                                <Popup classes="PopupStatDevice" value={device.deviceName}/>
 
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
@@ -225,7 +203,6 @@ const DeviceDataComponent = ({classes}) => {
                                                 <div style={{height: 300, width: '100%'}}>
 
                                                     <DataGrid rows={device.wattsType} columns={columns}/>
-
 
 
                                                 </div>
