@@ -17,30 +17,20 @@ const style = {
     p: 4,
 };
 
+let popupData;
+
 const Popup = ({classes,value})=> {
     const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
     const handleOpenPopupComponent = () => {
-        if (classes==="PopupStatInstall"){
-            document.cookie = `install=${value}`;
-            document.cookie = "device= ";
-            console.log("cool")
-            console.log(document.cookie)
+        if (classes==="popupData"){
+            console.log(value)
+            popupData = value;
         }
-        if (classes==="PopupStatDevice"){
-            document.cookie = "install=";
-            document.cookie = `device=${value}`;
-        }
-
         setOpenPopupComponent(true)
     };
     const handleClosePopupComponent = () => {
-
         setOpenPopupComponent(false);
     }
-
-
-
-
 
     return (
         <div>
@@ -53,7 +43,7 @@ const Popup = ({classes,value})=> {
             >
                 <Box sx={style}>
                     {/*component stats*/}
-                    <PageStatistics/>
+                    <PageStatistics classes="popupData" value={popupData}/>
                 </Box>
             </Modal>
         </div>
