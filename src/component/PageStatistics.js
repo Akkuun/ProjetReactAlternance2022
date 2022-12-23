@@ -81,37 +81,6 @@ const optionsConso = {
     }
 };
 
-let dataConso = {
-    labels: [],
-    datasets: [
-        {
-            label: 'Consommation',
-            data: [],
-            fill: false,
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 2,
-        }
-    ]
-};
-
-let dataTemp = {
-    labels: [],
-    datasets: [
-        {
-            label: 'Temperature',
-            data: [],
-            fill: false,
-            borderColor: 'rgba(255, 255, 255, 0.2)',
-            borderWidth: 2,
-            pointBackgroundColor: 'transparent',
-            pointBorderColor: '#FFFFFF',
-            pointBorderWidth: 3,
-            pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
-            pointHoverBorderWidth: 10,
-            lineTension: 0,
-        }
-    ]
-};
 
 const optionsTemp = {
     responsive: true,
@@ -186,6 +155,39 @@ const PageStatistics = ({classes, value})=> {
     };
     
     async function getStats(dataInterval, stateSwitch) {
+    
+        let dataConso = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Consommation',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderWidth: 2,
+                }
+            ]
+        };
+    
+        let dataTemp = {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Temperature',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'transparent',
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 3,
+                    pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
+                    pointHoverBorderWidth: 10,
+                    lineTension: 0,
+                }
+            ]
+        };
+        
         console.log("dataInterval = " + dataInterval + " state switch = " + stateSwitch)
         if(dataInterval != undefined) {
             let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
@@ -279,8 +281,9 @@ const PageStatistics = ({classes, value})=> {
                     }
                 }
             }
-            
+    
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
+            console.log("UPDATE GRAPH")
             if(stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
             } else { // Temperature
