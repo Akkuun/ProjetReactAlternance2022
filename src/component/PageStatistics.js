@@ -34,6 +34,133 @@ ChartJS.register(
     ChartDataLabels
 );
 
+
+const optionsConso = {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            right: 0,
+            left: 0,
+            top: 20,
+            bottom: -50
+        }
+    },
+    plugins: {
+        legend: {
+            display: false
+        },
+        datalabels: {
+            color: 'white',
+            anchor: 'center',
+            clamp: true,
+            font: {
+                weight: 'bold'
+            },
+        },
+        tooltip: {
+            enabled: false
+        },
+    },
+    legend: {
+        display: false,
+    },
+    scales: {
+        x: {
+            display: false,
+            ticks: {
+                backdropPadding: 0,
+            }
+        },
+        y: {
+            display: false,
+            ticks: {
+                beginAtZero: true,
+            },
+        }
+    }
+};
+
+let dataConso = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Consommation',
+            data: [],
+            fill: false,
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+            borderWidth: 2,
+        }
+    ]
+};
+
+let dataTemp = {
+    labels: [],
+    datasets: [
+        {
+            label: 'Temperature',
+            data: [],
+            fill: false,
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+            borderWidth: 2,
+            pointBackgroundColor: 'transparent',
+            pointBorderColor: '#FFFFFF',
+            pointBorderWidth: 3,
+            pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
+            pointHoverBorderWidth: 10,
+            lineTension: 0,
+        }
+    ]
+};
+
+const optionsTemp = {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+        padding: {
+            right: 25,
+            left: 25,
+            top: 50,
+            bottom: 0
+        }
+    },
+    elements: {
+        point: {
+            radius: 8,
+            hitRadius: 8,
+            hoverRadius: 8
+        }
+    },
+    plugins: {
+        legend: {
+            display: false
+        },
+        tooltip: {
+            enabled: false
+        },
+        datalabels: {
+            color: 'white',
+            clamp: true,
+            align: -45,
+            font: {
+                weight: 'bold'
+            },
+        }
+    },
+    scales: {
+        x: {
+            display: false,
+        },
+        y: {
+            display: false,
+            ticks: {
+                beginAtZero: true,
+            },
+        }
+    }
+};
+
+
 let popupData;
 let intervalClicked;
 let switchChecked = false;
@@ -80,132 +207,6 @@ const PageStatistics = ({classes, value})=> {
     
             let realDataInterval;
             let listChildren = [];
-            
-            const optionsConso = {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        right: 0,
-                        left: 0,
-                        top: 20,
-                        bottom: -50
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    datalabels: {
-                        color: 'white',
-                        anchor: 'center',
-                        clamp: true,
-                        font: {
-                            weight: 'bold'
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                },
-                legend: {
-                    display: false,
-                },
-                scales: {
-                    x: {
-                        display: false,
-                        ticks: {
-                            backdropPadding: 0,
-                        }
-                    },
-                    y: {
-                        display: false,
-                        ticks: {
-                            beginAtZero: true,
-                        },
-                    }
-                }
-            };
-            
-            let dataConso = {
-                labels: [],
-                datasets: [
-                    {
-                        label: 'Consommation',
-                        data: [],
-                        fill: false,
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        borderWidth: 2,
-                    }
-                ]
-            };
-            
-            let dataTemp = {
-                labels: [],
-                datasets: [
-                    {
-                        label: 'Temperature',
-                        data: [],
-                        fill: false,
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'transparent',
-                        pointBorderColor: '#FFFFFF',
-                        pointBorderWidth: 3,
-                        pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
-                        pointHoverBorderWidth: 10,
-                        lineTension: 0,
-                    }
-                ]
-            };
-    
-            const optionsTemp = {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        right: 25,
-                        left: 25,
-                        top: 50,
-                        bottom: 0
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 8,
-                        hitRadius: 8,
-                        hoverRadius: 8
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    datalabels: {
-                        color: 'white',
-                        clamp: true,
-                        align: -45,
-                        font: {
-                            weight: 'bold'
-                        },
-                    }
-                },
-                scales: {
-                    x: {
-                        display: false,
-                    },
-                    y: {
-                        display: false,
-                        ticks: {
-                            beginAtZero: true,
-                        },
-                    }
-                }
-            };
-    
             let data;
             let options;
     
@@ -216,131 +217,75 @@ const PageStatistics = ({classes, value})=> {
                 data = dataTemp;
                 options = optionsTemp;
             }
+    
+            let statsApiMinIntervalTime;
+            let statsTimePeriod, statsTimePeriodUnit;
+            let xAxisDayNumberFormat, xAxisDayNameFormat;
             
             if (dataInterval == "Day") {
+                statsTimePeriod = 24;
+                statsTimePeriodUnit = 'hours';
                 realDataInterval = "Hour";
-                // let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${popupData.statsInstallation[1]}/${popupData.statsInstallation[0]}/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                    headers: headers
-                });
-        
-                resApi.data = resApi.data.reverse();
-                let i = 0;
-                if (resApi.data.length > 24) i = resApi.data.length - 24;
-        
-                for (i; i < resApi.data.length; i++) {
-                    let elem = resApi.data[i];
-                    // Axis
-                    let timeDataStart = moment(elem.startDateOfMetric)
-                    timeDataStart.add(2, 'h')
-                    listChildren.push(<div className="tick" key={timeDataStart}>
-                        <span className="day-number">{`${timeDataStart.format('H')}H`}</span>
-                        <span className="day-name">{timeDataStart.format('ddd')}</span>
-                    </div>)
-                    // Graph
-                    data.labels.push(timeDataStart.format('h'))
-                    if(stateSwitch) { // Consommation
-                        data.datasets[0].data.push(elem.sum)
-                    } else { // Temperature
-                        data.datasets[0].data.push(elem.avg)
-                    }
-                }
+                statsApiMinIntervalTime = 2;
+                xAxisDayNumberFormat = "H";
+                xAxisDayNameFormat = "ddd";
             } else if (dataInterval == "Week") {
+                statsTimePeriod = 7;
+                statsTimePeriodUnit = 'days';
                 realDataInterval = "Day";
-        
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(8, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                    headers: headers
-                });
-        
-                resApi.data = resApi.data.reverse();
-                let i = 0;
-                if (resApi.data.length > 7) i = resApi.data.length - 7;
-        
-                for (i; i < resApi.data.length; i++) {
-                    let elem = resApi.data[i];
-                    console.log(elem)
-                    // Axis
-                    let timeDataStart = moment(elem.startDateOfMetric)
-                    timeDataStart.add(2, 'h')
-                    listChildren.push(<div className="tick" key={timeDataStart}>
-                        <span className="day-number">{`${timeDataStart.format('D')}`}</span>
-                        <span className="day-name">{timeDataStart.format('ddd')}</span>
-                    </div>)
-                    // Graph
-                    data.labels.push(timeDataStart.format('h'))
-                    if(stateSwitch) { // Consommation
-                        data.datasets[0].data.push(elem.sum)
-                    } else { // Temperature
-                        data.datasets[0].data.push(elem.avg)
-                    }
-                }
+                statsApiMinIntervalTime = 8;
+                xAxisDayNumberFormat = "DD";
+                xAxisDayNameFormat = "ddd";
             } else if (dataInterval == "Month") {
+                statsTimePeriod = 1;
+                statsTimePeriodUnit = 'months';
                 realDataInterval = "Month";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(366, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                    headers: headers
-                });
-        
-                console.log(resApi)
-                resApi.data = resApi.data.reverse();
-                let i = 0;
-                if (resApi.data.length > 12) i = resApi.data.length - 12;
-                
-                for (i; i < resApi.data.length; i++) {
-                    let elem = resApi.data[i];
-                    console.log(elem)
-                    // Axis
-                    let timeDataStart = moment(elem.startDateOfMetric)
-                    timeDataStart.add(2, 'h')
-                    listChildren.push(<div className="tick" key={timeDataStart}>
-                        <span className="day-number">{`${timeDataStart.format('MM')}`}</span>
-                        <span className="day-name">{timeDataStart.format('YYYY')}</span>
-                    </div>)
-                    // Graph
-                    data.labels.push(timeDataStart.format('h'))
-                    if(stateSwitch) { // Consommation
-                        data.datasets[0].data.push(elem.sum)
-                    } else { // Temperature
-                        data.datasets[0].data.push(elem.avg)
-                    }
-                }
+                statsApiMinIntervalTime = 366;
+                xAxisDayNumberFormat = "MM";
+                xAxisDayNameFormat = "YYYY";
             } else if (dataInterval == "Year") {
+                statsTimePeriod = 1;
+                statsTimePeriodUnit = 'year';
                 realDataInterval = "Year";
-                let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(365 * 5, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                    headers: headers
-                });
-        
-                resApi.data = resApi.data.reverse();
-                let i = 0;
-                if (resApi.data.length > 5) i = resApi.data.length - 5;
-        
-                for (i; i < resApi.data.length; i++) {
-                    let elem = resApi.data[i];
-                    console.log(elem)
-                    // Axis
-                    let timeDataStart = moment(elem.startDateOfMetric)
-                    timeDataStart.add(2, 'h')
+                statsApiMinIntervalTime = 366*5;
+                xAxisDayNumberFormat = "MM";
+                xAxisDayNameFormat = "YYYY";
+            }
+            
+            // let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${popupData.statsInstallation[1]}/${popupData.statsInstallation[0]}/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+            let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(statsApiMinIntervalTime, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
+                headers: headers
+            });
+    
+            resApi.data = resApi.data.reverse();
+            let lastStatTime = moment(resApi.data[resApi.data.length - 1].startDateOfMetric);
+            lastStatTime = lastStatTime.add(2, 'h').subtract(statsTimePeriod, statsTimePeriodUnit).unix()
+    
+            for (let i = 0; i < resApi.data.length; i++) {
+                let elem = resApi.data[i];
+                // Axis
+                let timeDataStart = moment(elem.startDateOfMetric).add(2, 'h')
+                if (timeDataStart.unix() > lastStatTime) {
                     listChildren.push(<div className="tick" key={timeDataStart}>
-                        <span className="day-number">{`${timeDataStart.format('MM')}`}</span>
-                        <span className="day-name">{timeDataStart.format('YYYY')}</span>
+                        <span className="day-number">{`${timeDataStart.format(xAxisDayNumberFormat)}`}</span>
+                        <span className="day-name">{timeDataStart.format(xAxisDayNameFormat)}</span>
                     </div>)
                     // Graph
                     data.labels.push(timeDataStart.format('h'))
-                    if(stateSwitch) { // Consommation
+                    if (stateSwitch) { // Consommation
                         data.datasets[0].data.push(elem.sum)
                     } else { // Temperature
                         data.datasets[0].data.push(elem.avg)
                     }
                 }
             }
-        
+            
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
             if(stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
             } else { // Temperature
                 setGraphDataConso(<Line options={options} data={data}/>)
             }
-        } else {
-            console.log("ERREUR : dataInterval undefined ")
         }
     }
     
