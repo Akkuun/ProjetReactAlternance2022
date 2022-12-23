@@ -1,10 +1,8 @@
 import axios from "axios";
 
 export async function getTokenAPI(mode) {
-
     let tokenResult;
     switch (mode) {
-
         case "user":
             tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
@@ -16,8 +14,8 @@ export async function getTokenAPI(mode) {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            return await tokenResult.data["access_token"]
-
+            return tokenResult.data["access_token"]
+        
         case "device":
             tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
@@ -29,15 +27,12 @@ export async function getTokenAPI(mode) {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            return await tokenResult.data["access_token"]
+            return tokenResult.data["access_token"]
     }
-
-
 }
 
 // Get the list of installation by a A1
 export async function getListInstallation(token, a1) {
-
     return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/security/v1/security/getInstallationsByUser/${a1}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -66,12 +61,10 @@ export async function getDataByRoomID(token, deviceID) {
             'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
         }
     })
-
-
 }
 
 export async function getListOfUser(token) {
-
+    
     return axios.get("https://visionsystem2-identity-dev.azurewebsites.net/api/v1.0/Users", {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -82,12 +75,20 @@ export async function getListOfUser(token) {
 }
 
 
-export function getStatistics() {
-    let headers = {
-        'Authorization': `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjE4RUZCRTM1Q0ExREU0MjY4QjdFOEY4NURDQzFEQjcxRkQzOTdDNjYiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJHTy0tTmNvZDVDYUxmby1GM01IYmNmMDVmR1kifQ.eyJuYmYiOjE2NzA0OTY2NTIsImV4cCI6MTY3MDU4Mjk5MiwiaXNzIjoiaHR0cHM6Ly92aXNpb25zeXN0ZW0yLWlkZW50aXR5LWRldi5henVyZXdlYnNpdGVzLm5ldCIsImF1ZCI6WyJidXNpbmVzc21vZHVsZSIsImRhdGFwcm9jZXNzaW5nIiwiZmlybXdhcmUiLCJpZGVudGl0eSIsImlvdG1hbmFnZW1lbnQiLCJvcGVyYXRpb25zIiwidG91Iiwic2NoZW1hcyJdLCJjbGllbnRfaWQiOiIyYjY0ZmE3OS0zNWMzLTQxOGYtOGE3OC0zZWY2ZjlkZjljNTMiLCJlbWFpbCI6InRoZW90ZXN0QHlvcG1haWwuY29tIiwic3ViIjoiRUM5QThCRERCRUVFIiwianRpIjoiVkxOT3gyUUtBQzB2UnB1TzhJbWh6USIsInNjb3BlIjpbIkNvbW1pc3Npb25pbmdzLlJlYWQiLCJDb21taXNzaW9uaW5ncy5Xcml0ZSIsIkRldmljZS5SZWFkIiwiRGV2aWNlLldyaXRlIiwiSGlzdG9yaWNhbERhdGEuUmVhZCIsIkhpc3RvcmljYWxEYXRhLldyaXRlIiwiaHR0cHM6Ly92aXNpb25zeXN0ZW0yLmNvbS9idXNpbmVzc21vZHVsZS91c2VyX2ltcGVyc29uYXRpb24iLCJJbnN0YWxsYXRpb24uUmVhZCIsIkluc3RhbGxhdGlvbi5Xcml0ZSIsIlJvb20uUmVhZCIsIlJvb20uV3JpdGUiLCJEYXRhUHJvY2Vzc2luZy5SZWFkIiwiRGF0YVByb2Nlc3NpbmcuV3JpdGUiLCJodHRwczovL3Zpc2lvbnN5c3RlbTIuY29tL2RhdGFwcm9jZXNzaW5nL3VzZXJfaW1wZXJzb25hdGlvbiIsIkZpcm13YXJlLlJlYWQiLCJGaXJtd2FyZS5Xcml0ZSIsImh0dHBzOi8vdmlzaW9uc3lzdGVtMi5jb20vaWRlbnRpdHkvdXNlcl9pbXBlcnNvbmF0aW9uIiwiaHR0cHM6Ly92aXNpb25zeXN0ZW0yLmNvbS9pb3RtYW5hZ2VtZW50L3VzZXJfaW1wZXJzb25hdGlvbiIsIklPVE1hbmFnZW1lbnQuUmVhZCIsIklPVE1hbmFnZW1lbnQuV3JpdGUiLCJodHRwczovL3Zpc2lvbnN5c3RlbTIuY29tL29wZXJhdGlvbnMvdXNlcl9pbXBlcnNvbmF0aW9uIiwiaHR0cHM6Ly92aXNpb25zeXN0ZW0yLmNvbS90b3UvdXNlcl9pbXBlcnNvbmF0aW9uIiwiVGVybU9mVXNlLlJlYWQiLCJUZXJtT2ZVc2UuV3JpdGUiLCJTY2hlbWEuUmVhZCIsIlNjaGVtYS5Xcml0ZSJdfQ.aHgJ6s_ufi-ODqpgMP_zYha_UzhQV5noyrl_rq9t8mw0DsBebU1MC7980etnEBMjdwRT-9_BqGF1b73s0ui_-oVfSLVHKz8Rea5H5jJ7FSeH_Z0qewa4Btlyry0xMbifjrkdl4E57Bjm00f_1GkQi7k-b8au3Jm99AZXDP7qWBbb9Jv0n9GC8l326rXhuGqO_FDRCGKstVAB-gpb-wipiKYpnq2dj59d5Vh4_SZCUDj5Hm13QDNY3LgiSelcqez0ZEzKevhAlO7L8XmqM7darxeWJCWy7vwg-HDwjTj0Qc9NswFSLwJTQddAv4IMK4W9wQ9n5weCEFa1WejN9GGElA`,
-        'Ocp-Apim-Subscription-Key': ``
-    };
-
-    let statisticsData = axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/Day/Wc/2022-12-01/2022-12-08`, {headers});
-    return statisticsData
+export async function getStatistics(mode, token, A1, installationID, deviceID, wattsType, realDataInterval, minInterval, maxInterval) {
+    let url;
+    if (mode === "installation") {
+        url = `https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${installationID}/${A1}/${realDataInterval}/${wattsType}/${minInterval}/${maxInterval}`;
+    } else {
+        url = `https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/device/${installationID}/${deviceID}/${A1}/${realDataInterval}/${wattsType}/${minInterval}/${maxInterval}`;
+    }
+    let statisticsData = await axios.get(url, {
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Ocp-Apim-Subscription-Key': ''
+        }
+    })
+    
+    return statisticsData;
 }

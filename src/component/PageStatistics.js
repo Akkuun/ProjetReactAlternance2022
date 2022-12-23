@@ -1,29 +1,17 @@
-import { getToken } from '../services/Api';
-import React from 'react';
-import { useEffect, useState } from 'react';
+import {getStatistics, getTokenAPI} from '../services/Api';
+import React, {useEffect, useState} from 'react';
 import {Bar, Line} from 'react-chartjs-2';
-import Switch, { SwitchProps } from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import {styled} from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import "./stats.scss"
 import 'chart.js/auto'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import axios from "axios";
 import moment from "moment";
 import 'moment/locale/fr';
-import ThermostatIcon from '@mui/icons-material/Thermostat';
 
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import Popup from "./popupComponent/popup";
+import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title,} from 'chart.js';
 
 ChartJS.register(
     CategoryScale,
@@ -134,12 +122,12 @@ let popupData;
 let intervalClicked;
 let switchChecked = false;
 
-const PageStatistics = ({classes, value})=> {
+const PageStatistics = ({classes, value}) => {
     const [active, setActive] = useState("");
     const [axis, setAxis] = useState((<div></div>));
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
     
-    if (classes==="popupData"){
+    if (classes === "popupData") {
         popupData = value;
     }
     
@@ -155,7 +143,7 @@ const PageStatistics = ({classes, value})=> {
     };
     
     async function getStats(dataInterval, stateSwitch) {
-    
+        
         let dataConso = {
             labels: [],
             datasets: [
@@ -168,7 +156,7 @@ const PageStatistics = ({classes, value})=> {
                 }
             ]
         };
-    
+        
         let dataTemp = {
             labels: [],
             datasets: [
@@ -189,29 +177,14 @@ const PageStatistics = ({classes, value})=> {
         };
         
         console.log("dataInterval = " + dataInterval + " state switch = " + stateSwitch)
-        if(dataInterval != undefined) {
-            let tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
-                'grant_type': 'client_credentials',
-                'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
-                'client_id': '2b64fa79-35c3-418f-8a78-3ef6f9df9c53',
-                'client_secret': 'EB44AA55C51AD31B87D139528CD5DE7E89BE925B301A4351B918E4CB568B3252'
-            }, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                }
-            });
-    
-            let headers = {
-                'Authorization': 'Bearer ' + tokenResult.data["access_token"],
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Ocp-Apim-Subscription-Key': ''
-            };
-    
+        if (dataInterval != undefined) {
+            let token = await getTokenAPI("device");
+            
             let realDataInterval;
             let listChildren = [];
             let data;
             let options;
-    
+            
             if (stateSwitch) { // Consommation
                 data = dataConso;
                 options = optionsConso;
@@ -219,52 +192,53 @@ const PageStatistics = ({classes, value})=> {
                 data = dataTemp;
                 options = optionsTemp;
             }
-    
+            
             let statsApiMinIntervalTime;
             let statsTimePeriod, statsTimePeriodUnit;
             let xAxisDayNumberFormat, xAxisDayNameFormat;
             
-            if (dataInterval == "Day") {
-                statsTimePeriod = 24;
-                statsTimePeriodUnit = 'hours';
-                realDataInterval = "Hour";
-                statsApiMinIntervalTime = 2;
-                xAxisDayNumberFormat = "H";
-                xAxisDayNameFormat = "ddd";
-            } else if (dataInterval == "Week") {
-                statsTimePeriod = 7;
-                statsTimePeriodUnit = 'days';
-                realDataInterval = "Day";
-                statsApiMinIntervalTime = 8;
-                xAxisDayNumberFormat = "DD";
-                xAxisDayNameFormat = "ddd";
-            } else if (dataInterval == "Month") {
-                statsTimePeriod = 1;
-                statsTimePeriodUnit = 'months';
-                realDataInterval = "Month";
-                statsApiMinIntervalTime = 366;
-                xAxisDayNumberFormat = "MM";
-                xAxisDayNameFormat = "YYYY";
-            } else if (dataInterval == "Year") {
-                statsTimePeriod = 1;
-                statsTimePeriodUnit = 'year';
-                realDataInterval = "Year";
-                statsApiMinIntervalTime = 366*5;
-                xAxisDayNumberFormat = "MM";
-                xAxisDayNameFormat = "YYYY";
+            switch (dataInterval) {
+                case "Day":
+                    statsTimePeriod = 24;
+                    statsTimePeriodUnit = 'hours';
+                    realDataInterval = "Hour";
+                    statsApiMinIntervalTime = 2;
+                    xAxisDayNumberFormat = "H";
+                    xAxisDayNameFormat = "ddd";
+                    break;
+                case "Week":
+                    statsTimePeriod = 7;
+                    statsTimePeriodUnit = 'days';
+                    realDataInterval = "Day";
+                    statsApiMinIntervalTime = 8;
+                    xAxisDayNumberFormat = "DD";
+                    xAxisDayNameFormat = "ddd";
+                    break;
+                case "Month":
+                    statsTimePeriod = 1;
+                    statsTimePeriodUnit = 'months';
+                    realDataInterval = "Month";
+                    statsApiMinIntervalTime = 366;
+                    xAxisDayNumberFormat = "MM";
+                    xAxisDayNameFormat = "YYYY";
+                    break;
+                case "Year":
+                    statsTimePeriod = 1;
+                    statsTimePeriodUnit = 'year';
+                    realDataInterval = "Year";
+                    statsApiMinIntervalTime = 366 * 5;
+                    xAxisDayNumberFormat = "MM";
+                    xAxisDayNameFormat = "YYYY";
+                    break;
             }
             
-            // let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${popupData.statsInstallation[1]}/${popupData.statsInstallation[0]}/${realDataInterval}/Wc/${moment().subtract(2, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-            let resApi = await axios.get(`https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/installSimulated/EC9A8BDDBEEE/${realDataInterval}/Wc/${moment().subtract(statsApiMinIntervalTime, 'd').format("YYYY-MM-DD")}/${moment().add(1, 'd').format("YYYY-MM-DD")}`, {
-                headers: headers
-            });
-    
-            resApi.data = resApi.data.reverse();
-            let lastStatTime = moment(resApi.data[resApi.data.length - 1].startDateOfMetric);
+            let statsResult = await getStatistics("installation", token, "EC9A8BDDBEEE", "installSimulated", "", "Wc", realDataInterval, moment().subtract(statsApiMinIntervalTime, 'd').format("YYYY-MM-DD"), moment().add(1, 'd').format("YYYY-MM-DD"));
+            statsResult.data = statsResult.data.reverse();
+            let lastStatTime = moment(statsResult.data[statsResult.data.length - 1].startDateOfMetric);
             lastStatTime = lastStatTime.add(2, 'h').subtract(statsTimePeriod, statsTimePeriodUnit).unix()
-    
-            for (let i = 0; i < resApi.data.length; i++) {
-                let elem = resApi.data[i];
+            
+            for (let i = 0; i < statsResult.data.length; i++) {
+                let elem = statsResult.data[i];
                 // Axis
                 let timeDataStart = moment(elem.startDateOfMetric).add(2, 'h')
                 if (timeDataStart.unix() > lastStatTime) {
@@ -281,10 +255,10 @@ const PageStatistics = ({classes, value})=> {
                     }
                 }
             }
-    
+            
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
             console.log("UPDATE GRAPH")
-            if(stateSwitch) { // Consommation
+            if (stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
             } else { // Temperature
                 setGraphDataConso(<Line options={options} data={data}/>)
@@ -292,7 +266,7 @@ const PageStatistics = ({classes, value})=> {
         }
     }
     
-    const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+    const MaterialUISwitch = styled(Switch)(({theme}) => ({
         width: 62,
         height: 34,
         padding: 7,
@@ -344,6 +318,7 @@ const PageStatistics = ({classes, value})=> {
         async function fetchData() {
             const response = await getStats();
         }
+        
         fetchData();
     }, []);
     
@@ -355,7 +330,7 @@ const PageStatistics = ({classes, value})=> {
                 <p className="lead">DEVICE_ID</p>
                 <FormGroup className="switch-button">
                     <FormControlLabel
-                        control={<MaterialUISwitch sx={{ m: 1 }} checked={switchChecked} onChange={handleChange}/>}
+                        control={<MaterialUISwitch sx={{m: 1}} checked={switchChecked} onChange={handleChange}/>}
                     />
                 </FormGroup>
                 <div>
@@ -399,14 +374,14 @@ const PageStatistics = ({classes, value})=> {
                                     </button>
                                 </li>
                             </ul>
-
+                        
                         </div>
                     </div>
                 </div>
                 <div>
                     {graphDataConso}
                 </div>
-                    {axis}
+                {axis}
             </div>
         </div>)
 }
