@@ -75,8 +75,8 @@ const optionsTemp = {
     maintainAspectRatio: false,
     layout: {
         padding: {
-            right: 30,
-            left: 30,
+            right: 25,
+            left: 25,
             top: 50,
             bottom: 0
         }
@@ -126,6 +126,7 @@ const PageStatistics = ({classes, value}) => {
     const [active, setActive] = useState("");
     const [axis, setAxis] = useState((<div></div>));
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
+    const [windowSize, setWindowSize] = useState(getWindowSize());
     
     if (classes === "popupData") {
         popupData = value;
@@ -142,8 +143,20 @@ const PageStatistics = ({classes, value}) => {
         switchChecked = !switchChecked;
     };
     
-    async function getStats(dataInterval, stateSwitch) {
+    useEffect(() => {
+        function handleWindowResize() {
+            setWindowSize(getWindowSize());
+        }
         
+        window.addEventListener('resize', handleWindowResize);
+        
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+    }, []);
+    
+    
+    async function getStats(dataInterval, stateSwitch) {
         let dataConso = {
             labels: [],
             datasets: [
@@ -170,7 +183,7 @@ const PageStatistics = ({classes, value}) => {
                     pointBorderColor: '#FFFFFF',
                     pointBorderWidth: 3,
                     pointHoverBorderColor: 'rgba(255, 255, 255, 0.2)',
-                    pointHoverBorderWidth: 10,
+                    pointHoverBorderWidth: 0,
                     lineTension: 0,
                 }
             ]
@@ -257,14 +270,20 @@ const PageStatistics = ({classes, value}) => {
             }
             
             setAxis(React.createElement('div', {className: 'axis'}, listChildren))
+            if (!stateSwitch) {
+                options.layout.padding.left = (windowSize.innerWidth * 0.8) / data.datasets[0].data.length / 2
+                options.layout.padding.right = (windowSize.innerWidth * 0.8) / data.datasets[0].data.length / 2
+            }
             
-            console.log(data.datasets[0].data.length)
+            // Fix bug when only one data to display on chart
             if (data.datasets[0].data.length == 1) {
                 data.datasets[0].data.unshift("NaN")
                 data.datasets[0].data.push("NaN")
                 data.labels.unshift("")
                 data.labels.push("")
             }
+            
+            console.log(windowSize.innerWidth)
             console.log("UPDATE GRAPH")
             if (stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
@@ -396,6 +415,11 @@ const PageStatistics = ({classes, value}) => {
 
 function convertFahrenheitToCelsius(degrees) {
     return Math.floor(5 / 9 * (degrees - 32));
+}
+
+function getWindowSize() {
+    const {innerWidth, innerHeight} = window;
+    return {innerWidth, innerHeight};
 }
 
 export default PageStatistics;
