@@ -15,7 +15,13 @@ import {AccountCircle} from "@mui/icons-material";
 import moment from "moment";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {DataGrid} from "@mui/x-data-grid"
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridToolbarQuickFilter
+} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
 import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
@@ -141,6 +147,25 @@ const DeviceDataComponent = ({classes}) => {
         }
     }
     
+
+    function CustomToolbar() {
+        return (
+            <GridToolbarContainer>
+                {/*search feature*/}
+                <GridToolbarQuickFilter
+                    quickFilterParser={(searchInput) =>
+                        searchInput.split(',').map((value) => value.trim())
+                    }
+                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                    debounceMs={200} // time before applying the new quick filter value
+                />
+               
+
+            </GridToolbarContainer>
+        )
+    }
+
+
     const [installationsList, setInstallationsList] = useState([]);
     
     // creation accodion avec tableaux a partir de la map des donnes obtenu
@@ -180,6 +205,7 @@ const DeviceDataComponent = ({classes}) => {
                                     
                                     <Popup classes="popupData"
                                            value={{"statsInstallation": [a1, station.installation]}}/>
+
                                 </AccordionSummary>
                                 
                                 {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
@@ -217,7 +243,9 @@ const DeviceDataComponent = ({classes}) => {
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
                                                     
-                                                    <DataGrid rows={device.wattsType} columns={columns}/>
+                                                    <DataGrid rows={device.wattsType} columns={columns} components={{
+                                                        Toolbar: CustomToolbar
+                                                    }}/>
                                                 
                                                 
                                                 </div>
