@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
@@ -9,16 +10,14 @@ import ListItem from "@mui/material/ListItem";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {Icon, TextField} from "@mui/material";
+import {Icon, TextField, Tooltip} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
 import moment from "moment";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
-import {Tooltip} from "@mui/material";
-import {getTokenAPI, getListInstallation, getListOfRommByInstallation, getDataByRoomID} from "../../services/Api";
+import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
 
 //creation item par rapport à une liste de données
@@ -53,9 +52,12 @@ const columns: GridColDef[] = [
 
 
 const DeviceDataComponent = ({classes}) => {
-
+    
     const [a1, setA1] = useState('');
-
+    const [accordionOpen, setAccordionOpen] = React.useState(false);
+    const [accordionOpen2, setAccordionOpen2] = React.useState(false);
+    
+    
     const [icons] = useState({
         installation: [
             {Icon: CottageIcon},
@@ -67,8 +69,8 @@ const DeviceDataComponent = ({classes}) => {
             {Icon: AssessmentIcon},
         ]
     });
-
-
+    
+    
     useEffect(() => {
         getToken();
     }, []);
@@ -88,21 +90,21 @@ const DeviceDataComponent = ({classes}) => {
     const getToken = async (a1) => {
         try {
             let token = await getTokenAPI("device");
-
+            
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(token, a1)
-
+            
             let installationsList = [];
             for (let install of installationsListResult.data) {
-
+                
                 let installationResult = await getListOfRommByInstallation(token, a1, install)
-
+                
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
                     let configurationResult = await getDataByRoomID(token, room.devices[0].Id_deviceId);
-
-
+                    
+                    
                     let deviceConfigurationData = [];
                     let added = 0;
                     // for each data of the configuration, insert the correct data in the list
@@ -128,7 +130,7 @@ const DeviceDataComponent = ({classes}) => {
                     installation: install,
                     devices: devices
                 });
-
+                
             }
             //udate the installationList
             setInstallationsList(installationsList);
@@ -138,12 +140,12 @@ const DeviceDataComponent = ({classes}) => {
             console.error(e);
         }
     }
-
+    
     const [installationsList, setInstallationsList] = useState([]);
-
+    
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
-
+        
         <Grid container spacing={3} marginLeft="10%" marginTop="0%">
             <Grid item xs={9}>
                 <form>
@@ -151,40 +153,49 @@ const DeviceDataComponent = ({classes}) => {
                     <TextField id="outlined-basic" label="A1" variant="outlined"
                                onChange={(e) => a1Handler(e.target.value)}/>
                 </form>
-
+                
                 {a1.length === 12 ? (<List>
                     <div>
                         {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
                         {installationsList.map(station => (
                             // permier accordion pour les noms des installations
-                            <Accordion key={station.installation}>
+                            <Accordion key={station.installation} expanded={accordionOpen}>
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
+                                    expandIcon={
+                                        <ExpandMoreIcon
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => setAccordionOpen(!accordionOpen)}/>
+                                    }
+                                    sx={{cursor: 'unset !important'}}
                                 >
                                     <Typography component={'span'}>
                                         <ListItems items={icons.installation}/>
                                     </Typography>
-
+                                    
                                     <ListItem>
                                         {station.devices[0].Il}
                                     </ListItem>
-
-    
-                                    <Popup classes="popupData" value={{"statsInstallation": [a1, station.installation]}}/>
-
-
+                                    
+                                    <Popup classes="popupData"
+                                           value={{"statsInstallation": [a1, station.installation]}}/>
                                 </AccordionSummary>
-
+                                
                                 {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
                                 <AccordionDetails>
                                     {station.devices.map(device => (
-                                        <Accordion key={device.deviceName}>
+                                        <Accordion key={device.deviceName} expanded={accordionOpen2}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon/>}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
+                                                expandIcon={
+                                                    <ExpandMoreIcon
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={() => setAccordionOpen2(!accordionOpen2)}/>
+                                                }
+                                                sx={{cursor: 'unset !important'}}
                                             >
                                                 <Typography component={'span'}>
                                                     <ListItems items={icons.device}/>
@@ -194,20 +205,21 @@ const DeviceDataComponent = ({classes}) => {
                                                         <Icon/>
                                                     </ListItemIcon>
                                                     {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
-
+                                                
                                                 </ListItem>
-
-                                                <Popup classes="popupData" value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
-
-
+                                                
+                                                <Popup classes="popupData"
+                                                       value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
+                                            
+                                            
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
-
+                                                    
                                                     <DataGrid rows={device.wattsType} columns={columns}/>
-
-
+                                                
+                                                
                                                 </div>
                                             </AccordionDetails>
                                         </Accordion>
@@ -216,13 +228,13 @@ const DeviceDataComponent = ({classes}) => {
                             </Accordion>
                         ))}
                     </div>
-                </List>) : (<div> rien</div>)}
-
+                </List>) : (<div></div>)}
+            
             </Grid>
-
+        
         </Grid>
-
-
+    
+    
     )
 }
 
