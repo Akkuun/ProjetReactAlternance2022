@@ -15,7 +15,13 @@ import moment from "moment";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import {useEffect, useState} from "react";
-import {DataGrid} from "@mui/x-data-grid"
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridToolbarQuickFilter
+} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
 import {Tooltip} from "@mui/material";
 import {getTokenAPI, getListInstallation, getListOfRommByInstallation, getDataByRoomID} from "../../services/Api";
@@ -139,6 +145,25 @@ const DeviceDataComponent = ({classes}) => {
         }
     }
 
+
+    function CustomToolbar() {
+        return (
+            <GridToolbarContainer>
+                {/*search feature*/}
+                <GridToolbarQuickFilter
+                    quickFilterParser={(searchInput) =>
+                        searchInput.split(',').map((value) => value.trim())
+                    }
+                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                    debounceMs={200} // time before applying the new quick filter value
+                />
+               
+
+            </GridToolbarContainer>
+        )
+    }
+
+
     const [installationsList, setInstallationsList] = useState([]);
 
     // creation accodion avec tableaux a partir de la map des donnes obtenu
@@ -171,8 +196,9 @@ const DeviceDataComponent = ({classes}) => {
                                         {station.devices[0].Il}
                                     </ListItem>
 
-    
-                                    <Popup classes="popupData" value={{"statsInstallation": [a1, station.installation]}}/>
+
+                                    <Popup classes="popupData"
+                                           value={{"statsInstallation": [a1, station.installation]}}/>
 
 
                                 </AccordionSummary>
@@ -197,7 +223,8 @@ const DeviceDataComponent = ({classes}) => {
 
                                                 </ListItem>
 
-                                                <Popup classes="popupData" value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
+                                                <Popup classes="popupData"
+                                                       value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
 
 
                                             </AccordionSummary>
@@ -205,7 +232,9 @@ const DeviceDataComponent = ({classes}) => {
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
 
-                                                    <DataGrid rows={device.wattsType} columns={columns}/>
+                                                    <DataGrid rows={device.wattsType} columns={columns} components={{
+                                                        Toolbar: CustomToolbar
+                                                    }}/>
 
 
                                                 </div>
