@@ -1,5 +1,4 @@
 import * as React from 'react';
-import '../../styleComponent/JsonButton.css';
 import {
     DataGrid, gridFilteredSortedRowIdsSelector, gridPageCountSelector, gridPageSelector,
     GridToolbarContainer,
@@ -10,8 +9,10 @@ import {
 import {useState} from "react";
 import {LinearProgress, MenuItem, Pagination, Tooltip} from "@mui/material";
 import Cookies from "universal-cookie";
+import '../../styleComponent/JsonButton.css';
 
 
+//export to JSSON & CSV function
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
@@ -26,7 +27,7 @@ const exportBlob = (blob, filename) => {
     });
 };
 
-
+//transform data to JSON
 const getJson = (apiRef) => {
     // Select rows and columns
     const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
@@ -51,10 +52,11 @@ function CustomToolbar() {
 
     const cookies = new Cookies();
 
-    let toto = cookies.get('sizeUser')
+    let sizeUser = cookies.get('sizeUser')
     return (
 
         <GridToolbarContainer>
+            {/*search feature*/}
             <GridToolbarQuickFilter
                 quickFilterParser={(searchInput) =>
                     searchInput.split(',').map((value) => value.trim())
@@ -62,12 +64,11 @@ function CustomToolbar() {
                 quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                 debounceMs={200} // time before applying the new quick filter value
             />
-            <Tooltip title={"users : " + toto} placement="right-end">
+            <Tooltip title={"users : " + sizeUser} placement="right-end">
                 <GridToolbarExportContainer>
-
+                    {/*export feature*/}
                     <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
                     <div className="JsonButton">
-
                         <JsonExportMenuItem/>
                     </div>
 
