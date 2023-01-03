@@ -20,16 +20,9 @@ import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-dat
 import Popup from "../popupComponent/popup";
 import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
-<<<<<<< HEAD
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-=======
 import LoadingButton from '@mui/lab/LoadingButton';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-
-
-
->>>>>>> 094f0548f7782fb21b694114b3f7833c82699d75
 
 //creation item par rapport à une liste de données
 const ListItems = ({items}) =>
@@ -60,7 +53,6 @@ const columns: GridColDef[] = [
     {field: 'col3', headerName: 'WattsType', width: 400},
 
 ];
-
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -155,60 +147,56 @@ const DeviceDataComponent = ({classes}) => {
     
     
     function CustomToolbar() {
-
+        
         const [loading, setLoading] = React.useState(false);
-
+        
         const handleClick = () => {
-
+            
             setLoading(!loading);
-
-
-            for(let i=0;i<150;i++){
+            
+            
+            for (let i = 0; i < 150; i++) {
                 console.log("tototo")
             }
-
+            
             setLoading(!loading);
-
-
+            
+            
         }
-
-
+        
+        
         return (
             <GridToolbarContainer>
                 {/*search feature*/}
                 <GridToolbarQuickFilter onBlur={handleClick}
-
-                    quickFilterParser={(searchInput) =>
-                        searchInput.split(',').map((value) => value.trim())
-                    }
-                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
-                    debounceMs={200} // time before applying the new quick filter value
-
+                
+                                        quickFilterParser={(searchInput) =>
+                                            searchInput.split(',').map((value) => value.trim())
+                                        }
+                                        quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                                        debounceMs={200} // time before applying the new quick filter value
+                
                 />
-<<<<<<< HEAD
-            
-            
-=======
-
+                
+                
                 <LoadingButton
                     loading={loading}
-                    onClick={()=>{
+                    onClick={() => {
                         setLoading(!loading);
-
-
-                        for(let i=0;i<150;i++){
+                        
+                        
+                        for (let i = 0; i < 150; i++) {
                             console.log("tototo")
                         }
-
+                        
                         setLoading(!loading);
                     }}
-                    endIcon={<RefreshIcon />}
+                    endIcon={<RefreshIcon/>}
                     loadingPosition="end"
                     variant="text"
                 >
                     Send
                 </LoadingButton>
->>>>>>> 094f0548f7782fb21b694114b3f7833c82699d75
             </GridToolbarContainer>
         )
     }
