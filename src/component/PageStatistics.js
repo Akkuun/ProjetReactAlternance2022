@@ -284,7 +284,6 @@ const PageStatistics = ({classes, value}) => {
             }
             
             console.log(windowSize.innerWidth)
-            console.log("UPDATE GRAPH")
             if (stateSwitch) { // Consommation
                 setGraphDataConso(<Bar options={options} data={data}/>)
             } else { // Temperature

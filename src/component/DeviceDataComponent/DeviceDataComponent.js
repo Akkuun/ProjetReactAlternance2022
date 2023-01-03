@@ -15,16 +15,12 @@ import {AccountCircle} from "@mui/icons-material";
 import moment from "moment";
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {
-    DataGrid,
-    GridToolbarContainer,
-    GridToolbarExport,
-    GridToolbarExportContainer,
-    GridToolbarQuickFilter
-} from "@mui/x-data-grid"
+import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
 import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //creation item par rapport à une liste de données
 const ListItems = ({items}) =>
@@ -147,7 +143,7 @@ const DeviceDataComponent = ({classes}) => {
         }
     }
     
-
+    
     function CustomToolbar() {
         return (
             <GridToolbarContainer>
@@ -159,14 +155,31 @@ const DeviceDataComponent = ({classes}) => {
                     quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                     debounceMs={200} // time before applying the new quick filter value
                 />
-               
-
+            
+            
             </GridToolbarContainer>
         )
     }
-
-
+    
+    
     const [installationsList, setInstallationsList] = useState([]);
+    
+    
+    const addToClipboard = (content) => {
+        console.log(content.target.innerText)
+        navigator.clipboard.writeText(content.target.innerText);
+        console.log("okok")
+        toast.info('Ajouté au presse-papier: ' + content.target.innerText, {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+        });
+    };
     
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
@@ -200,12 +213,13 @@ const DeviceDataComponent = ({classes}) => {
                                     </Typography>
                                     
                                     <ListItem>
-                                        {station.devices[0].Il}
+                                        <Typography onClick={addToClipboard}>
+                                            {station.devices[0].Il}
+                                        </Typography>
                                     </ListItem>
                                     
                                     <Popup classes="popupData"
                                            value={{"statsInstallation": [a1, station.installation]}}/>
-
                                 </AccordionSummary>
                                 
                                 {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
@@ -230,8 +244,15 @@ const DeviceDataComponent = ({classes}) => {
                                                     <ListItemIcon>
                                                         <Icon/>
                                                     </ListItemIcon>
-                                                    {` Room : ${device.roomName} -  Device : ${device.deviceName}`}
-                                                
+                                                    <span>Room:&nbsp;</span>
+                                                    <Typography onClick={addToClipboard}>
+                                                        {device.roomName}
+                                                    </Typography>
+                                                    <span>&nbsp;Device:&nbsp;</span>
+                                                    <Typography onClick={addToClipboard}>
+                                                        {device.deviceName}
+                                                    </Typography>
+                                                    <ToastContainer/>
                                                 </ListItem>
                                                 
                                                 <Popup classes="popupData"
@@ -242,12 +263,9 @@ const DeviceDataComponent = ({classes}) => {
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
-                                                    
                                                     <DataGrid rows={device.wattsType} columns={columns} components={{
                                                         Toolbar: CustomToolbar
                                                     }}/>
-                                                
-                                                
                                                 </div>
                                             </AccordionDetails>
                                         </Accordion>
@@ -257,12 +275,8 @@ const DeviceDataComponent = ({classes}) => {
                         ))}
                     </div>
                 </List>) : (<div></div>)}
-            
             </Grid>
-        
         </Grid>
-    
-    
     )
 }
 
