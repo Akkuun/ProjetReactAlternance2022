@@ -13,14 +13,23 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import {Icon, TextField, Tooltip} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
 import moment from "moment";
+import RefreshIcon from '@mui/icons-material/Refresh';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
 import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
+<<<<<<< HEAD
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+=======
+import LoadingButton from '@mui/lab/LoadingButton';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+
+
+
+>>>>>>> 094f0548f7782fb21b694114b3f7833c82699d75
 
 //creation item par rapport à une liste de données
 const ListItems = ({items}) =>
@@ -51,6 +60,7 @@ const columns: GridColDef[] = [
     {field: 'col3', headerName: 'WattsType', width: 400},
 
 ];
+
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -145,18 +155,60 @@ const DeviceDataComponent = ({classes}) => {
     
     
     function CustomToolbar() {
+
+        const [loading, setLoading] = React.useState(false);
+
+        const handleClick = () => {
+
+            setLoading(!loading);
+
+
+            for(let i=0;i<150;i++){
+                console.log("tototo")
+            }
+
+            setLoading(!loading);
+
+
+        }
+
+
         return (
             <GridToolbarContainer>
                 {/*search feature*/}
-                <GridToolbarQuickFilter
+                <GridToolbarQuickFilter onBlur={handleClick}
+
                     quickFilterParser={(searchInput) =>
                         searchInput.split(',').map((value) => value.trim())
                     }
                     quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                     debounceMs={200} // time before applying the new quick filter value
+
                 />
+<<<<<<< HEAD
             
             
+=======
+
+                <LoadingButton
+                    loading={loading}
+                    onClick={()=>{
+                        setLoading(!loading);
+
+
+                        for(let i=0;i<150;i++){
+                            console.log("tototo")
+                        }
+
+                        setLoading(!loading);
+                    }}
+                    endIcon={<RefreshIcon />}
+                    loadingPosition="end"
+                    variant="text"
+                >
+                    Send
+                </LoadingButton>
+>>>>>>> 094f0548f7782fb21b694114b3f7833c82699d75
             </GridToolbarContainer>
         )
     }
