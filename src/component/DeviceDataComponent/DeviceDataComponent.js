@@ -18,7 +18,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
-import {getDataByRoomID, getListInstallation, getListOfRommByInstallation, getTokenAPI} from "../../services/Api";
+import {getDataByDeviceID, getListInstallation, getListOfRoomByInstallation, getTokenAPI} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -97,17 +97,18 @@ const DeviceDataComponent = ({classes}) => {
             
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(token, a1)
+            // console.log(installationsListResult.data)
             
             let installationsList = [];
             for (let install of installationsListResult.data) {
                 
-                let installationResult = await getListOfRommByInstallation(token, a1, install)
-                
+                let installationResult = await getListOfRoomByInstallation(token, a1, install)
+                // console.log(installationResult.data)
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-                    let configurationResult = await getDataByRoomID(token, room.devices[0].Id_deviceId);
-                    
+                    console.log(room)
+                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId);
                     
                     let deviceConfigurationData = [];
                     let added = 0;
@@ -147,7 +148,6 @@ const DeviceDataComponent = ({classes}) => {
     
     
     function CustomToolbar() {
-        
         const [loading, setLoading] = React.useState(false);
         
         const handleClick = () => {
@@ -183,19 +183,16 @@ const DeviceDataComponent = ({classes}) => {
                     loading={loading}
                     onClick={() => {
                         setLoading(!loading);
-                        
-                        
                         for (let i = 0; i < 150; i++) {
                             console.log("tototo")
                         }
-                        
                         setLoading(!loading);
                     }}
                     endIcon={<RefreshIcon/>}
                     loadingPosition="end"
                     variant="text"
                 >
-                    Send
+                    SEND UC=1
                 </LoadingButton>
             </GridToolbarContainer>
         )
@@ -206,9 +203,7 @@ const DeviceDataComponent = ({classes}) => {
     
     
     const addToClipboard = (content) => {
-        console.log(content.target.innerText)
         navigator.clipboard.writeText(content.target.innerText);
-        console.log("okok")
         toast.info('Ajouté au presse-papier: ' + content.target.innerText, {
             position: "bottom-right",
             autoClose: 2000,
@@ -297,7 +292,6 @@ const DeviceDataComponent = ({classes}) => {
                                                 
                                                 <Popup classes="popupData"
                                                        value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
-                                            
                                             
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
