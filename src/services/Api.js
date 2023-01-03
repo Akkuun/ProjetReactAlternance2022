@@ -43,7 +43,7 @@ export async function getListInstallation(token, a1) {
 }
 
 // get the list of room for a specific a1 and installationID
-export async function getListOfRommByInstallation(token, a1, installID) {
+export async function getListOfRoomByInstallation(token, a1, installID) {
     return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/businessmodule/v1/installations/${a1}/${installID}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -53,7 +53,7 @@ export async function getListOfRommByInstallation(token, a1, installID) {
     })
 }
 
-export async function getDataByRoomID(token, deviceID) {
+export async function getDataByDeviceID(token, deviceID) {
     return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/configuration/${deviceID}/${deviceID}/v1/content/`, {
         headers: {
             'Authorization': 'Bearer ' + token,
