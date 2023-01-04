@@ -24,7 +24,6 @@ const Popup = ({classes, value}) => {
     const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
     const handleOpenPopupComponent = () => {
         if (classes === "popupData") {
-            console.log(value)
             popupData = value;
         }
         setOpenPopupComponent(true)
