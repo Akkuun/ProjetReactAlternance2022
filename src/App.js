@@ -13,14 +13,14 @@ function App() {
             <RouterBreadcrumbs/>
             <Routes>
                 {<Route path="/" element={<PageHome/>}/>}
-                <Route path="/wattsProd" element={<PageHome/>} />
-                <Route path="/wattsDev" element={<PageHome/>} />
+                <Route path="/wattsProd" element={<PageHome/>}/>
+                <Route path="/wattsDev" element={<PageHome/>}/>
                 
-                <Route path="/stats" element={<PageStatistics/>} />
-
+                <Route path="/stats" element={<PageStatistics/>}/>
+                
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
-
+                
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
             </Routes>

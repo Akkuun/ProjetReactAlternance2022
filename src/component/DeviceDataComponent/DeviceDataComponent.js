@@ -103,7 +103,7 @@ const DeviceDataComponent = ({classes}) => {
             for (let install of installationsListResult.data) {
                 
                 let installationResult = await getListOfRoomByInstallation(token, a1, install)
-                // console.log(installationResult.data)
+                console.log(installationResult.data)
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
