@@ -128,9 +128,16 @@ const PageStatistics = ({classes, value}) => {
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
     const [windowSize, setWindowSize] = useState(getWindowSize());
     
+    const [a1, setA1] = useState("N/A");
+    const [installationId, setInstallationId] = useState("N/A");
+    const [deviceId, setDeviceId] = useState("N/A");
+    
+    
     if (classes === "popupData") {
         popupData = value;
     }
+    
+    console.log(popupData)
     
     const handleClick = event => {
         setActive(event.target.id);
@@ -157,6 +164,15 @@ const PageStatistics = ({classes, value}) => {
     
     
     async function getStats(dataInterval, stateSwitch) {
+        if (popupData.statsInstallation != undefined) { // Installation statistics
+            setA1(popupData.statsInstallation[0])
+            setInstallationId(popupData.statsInstallation[1])
+        } else { // Room statistics
+            setA1(popupData.statsDevice[0])
+            setInstallationId(popupData.statsDevice[1])
+            setDeviceId(popupData.statsDevice[2])
+        }
+        
         let dataConso = {
             labels: [],
             datasets: [
@@ -245,7 +261,7 @@ const PageStatistics = ({classes, value}) => {
                     break;
             }
             
-            let statsResult = await getStatistics("installation", token, "EC9A8BDDBEEE", "installSimulated", "", "Wc", realDataInterval, moment().subtract(statsApiMinIntervalTime, 'd').format("YYYY-MM-DD"), moment().add(1, 'd').format("YYYY-MM-DD"));
+            let statsResult = await getStatistics("installation", token, a1, installationId, deviceId, "Wc", realDataInterval, moment().subtract(statsApiMinIntervalTime, 'd').format("YYYY-MM-DD"), moment().add(1, 'd').format("YYYY-MM-DD"));
             statsResult.data = statsResult.data.reverse();
             let lastStatTime = moment(statsResult.data[statsResult.data.length - 1].startDateOfMetric);
             lastStatTime = lastStatTime.add(2, 'h').subtract(statsTimePeriod, statsTimePeriodUnit).unix()
@@ -353,7 +369,9 @@ const PageStatistics = ({classes, value}) => {
             <div className="about">
                 <br/>
                 <h3>Temperature in °C</h3>
-                <p className="lead">DEVICE_ID</p>
+                <p className="lead">A1: {a1}</p>
+                <p className="lead">Installation: {installationId}</p>
+                <p className="lead">Device: {deviceId}</p>
                 <FormGroup className="switch-button">
                     <FormControlLabel
                         control={<MaterialUISwitch sx={{m: 1}} checked={switchChecked} onChange={handleChange}/>}

@@ -86,7 +86,7 @@ export async function getStatistics(mode, token, A1, installationID, deviceID, w
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': ''
+            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
         }
     })
     

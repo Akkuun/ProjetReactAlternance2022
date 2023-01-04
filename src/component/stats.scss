@@ -6,13 +6,13 @@ $gray-border: darken(#FAFAFA, 5%);
 }
 
 %gradient-bg {
-  background: rgba(255,147,80,1);
-  background: -moz-linear-gradient(top, rgba(255,147,80,1) 0%, rgba(255,63,49,1) 100%);
-  background: -webkit-linear-gradient(top, rgba(255,147,80,1) 0%, rgba(255,63,49,1) 100%);
-  background: -o-linear-gradient(top, rgba(255,147,80,1) 0%, rgba(255,63,49,1) 100%);
-  background: -ms-linear-gradient(top, rgba(255,147,80,1) 0%, rgba(255,63,49,1) 100%);
-  background: linear-gradient(to bottom, rgba(255,147,80,1) 0%, rgba(255,63,49,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff9350', endColorstr='#ff3f31', GradientType=0 );
+  background: rgba(255, 147, 80, 1);
+  background: -moz-linear-gradient(top, rgba(255, 147, 80, 1) 0%, rgba(255, 63, 49, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255, 147, 80, 1) 0%, rgba(255, 63, 49, 1) 100%);
+  background: -o-linear-gradient(top, rgba(255, 147, 80, 1) 0%, rgba(255, 63, 49, 1) 100%);
+  background: -ms-linear-gradient(top, rgba(255, 147, 80, 1) 0%, rgba(255, 63, 49, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 147, 80, 1) 0%, rgba(255, 63, 49, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff9350', endColorstr='#ff3f31', GradientType=0);
 }
 
 
@@ -43,7 +43,7 @@ body {
 .phone-wrap {
   display: block;
   background: white;
-  height: 510px;
+  height: 610px;
   width: 320px;
   overflow-x: hidden;
   border: 1px solid $gray-border;
@@ -123,7 +123,7 @@ body {
 
 .graph-card-header {
   padding: 5px;
-  border-bottom: 1px solid rgba(255,255,255, .5);
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
 }
 
 .graph-card-heading {
@@ -150,7 +150,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 375px;
+  height: 420px;
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
@@ -173,10 +173,12 @@ body {
 .card .about h3 {
   font-size: 24px;
   color: #fff;
+  margin-left: 20px;
 }
 
 .card .about .lead {
   color: #eee;
+  margin-left: 20px;
 }
 
 .card .info {
@@ -275,8 +277,7 @@ body {
   background-size: 400% 400%;
 }
 
-@keyframes bg
-{
+@keyframes bg {
   0% {
     background-position: 0% 50%
   }
@@ -287,7 +288,8 @@ body {
     background-position: 0% 50%
   }
 }
-#popup{
+
+#popup {
   visibility: hidden;
 }
 
