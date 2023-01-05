@@ -92,3 +92,16 @@ export async function getStatistics(mode, token, A1, installationID, deviceID, w
     
     return statisticsData;
 }
+
+export async function replaceTwin(token, deviceId, newTwin) {
+    let url = `https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/devices/twin/properties/config/replace`;
+
+    let apiRes = await axios.put(url, newTwin, {
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
+        }
+    })
+    
+    return apiRes;
+}

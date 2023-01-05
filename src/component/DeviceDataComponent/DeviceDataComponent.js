@@ -10,18 +10,20 @@ import ListItem from "@mui/material/ListItem";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {Icon, Tooltip} from "@mui/material";
+import {FormControl, Icon, InputLabel, MenuItem, Select, Slider, TextField, Tooltip} from "@mui/material";
 import moment from "moment";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
-import {getDataByDeviceID, getListInstallation, getListOfRoomByInstallation} from "../../services/Api";
+import {getDataByDeviceID, getListInstallation, getListOfRoomByInstallation, replaceTwin} from "../../services/Api";
+import {convertCelsiusToFahrenheit, convertFahrenheitToCelsius} from "../../services/Helper";
 import Accordion from '@mui/material/Accordion';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Box from "@mui/material/Box";
 
 //creation item par rapport à une liste de données
 const ListItems = ({items}) =>
@@ -35,31 +37,28 @@ const ListItems = ({items}) =>
                 {label}
             </ListItem>
         ));
-//definition colonne de DataGrid
-const columns: GridColDef[] = [
-    {
-        field: 'col1',
-        headerName: 'Last Updated',
-        width: 150,
-        //hover effect on Last Updated -> timestamp conversion
-        renderCell: (params: any) => (
-            <Tooltip title={moment.unix(params.value).format("YYYY-MM-DD HH:mm:ss")}>
-                <span className="table-cell-trucate">{params.value}</span>
-            </Tooltip>
-        ),
-    },
-    {field: 'col2', headerName: 'Value', width: 150},
-    {field: 'col3', headerName: 'WattsType', width: 400},
 
+const marks = [
+    {
+        value: 5,
+        label: '5°C',
+    },
+    {
+        value: 35,
+        label: '35°C',
+    }
 ];
 
+function valuetext(value) {
+    return `${value}°C`;
+}
 
 const DeviceDataComponent = ({classes}) => {
-    
     const [a1, setA1] = useState('');
     const [accordionOpen, setAccordionOpen] = React.useState(false);
     const [accordionOpen2, setAccordionOpen2] = React.useState(false);
-    
+    const [selectModeValue, setSelectModeValue] = React.useState(99);
+    const [installationsList, setInstallationsList] = useState([]);
     
     const [icons] = useState({
         installation: [
@@ -72,7 +71,6 @@ const DeviceDataComponent = ({classes}) => {
             {Icon: AssessmentIcon},
         ]
     });
-    
     
     useEffect(() => {
         getData();
@@ -87,19 +85,15 @@ const DeviceDataComponent = ({classes}) => {
             
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(token, a1)
-            // console.log(installationsListResult.data)
             
             let installationsList = [];
             for (let install of installationsListResult.data) {
                 
                 let installationResult = await getListOfRoomByInstallation(token, a1, install)
-                console.log(installationResult.data)
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-                    console.log(room)
                     let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId);
-                    
                     let deviceConfigurationData = [];
                     let added = 0;
                     // for each data of the configuration, insert the correct data in the list
@@ -119,8 +113,9 @@ const DeviceDataComponent = ({classes}) => {
                         wattsType: deviceConfigurationData,
                         Il: installationResult.data.Il
                     })
+                    
                 }
-//installation data
+                //installation data
                 installationsList.push({
                     installation: install,
                     devices: devices
@@ -129,67 +124,10 @@ const DeviceDataComponent = ({classes}) => {
             }
             //udate the installationList
             setInstallationsList(installationsList);
-            console.log("installation")
-            console.log(installationsList)
         } catch (e) {
             console.error(e);
         }
     }
-    
-    
-    function CustomToolbar() {
-        const [loading, setLoading] = React.useState(false);
-        
-        const handleClick = () => {
-            
-            setLoading(!loading);
-            
-            
-            for (let i = 0; i < 150; i++) {
-                console.log("tototo")
-            }
-            
-            setLoading(!loading);
-            
-            
-        }
-        
-        
-        return (
-            <GridToolbarContainer>
-                {/*search feature*/}
-                <GridToolbarQuickFilter onBlur={handleClick}
-                
-                                        quickFilterParser={(searchInput) =>
-                                            searchInput.split(',').map((value) => value.trim())
-                                        }
-                                        quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
-                                        debounceMs={200} // time before applying the new quick filter value
-                
-                />
-                
-                
-                <LoadingButton
-                    loading={loading}
-                    onClick={() => {
-                        setLoading(!loading);
-                        for (let i = 0; i < 150; i++) {
-                            console.log("tototo")
-                        }
-                        setLoading(!loading);
-                    }}
-                    endIcon={<RefreshIcon/>}
-                    loadingPosition="end"
-                    variant="text"
-                >
-                    SEND UC=1
-                </LoadingButton>
-            </GridToolbarContainer>
-        )
-    }
-    
-    
-    const [installationsList, setInstallationsList] = useState([]);
     
     
     const addToClipboard = (content) => {
@@ -206,6 +144,57 @@ const DeviceDataComponent = ({classes}) => {
         });
     };
     
+    async function handleModeChange(device, newMode) {
+        setSelectModeValue(newMode)
+        
+        let newTwin = {
+            "Id_deviceId": device.deviceName,
+            "S1": device.deviceName,
+            "configurationVersion": "v1.0",
+            "data": [
+                        {
+                        "wattsType": "Dm",
+                        "wattsTypeValue": newMode
+                        }
+                ]
+        };
+        await replaceTwin(localStorage.getItem("access_token"), device.deviceName, newTwin);
+    }
+    
+    async function handleTemperatureChange(device, newSetpoint) {
+        let currentMode = selectModeValue
+        let wattsType = "";
+        
+        switch(currentMode) {
+            case 1: (wattsType = "Ec"); break; // ECO
+            case 3: (wattsType = "Cf"); break; // CONFORT
+            case 4: (wattsType = "Df"); break; // DEFROST
+            case 5: (wattsType = "Bo"); break; // BOOST
+        }
+        
+        let newTwin = {
+            "Id_deviceId": device.deviceName,
+            "S1": device.deviceName,
+            "configurationVersion": "v1.0",
+            "data": [
+                {
+                    "wattsType": wattsType,
+                    "wattsTypeValue": convertCelsiusToFahrenheit(newSetpoint)
+                }
+            ]
+        };
+        await replaceTwin(localStorage.getItem("access_token"), device.deviceName, newTwin);
+    }
+    
+    function initSelectMode(device) {
+        if (selectModeValue == "") {
+            if(device.wattsType.filter(wt => wt.col2 == "Cm")[0] != undefined) {
+                console.log(device.wattsType.filter(wt => wt.col2 == "Cm")[0].col3)
+                setSelectModeValue(device.wattsType.filter(wt => wt.col2 == "Cm")[0].col3)
+            }
+        }
+    }
+
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
         
@@ -281,9 +270,45 @@ const DeviceDataComponent = ({classes}) => {
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
-                                                    <DataGrid rows={device.wattsType} columns={columns} components={{
-                                                        Toolbar: CustomToolbar
-                                                    }}/>
+                                                    <Box sx={{ minWidth: 120 }}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Mode</InputLabel>
+                                                            <Select
+                                                                key={`select-mode-menu`}
+                                                                labelId="mode-select-menu"
+                                                                id="mode-select-menu"
+                                                                value={selectModeValue}
+                                                                label="Mode"
+                                                                onChange={e => handleModeChange(device, e.target.value)}
+                                                            >
+                                                                <MenuItem value={3}>Confort</MenuItem>
+                                                                <MenuItem value={2}>Programme</MenuItem>
+                                                                <MenuItem value={1}>Eco</MenuItem>
+                                                                <MenuItem value={5}>Boost</MenuItem>
+                                                                <MenuItem value={4}>Hors-Gel</MenuItem>
+                                                                <MenuItem value={0}>Off</MenuItem>
+                                                                <MenuItem value={99}>-</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Box>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <Box>
+                                                        <Slider
+                                                            key={`slider-temperature`}
+                                                            aria-label="Always visible"
+                                                            defaultValue={20}
+                                                            getAriaValueText={valuetext}
+                                                            step={0.5}
+                                                            marks={marks}
+                                                            valueLabelDisplay="on"
+                                                            min={5}
+                                                            max={35}
+                                                            onChangeCommitted={(_, newValue) => handleTemperatureChange(device, newValue)}
+                                                        />
+                                                    </Box>
+                                                    
                                                 </div>
                                             </AccordionDetails>
                                         </Accordion>
@@ -297,5 +322,6 @@ const DeviceDataComponent = ({classes}) => {
         </Grid>
     )
 }
+
 
 export default DeviceDataComponent

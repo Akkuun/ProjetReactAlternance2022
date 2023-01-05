@@ -429,8 +429,12 @@ const PageStatistics = ({classes, value}) => {
         </div>)
 }
 
-function convertFahrenheitToCelsius(degrees) {
-    return Math.floor(5 / 9 * (degrees - 32));
+function convertFahrenheitToCelsius(fahrenheit) {
+    return Math.floor(5 / 9 * (fahrenheit - 32));
+}
+
+function convertCelsiusToFahrenheit(celsius) {
+    return Math.floor(celsius * 9/5 + 32)
 }
 
 function getWindowSize() {
