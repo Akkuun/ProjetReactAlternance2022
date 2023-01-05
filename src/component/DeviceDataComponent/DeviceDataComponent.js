@@ -10,15 +10,14 @@ import ListItem from "@mui/material/ListItem";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {Icon, TextField, Tooltip} from "@mui/material";
-import {AccountCircle} from "@mui/icons-material";
+import {Icon, Tooltip} from "@mui/material";
 import moment from "moment";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
 import Popup from "../popupComponent/popup";
-import {getDataByDeviceID, getListInstallation, getListOfRoomByInstallation, getTokenAPI} from "../../services/Api";
+import {getDataByDeviceID, getListInstallation, getListOfRoomByInstallation} from "../../services/Api";
 import Accordion from '@mui/material/Accordion';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -76,24 +75,15 @@ const DeviceDataComponent = ({classes}) => {
     
     
     useEffect(() => {
-        getToken();
+        getData();
     }, []);
 
 
-//recuperation du a1 pour requêtes
-    const a1Handler = async (a1) => {
-        if (a1.length === 12) {
-            setA1(a1);
-            await getToken(a1);
-        } else {
-            setA1("");
-        }
-    }
-
 // recuperation data
-    const getToken = async (a1) => {
+    const getData = async () => {
         try {
-            let token = await getTokenAPI("device");
+            let token = localStorage.getItem("access_token");
+            let a1 = localStorage.getItem("a1");
             
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(token, a1)
@@ -221,13 +211,7 @@ const DeviceDataComponent = ({classes}) => {
         
         <Grid container spacing={3} marginLeft="10%" marginTop="0%">
             <Grid item xs={9}>
-                <form>
-                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                    <TextField id="outlined-basic" label="A1" variant="outlined"
-                               onChange={(e) => a1Handler(e.target.value)}/>
-                </form>
-                
-                {a1.length === 12 ? (<List>
+                <List>
                     <div>
                         {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
                         {installationsList.map(station => (
@@ -308,7 +292,7 @@ const DeviceDataComponent = ({classes}) => {
                             </Accordion>
                         ))}
                     </div>
-                </List>) : (<div></div>)}
+                </List>
             </Grid>
         </Grid>
     )

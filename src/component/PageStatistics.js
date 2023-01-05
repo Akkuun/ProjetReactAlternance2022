@@ -128,9 +128,9 @@ const PageStatistics = ({classes, value}) => {
     const [graphDataConso, setGraphDataConso] = useState((<div></div>));
     const [windowSize, setWindowSize] = useState(getWindowSize());
     
-    const [a1, setA1] = useState("N/A");
     const [installationId, setInstallationId] = useState("N/A");
     const [deviceId, setDeviceId] = useState("N/A");
+    const [a1, setA1] = useState("N/A");
     
     
     if (classes === "popupData") {
@@ -164,11 +164,10 @@ const PageStatistics = ({classes, value}) => {
     
     
     async function getStats(dataInterval, stateSwitch) {
+        setA1(localStorage.getItem("a1"));
         if (popupData.statsInstallation != undefined) { // Installation statistics
-            setA1(popupData.statsInstallation[0])
             setInstallationId(popupData.statsInstallation[1])
         } else { // Room statistics
-            setA1(popupData.statsDevice[0])
             setInstallationId(popupData.statsDevice[1])
             setDeviceId(popupData.statsDevice[2])
         }
@@ -207,7 +206,7 @@ const PageStatistics = ({classes, value}) => {
         
         console.log("dataInterval = " + dataInterval + " state switch = " + stateSwitch)
         if (dataInterval != undefined) {
-            let token = await getTokenAPI("device");
+            let token = localStorage.getItem("access_token");
             
             let realDataInterval;
             let listChildren = [];

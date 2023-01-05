@@ -5,8 +5,10 @@ import PageDeviceData from "./component/pageDeviceData";
 import RouterBreadcrumbs from "./component/menu/componentSlideMenu"
 import PageHome from "./component/pages/pageHome";
 import PageStatistics from "./component/PageStatistics";
+import PageLogin from "./component/pageLogin";
 
 function App() {
+    
     return (
         <div className="App">
             {/*Routes des routeurs avec element pour rediriger l'utilisateur, :cloud est le paramètre qui sera pris dans la redirection*/}
@@ -20,6 +22,7 @@ function App() {
                 
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
+                <Route path="/:cloud/login" element={<PageLogin/>}/>
                 
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
