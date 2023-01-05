@@ -31,7 +31,7 @@ const optionsConso = {
             right: 0,
             left: 0,
             top: 20,
-            bottom: -50
+            bottom: 5
         }
     },
     plugins: {

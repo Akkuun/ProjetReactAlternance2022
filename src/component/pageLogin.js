@@ -31,8 +31,7 @@ const PageLogin = ({classes, value}) => {
         localStorage.setItem('a1', decodedToken.sub);
         localStorage.setItem('access_token', tokenResult.data["access_token"]);
         
-        let path = `/wattsDev/pageDeviceData`;
-        navigate(path);
+        navigate("/wattsDev/pageDeviceData");
     }
     
     
