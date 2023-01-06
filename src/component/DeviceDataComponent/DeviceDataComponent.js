@@ -80,15 +80,15 @@ const DeviceDataComponent = ({classes}) => {
         console.log(" ")
     
     }, []);
-    // useEffect(() => {
-    //     console.log(devicesConfiguration)
-    //
-    //     let intervalId = setInterval(async () => {
-    //             await updateDeviceData("all", localStorage.getItem("access_token"), null)
-    //         }, 5000);
-    //
-    //     return () => clearInterval(intervalId); //This is important
-    // }, [devicesConfiguration]);
+    useEffect(() => {
+        console.log(devicesConfiguration)
+
+        let intervalId = setInterval(async () => {
+                await updateDeviceData("all", localStorage.getItem("access_token"), null)
+            }, 5000);
+
+        return () => clearInterval(intervalId); //This is important
+    }, [devicesConfiguration]);
 
 
 // recuperation data
@@ -173,7 +173,7 @@ const DeviceDataComponent = ({classes}) => {
                     let newMap = {};
                     for (let [key, value] of Object.entries(devicesConfiguration)) {
                         let configurationResult = await getDataByDeviceID(token, key);
-                        newMap = {[key]: configurationResult.data}
+                        newMap[key] = configurationResult.data
                     }
                     setDevicesConfiguration(newMap)
             }
