@@ -56,12 +56,12 @@ function valuetext(value) {
 const DeviceDataComponent = ({classes}) => {
     const [a1, setA1] = useState('null');
     const [token, setToken] = useState('');
+    const [mapAccordionOpen, setMapAccordionOpen] = React.useState({});
     const [accordionOpen, setAccordionOpen] = React.useState(false);
     const [accordionOpen2, setAccordionOpen2] = React.useState(false);
     const [selectModeValue, setSelectModeValue] = React.useState(99);
     const [installationsList, setInstallationsList] = useState([]);
     const [devicesConfiguration, setDevicesConfiguration] = React.useState({});
-    
     
     const [icons] = useState({
         installation: [
@@ -77,18 +77,18 @@ const DeviceDataComponent = ({classes}) => {
     
     useEffect(() => {
         getData();
-        console.log("useeffect 1")
+        console.log(" ")
     
     }, []);
-    useEffect(() => {
-        console.log(devicesConfiguration)
-    
-        let intervalId = setInterval(async () => {
-                await updateDeviceData("all", localStorage.getItem("access_token"), null)
-            }, 5000);
-    
-        return () => clearInterval(intervalId); //This is important
-    }, [devicesConfiguration]);
+    // useEffect(() => {
+    //     console.log(devicesConfiguration)
+    //
+    //     let intervalId = setInterval(async () => {
+    //             await updateDeviceData("all", localStorage.getItem("access_token"), null)
+    //         }, 5000);
+    //
+    //     return () => clearInterval(intervalId); //This is important
+    // }, [devicesConfiguration]);
 
 
 // recuperation data
@@ -96,6 +96,8 @@ const DeviceDataComponent = ({classes}) => {
         try {
             setToken(localStorage.getItem("access_token"));
             setA1(localStorage.getItem("a1"));
+            
+            let newMapConfiguration = {};
             
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(localStorage.getItem("access_token"), localStorage.getItem("a1"))
@@ -108,8 +110,7 @@ const DeviceDataComponent = ({classes}) => {
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
                     let configurationResult = await getDataByDeviceID(localStorage.getItem("access_token"), room.devices[0].Id_deviceId);
-                    console.log(configurationResult.data)
-                    setDevicesConfiguration({[room.devices[0].Id_deviceId]: configurationResult.data})
+                    newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     
                     let deviceConfigurationData = [];
                     let added = 0;
@@ -140,8 +141,9 @@ const DeviceDataComponent = ({classes}) => {
                 });
                 
             }
-            //udate the installationList
+            console.log(newMapConfiguration)
             setInstallationsList(installationsList);
+            setDevicesConfiguration(newMapConfiguration);
         } catch (e) {
             console.error(e);
         }
@@ -170,13 +172,8 @@ const DeviceDataComponent = ({classes}) => {
                     console.log("OK UPDATING....")
                     let newMap = {};
                     for (let [key, value] of Object.entries(devicesConfiguration)) {
-                        console.log("OKOKOKOK " + key)
-                        console.log(value)
-        
                         let configurationResult = await getDataByDeviceID(token, key);
                         newMap = {[key]: configurationResult.data}
-                        console.log("newMap")
-                        console.log(newMap)
                     }
                     setDevicesConfiguration(newMap)
             }
@@ -213,12 +210,11 @@ const DeviceDataComponent = ({classes}) => {
                 ]
         };
         console.log(device.roomId)
-        // await updateDeviceData("oneDevice", token, device);
-        
         await replaceTwin(token, device.deviceName, newTwin);
     }
 
     async function handleTemperatureChange(device, newSetpoint) {
+        console.log("NEW SETPOINT = " + newSetpoint)
         let currentMode = selectModeValue
         let wattsType = "";
         
@@ -226,7 +222,8 @@ const DeviceDataComponent = ({classes}) => {
             case 1: (wattsType = "Ec"); break; // ECO
             case 3: (wattsType = "Cf"); break; // CONFORT
             case 4: (wattsType = "Df"); break; // DEFROST
-            case 5: (wattsType = "Bo"); break; // BOOST
+            case 5: (wattsType = "Bo"); // BOOST
+            default: (wattsType = "Cf")
         }
         
         let newTwin = {
@@ -240,7 +237,16 @@ const DeviceDataComponent = ({classes}) => {
                 }
             ]
         };
+        console.log(newTwin)
         await replaceTwin(localStorage.getItem("access_token"), device.deviceName, newTwin);
+    }
+    
+    function manageOpenAccordion(id) {
+        let newMap = {};
+        for (let [key, value] of Object.entries(mapAccordionOpen)) {
+            newMap = {[key]: !value}
+        }
+        setMapAccordionOpen(newMap)
     }
     
     // creation accodion avec tableaux a partir de la map des donnes obtenu
@@ -252,14 +258,14 @@ const DeviceDataComponent = ({classes}) => {
                         {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
                         {installationsList.map(station => (
                             // permier accordion pour les noms des installations
-                            <Accordion key={station.installation} expanded={accordionOpen}>
+                            <Accordion key={station.installation} expanded={mapAccordionOpen[station.installation]}>
                                 <AccordionSummary
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                     expandIcon={
                                         <ExpandMoreIcon
                                             style={{cursor: 'pointer'}}
-                                            onClick={() => setAccordionOpen(!accordionOpen)}/>
+                                            onClick={(e) => manageOpenAccordion(station.installation)}/>
                                     }
                                     sx={{cursor: 'unset !important'}}
                                 >
@@ -280,7 +286,7 @@ const DeviceDataComponent = ({classes}) => {
                                 {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
                                 <AccordionDetails>
                                     {station.devices.map(device => (
-                                        <Accordion key={device.deviceName} expanded={accordionOpen2}>
+                                        <Accordion key={device.deviceName} expanded={mapAccordionOpen[device.deviceName]}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon/>}
                                                 aria-controls="panel1a-content"
@@ -288,7 +294,7 @@ const DeviceDataComponent = ({classes}) => {
                                                 expandIcon={
                                                     <ExpandMoreIcon
                                                         style={{cursor: 'pointer'}}
-                                                        onClick={() => setAccordionOpen2(!accordionOpen2)}/>
+                                                        onClick={(e) => manageOpenAccordion(device.deviceName)}/>
                                                 }
                                                 sx={{cursor: 'unset !important'}}
                                             >
@@ -321,7 +327,7 @@ const DeviceDataComponent = ({classes}) => {
                                                         <FormControl fullWidth>
                                                             <InputLabel id="demo-simple-select-label">Mode</InputLabel>
                                                             <Select
-                                                                key={`select-mode-menu`}
+                                                                key={`select-mode-menu-${device.deviceName}`}
                                                                 labelId="mode-select-menu"
                                                                 id="mode-select-menu"
                                                                 value={devicesConfiguration[device.deviceName]["Cm"].value}
@@ -342,9 +348,9 @@ const DeviceDataComponent = ({classes}) => {
                                                     <br/>
                                                     <Box>
                                                         <Slider
-                                                            key={`slider-temperature`}
+                                                            key={`slider-temperature-${device.deviceName}`}
                                                             aria-label="Always visible"
-                                                            value={convertFahrenheitToCelsius(devicesConfiguration[device.deviceName]["Sp"].value)}
+                                                            defaultValue={convertFahrenheitToCelsius(devicesConfiguration[device.deviceName]["Sp"].value)}
                                                             getAriaValueText={valuetext}
                                                             step={0.5}
                                                             marks={marks}
