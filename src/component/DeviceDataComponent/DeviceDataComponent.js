@@ -54,11 +54,14 @@ function valuetext(value) {
 }
 
 const DeviceDataComponent = ({classes}) => {
-    const [a1, setA1] = useState('');
+    const [a1, setA1] = useState('null');
+    const [token, setToken] = useState('');
     const [accordionOpen, setAccordionOpen] = React.useState(false);
     const [accordionOpen2, setAccordionOpen2] = React.useState(false);
     const [selectModeValue, setSelectModeValue] = React.useState(99);
     const [installationsList, setInstallationsList] = useState([]);
+    const [devicesConfiguration, setDevicesConfiguration] = React.useState({});
+    
     
     const [icons] = useState({
         installation: [
@@ -74,26 +77,40 @@ const DeviceDataComponent = ({classes}) => {
     
     useEffect(() => {
         getData();
+        console.log("useeffect 1")
+    
     }, []);
+    useEffect(() => {
+        console.log(devicesConfiguration)
+    
+        let intervalId = setInterval(async () => {
+                await updateDeviceData("all", localStorage.getItem("access_token"), null)
+            }, 5000);
+    
+        return () => clearInterval(intervalId); //This is important
+    }, [devicesConfiguration]);
 
 
 // recuperation data
     const getData = async () => {
         try {
-            let token = localStorage.getItem("access_token");
-            let a1 = localStorage.getItem("a1");
+            setToken(localStorage.getItem("access_token"));
+            setA1(localStorage.getItem("a1"));
             
             // Get the list of installation by a A1
-            let installationsListResult = await getListInstallation(token, a1)
+            let installationsListResult = await getListInstallation(localStorage.getItem("access_token"), localStorage.getItem("a1"))
             
             let installationsList = [];
             for (let install of installationsListResult.data) {
                 
-                let installationResult = await getListOfRoomByInstallation(token, a1, install)
+                let installationResult = await getListOfRoomByInstallation(localStorage.getItem("access_token"), localStorage.getItem("a1"), install)
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId);
+                    let configurationResult = await getDataByDeviceID(localStorage.getItem("access_token"), room.devices[0].Id_deviceId);
+                    console.log(configurationResult.data)
+                    setDevicesConfiguration({[room.devices[0].Id_deviceId]: configurationResult.data})
+                    
                     let deviceConfigurationData = [];
                     let added = 0;
                     // for each data of the configuration, insert the correct data in the list
@@ -109,6 +126,7 @@ const DeviceDataComponent = ({classes}) => {
                     //devices data
                     devices.push({
                         roomName: room.Rn,
+                        roomId: room.Zn,
                         deviceName: room.devices[0].Id_deviceId,
                         wattsType: deviceConfigurationData,
                         Il: installationResult.data.Il
@@ -144,6 +162,42 @@ const DeviceDataComponent = ({classes}) => {
         });
     };
     
+    async function updateDeviceData(mode, token, device) {
+        if(mode == "all") {
+            console.log("ALL - devicesConfiguration = ")
+            console.log(devicesConfiguration)
+            if(devicesConfiguration != undefined) {
+                    console.log("OK UPDATING....")
+                    let newMap = {};
+                    for (let [key, value] of Object.entries(devicesConfiguration)) {
+                        console.log("OKOKOKOK " + key)
+                        console.log(value)
+        
+                        let configurationResult = await getDataByDeviceID(token, key);
+                        newMap = {[key]: configurationResult.data}
+                        console.log("newMap")
+                        console.log(newMap)
+                    }
+                    setDevicesConfiguration(newMap)
+            }
+        }
+        // else {
+        //     if(devicesConfiguration != undefined) {
+        //         let configurationResult = await getDataByDeviceID(token, device.deviceName);
+        //
+        //         let newMap = {};
+        //         for (let [key, value] of Object.entries(devicesConfiguration)) {
+        //             if(key == device.deviceName) {
+        //                 newMap = {[key]: configurationResult.data}
+        //             } else {
+        //                 newMap = {[key]: value}
+        //             }
+        //         }
+        //         setDevicesConfiguration(newMap)
+        //     }
+        // }
+    }
+    
     async function handleModeChange(device, newMode) {
         setSelectModeValue(newMode)
         
@@ -158,9 +212,12 @@ const DeviceDataComponent = ({classes}) => {
                         }
                 ]
         };
-        await replaceTwin(localStorage.getItem("access_token"), device.deviceName, newTwin);
+        console.log(device.roomId)
+        // await updateDeviceData("oneDevice", token, device);
+        
+        await replaceTwin(token, device.deviceName, newTwin);
     }
-    
+
     async function handleTemperatureChange(device, newSetpoint) {
         let currentMode = selectModeValue
         let wattsType = "";
@@ -186,18 +243,8 @@ const DeviceDataComponent = ({classes}) => {
         await replaceTwin(localStorage.getItem("access_token"), device.deviceName, newTwin);
     }
     
-    function initSelectMode(device) {
-        if (selectModeValue == "") {
-            if(device.wattsType.filter(wt => wt.col2 == "Cm")[0] != undefined) {
-                console.log(device.wattsType.filter(wt => wt.col2 == "Cm")[0].col3)
-                setSelectModeValue(device.wattsType.filter(wt => wt.col2 == "Cm")[0].col3)
-            }
-        }
-    }
-
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
-        
         <Grid container spacing={3} marginLeft="10%" marginTop="0%">
             <Grid item xs={9}>
                 <List>
@@ -277,7 +324,7 @@ const DeviceDataComponent = ({classes}) => {
                                                                 key={`select-mode-menu`}
                                                                 labelId="mode-select-menu"
                                                                 id="mode-select-menu"
-                                                                value={selectModeValue}
+                                                                value={devicesConfiguration[device.deviceName]["Cm"].value}
                                                                 label="Mode"
                                                                 onChange={e => handleModeChange(device, e.target.value)}
                                                             >
@@ -287,7 +334,6 @@ const DeviceDataComponent = ({classes}) => {
                                                                 <MenuItem value={5}>Boost</MenuItem>
                                                                 <MenuItem value={4}>Hors-Gel</MenuItem>
                                                                 <MenuItem value={0}>Off</MenuItem>
-                                                                <MenuItem value={99}>-</MenuItem>
                                                             </Select>
                                                         </FormControl>
                                                     </Box>
@@ -298,7 +344,7 @@ const DeviceDataComponent = ({classes}) => {
                                                         <Slider
                                                             key={`slider-temperature`}
                                                             aria-label="Always visible"
-                                                            defaultValue={20}
+                                                            value={convertFahrenheitToCelsius(devicesConfiguration[device.deviceName]["Sp"].value)}
                                                             getAriaValueText={valuetext}
                                                             step={0.5}
                                                             marks={marks}
