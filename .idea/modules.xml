@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../web_app/.idea/web_app.iml" filepath="$PROJECT_DIR$/../web_app/.idea/web_app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/web_appazure_management.iml" filepath="$PROJECT_DIR$/.idea/web_appazure_management.iml" />
     </modules>
   </component>
