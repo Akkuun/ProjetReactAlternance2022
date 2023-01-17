@@ -23,7 +23,7 @@ import Accordion from '@mui/material/Accordion';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingButton from '@mui/lab/LoadingButton';
-
+import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 //creation item par rapport à une liste de données
 const ListItems = ({items}) =>
     items
@@ -56,12 +56,13 @@ const columns: GridColDef[] = [
 
 
 const DeviceDataComponent = ({classes}) => {
-    
+
     const [a1, setA1] = useState('');
+    const [mac, setMac] = useState('');
     const [accordionOpen, setAccordionOpen] = React.useState(false);
     const [accordionOpen2, setAccordionOpen2] = React.useState(false);
-    
-    
+    const [mapAccordionOpen, setMapAccordionOpen] = React.useState({});
+
     const [icons] = useState({
         installation: [
             {Icon: CottageIcon},
@@ -73,8 +74,8 @@ const DeviceDataComponent = ({classes}) => {
             {Icon: AssessmentIcon},
         ]
     });
-    
-    
+
+
     useEffect(() => {
         getToken();
     }, []);
@@ -89,19 +90,32 @@ const DeviceDataComponent = ({classes}) => {
             setA1("");
         }
     }
+    const MacHandler = async (mac) => {
+        if (mac.length === 12) {
+            setMac(mac);
+            console.log("entre dna le mac")
+            // await getToken(mac);
+        } else {
+            setMac("");
+        }
+    }
 
 // recuperation data
+
+    let newMapConfiguration = {};
+
+
     const getToken = async (a1) => {
         try {
             let token = await getTokenAPI("device");
-            
+
             // Get the list of installation by a A1
             let installationsListResult = await getListInstallation(token, a1)
             // console.log(installationsListResult.data)
-            
+
             let installationsList = [];
             for (let install of installationsListResult.data) {
-                
+
                 let installationResult = await getListOfRoomByInstallation(token, a1, install)
                 console.log(installationResult.data)
                 let devices = [];
@@ -109,7 +123,7 @@ const DeviceDataComponent = ({classes}) => {
                 for (let room of installationResult.data.rooms) {
                     console.log(room)
                     let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId);
-                    
+                    newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = [];
                     let added = 0;
                     // for each data of the configuration, insert the correct data in the list
@@ -135,50 +149,51 @@ const DeviceDataComponent = ({classes}) => {
                     installation: install,
                     devices: devices
                 });
-                
+
             }
             //udate the installationList
             setInstallationsList(installationsList);
             console.log("installation")
             console.log(installationsList)
+
         } catch (e) {
             console.error(e);
         }
     }
-    
-    
+
+
     function CustomToolbar() {
         const [loading, setLoading] = React.useState(false);
-        
+
         const handleClick = () => {
-            
+
             setLoading(!loading);
-            
-            
+
+
             for (let i = 0; i < 150; i++) {
                 console.log("tototo")
             }
-            
+
             setLoading(!loading);
-            
-            
+
+
         }
-        
-        
+
+
         return (
             <GridToolbarContainer>
                 {/*search feature*/}
                 <GridToolbarQuickFilter onBlur={handleClick}
-                
+
                                         quickFilterParser={(searchInput) =>
                                             searchInput.split(',').map((value) => value.trim())
                                         }
                                         quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                                         debounceMs={200} // time before applying the new quick filter value
-                
+
                 />
-                
-                
+
+
                 <LoadingButton
                     loading={loading}
                     onClick={() => {
@@ -197,11 +212,11 @@ const DeviceDataComponent = ({classes}) => {
             </GridToolbarContainer>
         )
     }
-    
-    
+
+
     const [installationsList, setInstallationsList] = useState([]);
-    
-    
+
+
     const addToClipboard = (content) => {
         navigator.clipboard.writeText(content.target.innerText);
         toast.info('Ajouté au presse-papier: ' + content.target.innerText, {
@@ -215,48 +230,60 @@ const DeviceDataComponent = ({classes}) => {
             theme: "light",
         });
     };
-    
+
+    function manageOpenAccordion(id) {
+        let newMap = {};
+        for (let [key, value] of Object.entries(mapAccordionOpen)) {
+            newMap = {[key]: !value}
+        }
+        setMapAccordionOpen(newMap)
+    }
+
+
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
-        
-        <Grid container spacing={3} marginLeft="10%" marginTop="0%">
+
+        <Grid container spacing={3}  marginTop="0%" sx={{borderStyle:"solid",borderColor:"green", paddingLeft:"15%"}}>
             <Grid item xs={9}>
                 <form>
                     <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
                     <TextField id="outlined-basic" label="A1" variant="outlined"
                                onChange={(e) => a1Handler(e.target.value)}/>
+                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                    <TextField id="outlined-basic2" label="MAC" variant="outlined"
+                               onChange={(e) => MacHandler(e.target.value)}/>
                 </form>
-                
-                {a1.length === 12 ? (<List>
+
+                {a1.length === 12 && mac.length === 0 ? (<List>
                     <div>
                         {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
                         {installationsList.map(station => (
                             // permier accordion pour les noms des installations
-                            <Accordion key={station.installation} expanded={accordionOpen}>
+                            <Accordion key={station.installation} expanded={mapAccordionOpen[station.installation]}>
                                 <AccordionSummary
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                     expandIcon={
                                         <ExpandMoreIcon
                                             style={{cursor: 'pointer'}}
-                                            onClick={() => setAccordionOpen(!accordionOpen)}/>
+                                            onClick={() => manageOpenAccordion(station.installation)}/>
                                     }
                                     sx={{cursor: 'unset !important'}}
                                 >
                                     <Typography component={'span'}>
                                         <ListItems items={icons.installation}/>
                                     </Typography>
-                                    
+
                                     <ListItem>
                                         <Typography onClick={addToClipboard}>
                                             {station.devices[0].Il}
                                         </Typography>
                                     </ListItem>
-                                    
+
                                     <Popup classes="popupData"
                                            value={{"statsInstallation": [a1, station.installation]}}/>
                                 </AccordionSummary>
-                                
+
                                 {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
                                 <AccordionDetails>
                                     {station.devices.map(device => (
@@ -289,10 +316,10 @@ const DeviceDataComponent = ({classes}) => {
                                                     </Typography>
                                                     <ToastContainer/>
                                                 </ListItem>
-                                                
+
                                                 <Popup classes="popupData"
                                                        value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
-                                            
+
                                             </AccordionSummary>
                                             {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
                                             <AccordionDetails>
@@ -309,6 +336,20 @@ const DeviceDataComponent = ({classes}) => {
                         ))}
                     </div>
                 </List>) : (<div></div>)}
+                {mac.length === 12 && a1.length === 0 ? <div style={{
+                    flexDirection: "row",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    borderStyle: "solid",
+                    borderColor: "yellow"
+                }}><DeviceDataBubbleComponent mode={1} temp={2} last_updated={"15h15"} device_name={"toto"}
+                                              install_name={"BE"}/> <DeviceDataBubbleComponent mode={2} temp={2}
+                                                                                               last_updated={"15h15"}
+                                                                                               device_name={"toto"}
+                                                                                               install_name={"BE"}/><DeviceDataBubbleComponent
+                    mode={3} temp={2} last_updated={"15h15"} device_name={"toto"} install_name={"BE"}/></div> : (
+                    <div>rien</div>)}
             </Grid>
         </Grid>
     )
