@@ -243,7 +243,8 @@ const DeviceDataComponent = ({classes}) => {
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
 
-        <Grid container spacing={3}  marginTop="0%" sx={{borderStyle:"solid",borderColor:"green", paddingLeft:"15%"}}>
+        <Grid container spacing={3} marginTop="0%"
+              sx={{borderStyle: "solid", borderColor: "green", paddingLeft: "25%"}}>
             <Grid item xs={9}>
                 <form>
                     <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
@@ -342,13 +343,15 @@ const DeviceDataComponent = ({classes}) => {
                     flexWrap: "wrap",
                     justifyContent: "space-between",
                     borderStyle: "solid",
-                    borderColor: "yellow"
-                }}><DeviceDataBubbleComponent mode={1} temp={2} last_updated={"15h15"} device_name={"toto"}
-                                              install_name={"BE"}/> <DeviceDataBubbleComponent mode={2} temp={2}
-                                                                                               last_updated={"15h15"}
-                                                                                               device_name={"toto"}
-                                                                                               install_name={"BE"}/><DeviceDataBubbleComponent
-                    mode={3} temp={2} last_updated={"15h15"} device_name={"toto"} install_name={"BE"}/></div> : (
+                    borderColor: "yellow",
+                    width:"90%"
+                }}>
+                    <DeviceDataBubbleComponent mode={1} temp={2} last_updated={"15h15"} device_name={"toto"}
+                                               install_name={"BE"} uc={1}/>
+                    <DeviceDataBubbleComponent mode={2} temp={2} last_updated={"15h15"} device_name={"toto"}
+                                               install_name={"BE"} uc={0}/>
+                    <DeviceDataBubbleComponent mode={3} temp={2} last_updated={"15h15"} device_name={"toto"}
+                                               install_name={"BE"} uc={0}/></div> : (
                     <div>rien</div>)}
             </Grid>
         </Grid>

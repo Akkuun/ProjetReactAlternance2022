@@ -19,6 +19,9 @@ import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
+import CircleIcon from '@mui/icons-material/Circle';
+import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+
 
 const ExpandMore = styled((props) => {
     const {expand, ...other} = props;
@@ -36,42 +39,54 @@ const DeviceDataBubbleComponent = ({
                                      device_name,
                                      mode,
                                      temp,
-                                     last_updated
+                                     last_updated,
+                                       uc
                                  }) => {
 
     const [expanded, setExpanded] = React.useState(false);
-
+    let ImageCard,IsConnectedImage;
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-    let ImageCard;
-    if(mode===1){
-        ImageCard = <LocalFireDepartmentRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}  />
+
+
+    function getImageCard(){
+        if(mode===1){
+            ImageCard = <LocalFireDepartmentRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}  />
+        }
+        else if(mode===2){
+            ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
+        }
+        else if (mode ===3){
+            ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
+        }
+        else if (mode ===4){
+            ImageCard = <PlayCircleFilledWhiteRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+        }
+        else if (mode ===5){
+            ImageCard =<AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
+        }
+        else if (mode ===6){
+            ImageCard = <AccessTimeRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+        }
+        else if (mode ===7){
+            ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+        }
+        return ImageCard;
     }
-    else if(mode===2){
-      ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
+
+    function getIsconnected(){
+        mode===0? IsConnectedImage=<CircleOutlinedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/> :  IsConnectedImage=<CircleIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+        return IsConnectedImage;
     }
-    else if (mode ===3){
-        ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
-    }
-    else if (mode ===4){
-        ImageCard = <PlayCircleFilledWhiteRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
-    }
-    else if (mode ===5){
-        ImageCard =<AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
-    }
-    else if (mode ===6){
-        ImageCard = <AccessTimeRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
-    }
-    else if (mode ===7){
-        ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
-    }
+
+
 
 
 
     return (
 
-        <Card sx={{Width: "45%", maxWidth:"45%",borderRadius:5,flex:"50%",marginTop:"5%"}}>
+        <Card sx={{Width: "60%", maxWidth:"60%",borderRadius:5,flex:"80%",marginTop:"5%", borderStyle:"solid",borderColor:"blue"}}>
             <CardHeader
                 avatar={
                     <LocationOnIcon fontSize={"large"}>
@@ -94,14 +109,18 @@ const DeviceDataBubbleComponent = ({
                     height:125,
                     maxHeight:150,
                     fontSize:75,
-                    maxWidth:"50%",
-                    width:"50%"
+                    maxWidth:"70%",
+                    width:"70%"
                    ,
                     borderStyle:"solid",borderColor:"purple"
                 }}>
 
-                    {ImageCard}
-                    <div style={{fontSize:75}}> {temp} °C</div>
+                    {getImageCard()}
+                    <div style={{fontSize:"40%"}}>
+                        {getIsconnected()}
+
+                    </div>
+                    <div style={{fontSize:75}}>    {temp} °C</div>
                 </div>
 
                 <Typography variant="body2" color="text.secondary"  sx={{marginTop:'5%',fontSize:40}} >
