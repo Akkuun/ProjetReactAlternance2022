@@ -16,63 +16,71 @@ import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import InfoIcon from '@mui/icons-material/Info';
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import PopupWattsType from "../popupComponent/popupWattsType";
 
 
 
 const DeviceDataBubbleComponent = ({
-                                     install_name,
-                                     device_name,
-                                     mode,
-                                     temp,
-                                     last_updated,
-                                       uc
-                                 }) => {
+                                       install_name,
+                                       device_name,
+                                       mode,
+                                       temp,
+                                       last_updated,
+                                       uc,
+                                       keyValue,
+                                       a1
+                                   }) => {
 
-    const [expanded, setExpanded] = React.useState(false);
-    let ImageCard,IsConnectedImage;
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
+    const [Refresh, setRefresh] = React.useState(false);
 
 
-    function getImageCard(){
-        if(mode===1){
-            ImageCard = <LocalFireDepartmentRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}  />
-        }
-        else if(mode===2){
-            ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
-        }
-        else if (mode ===3){
-            ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
-        }
-        else if (mode ===4){
-            ImageCard = <PlayCircleFilledWhiteRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
-        }
-        else if (mode ===5){
-            ImageCard =<AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}} />
-        }
-        else if (mode ===6){
-            ImageCard = <AccessTimeRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
-        }
-        else if (mode ===7){
-            ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+    let ImageCard, IsConnectedImage;
+
+
+    function refreshData() {
+        setRefresh()
+
+    }
+
+
+    function getImageCard() {
+        if (mode === 1) {
+            ImageCard = <LocalFireDepartmentRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 5) {
+            ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 0) {
+            ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 4) {
+            ImageCard = <AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 3) {
+            ImageCard = <AccessTimeRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 6) {
+            ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 2) {
+            ImageCard = <WatchLaterIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
         }
         return ImageCard;
     }
 
-    function getIsconnected(){
-        uc===0? IsConnectedImage=<CircleOutlinedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/> :  IsConnectedImage=<CircleIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+    function getIsconnected() {
+        uc === 0 ? IsConnectedImage = <CircleOutlinedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/> : IsConnectedImage =
+            <CircleIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
         return IsConnectedImage;
     }
 
 
-
-
-
     return (
 
-        <Card sx={{Width: "40%", maxWidth:"40%",borderRadius:5,flex:"80%",marginTop:"5%", borderStyle:"solid",borderColor:"blue"}}>
+        <Card sx={{
+            Width: "40%",
+            maxWidth: "40%",
+            borderRadius: 5,
+            flex: "80%",
+            marginTop: "5%",
+            borderStyle: "solid",
+            borderColor: "blue"
+        }}>
             <CardHeader
                 avatar={
                     <LocationOnIcon fontSize={"large"}>
@@ -84,33 +92,39 @@ const DeviceDataBubbleComponent = ({
                     <Typography gutterBottom variant="h5" component="h2" fontSize={40}>
                         {install_name} - {device_name}
                     </Typography>
-                } />
+                }/>
 
 
-
-            <CardContent>
+            <CardContent key={keyValue}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'left',
-                    height:125,
-                    maxHeight:150,
-                    fontSize:75,
-                    maxWidth:"100%",
-                    width:"100%",
-                    borderStyle:"solid",borderColor:"purple",justifyContent:"center",
+                    height: 125,
+                    maxHeight: 150,
+                    fontSize: 75,
+                    maxWidth: "100%",
+                    width: "100%",
+                    borderStyle: "solid", borderColor: "purple", justifyContent: "center",
                 }}>
 
                     {getImageCard()}
-                    <div style={{fontSize:"40%"}}>
+                    <div style={{fontSize: "40%"}}>
                         {getIsconnected()}
 
                     </div>
-                    <div style={{fontSize:75, paddingTop:"5%"}}>    {temp} °C  <IconButton> <InfoIcon/></IconButton> </div>
-
+                    <div style={{
+                        fontSize: 75,
+                        paddingTop: "5%",
+                        borderStyle: "solid",
+                        borderColor: "grey",
+                        width: "80%"
+                    }}>    {temp} °C
+                    </div>
+                    <PopupWattsType/>
                 </div>
 
-                <Typography variant="body2" color="text.secondary"  sx={{marginTop:'5%',fontSize:40}} >
-                    Last update : {last_updated} <IconButton>  <RefreshIcon /> </IconButton>
+                <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
+                    Last update : {last_updated} <IconButton > <RefreshIcon/> </IconButton>
                 </Typography>
             </CardContent>
 
