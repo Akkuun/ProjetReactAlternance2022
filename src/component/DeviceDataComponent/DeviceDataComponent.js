@@ -243,23 +243,25 @@ const DeviceDataComponent = ({classes}) => {
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
 
-        <Grid container spacing={3} marginTop="0%"
+        <Grid container spacing={3} marginTop="0%" key={1}
               sx={{borderStyle: "solid", borderColor: "green"}}>
             <Grid item xs={9}>
                 <form>
-                    <div style={{paddingLeft:"35%", justifyContent:"space-between"}}>
-                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                    <TextField id="outlined-basic" label="A1" variant="outlined"
-                               onChange={(e) => a1Handler(e.target.value)}/>
-                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                    <TextField id="outlined-basic2" label="MAC" variant="outlined"
-                               onChange={(e) => MacHandler(e.target.value)}/>
+                    <div style={{paddingLeft: "35%", justifyContent: "space-between"}}>
+                        <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                        <TextField id="outlined-basic" label="A1" variant="outlined"
+                                   onChange={(e) => a1Handler(e.target.value)}/>
+                        <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                        <TextField id="outlined-basic2" label="MAC" variant="outlined"
+                                   onChange={(e) => MacHandler(e.target.value)}/>
                     </div>
                 </form>
+{/*
 
                 {a1.length === 12 && mac.length === 0 ? (<List>
+
                     <div>
-                        {/*iteration avec map permettant d'afficher tout les boutons ect ..*/}
+                        iteration avec map permettant d'afficher tout les boutons ect ..
                         {installationsList.map(station => (
                             // permier accordion pour les noms des installations
                             <Accordion key={station.installation} expanded={mapAccordionOpen[station.installation]}>
@@ -287,7 +289,7 @@ const DeviceDataComponent = ({classes}) => {
                                            value={{"statsInstallation": [a1, station.installation]}}/>
                                 </AccordionSummary>
 
-                                {/*ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices*/}
+                                ce que va avoir quand on va cliquer sur l'accordion de l'installation donc les devices
                                 <AccordionDetails>
                                     {station.devices.map(device => (
                                         <Accordion key={device.deviceName} expanded={accordionOpen2}>
@@ -324,7 +326,8 @@ const DeviceDataComponent = ({classes}) => {
                                                        value={{"statsDevice": [a1, station.installation, device.deviceName]}}/>
 
                                             </AccordionSummary>
-                                            {/* ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec les données du device en cours   */}
+                                            ce qu'on va avoir quand on a cliquer sur le device, le tableau des ty avec
+                                            les données du device en cours
                                             <AccordionDetails>
                                                 <div style={{height: 300, width: '100%'}}>
                                                     <DataGrid rows={device.wattsType} columns={columns} components={{
@@ -338,25 +341,37 @@ const DeviceDataComponent = ({classes}) => {
                             </Accordion>
                         ))}
                     </div>
-                </List>) : (<div></div>)}
-                {mac.length === 12 && a1.length === 0 ? <div style={{
+
+
+
+                </List>*/}
+
+                {mac.length === 0 && a1.length === 12 ? <div style={{
                     flexDirection: "row",
                     display: "flex",
                     flexWrap: "wrap",
                     justifyContent: "space-between",
                     borderStyle: "solid",
                     borderColor: "yellow",
-                    width:1500,
-                    marginLeft:1
+                    width: 1500,
+                    marginLeft: 1
 
                 }}>
-                    <DeviceDataBubbleComponent mode={1} temp={2} last_updated={"15h15"} device_name={"toto"}
-                                               install_name={"BE"} uc={1}/>
-                    <DeviceDataBubbleComponent mode={2} temp={2} last_updated={"15h15"} device_name={"toto"}
-                                               install_name={"BE"} uc={0}/>
-                    <DeviceDataBubbleComponent mode={3} temp={2} last_updated={"15h15"} device_name={"toto"}
-                                               install_name={"BE"} uc={0}/></div> : (
+                    {installationsList.map(station => (
+                       //<DeviceDataBubbleComponent mode={station.devices.wattsType["Cm"]} />
+                       station.devices.map(device=> (
+
+                           <DeviceDataBubbleComponent keyValue={device.wattsType[0].col3} mode={device.wattsType[4].col3} device_name={device.wattsType[20].col3} install_name={device.wattsType[18].col3} temp={((((device.wattsType[1].col3)/10)-32)/1.8).toPrecision(3)} last_updated={device.wattsType[6].col3} />
+
+                       ))
+
+                    ))}
+
+                </div> : (
                     <div>rien</div>)}
+
+
+
             </Grid>
         </Grid>
     )
