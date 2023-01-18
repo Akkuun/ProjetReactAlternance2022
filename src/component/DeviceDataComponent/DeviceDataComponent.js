@@ -244,15 +244,17 @@ const DeviceDataComponent = ({classes}) => {
     return (
 
         <Grid container spacing={3} marginTop="0%"
-              sx={{borderStyle: "solid", borderColor: "green", paddingLeft: "25%"}}>
+              sx={{borderStyle: "solid", borderColor: "green"}}>
             <Grid item xs={9}>
                 <form>
+                    <div style={{paddingLeft:"35%", justifyContent:"space-between"}}>
                     <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
                     <TextField id="outlined-basic" label="A1" variant="outlined"
                                onChange={(e) => a1Handler(e.target.value)}/>
                     <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
                     <TextField id="outlined-basic2" label="MAC" variant="outlined"
                                onChange={(e) => MacHandler(e.target.value)}/>
+                    </div>
                 </form>
 
                 {a1.length === 12 && mac.length === 0 ? (<List>
@@ -344,7 +346,9 @@ const DeviceDataComponent = ({classes}) => {
                     justifyContent: "space-between",
                     borderStyle: "solid",
                     borderColor: "yellow",
-                    width:"90%"
+                    width:1500,
+                    marginLeft:1
+
                 }}>
                     <DeviceDataBubbleComponent mode={1} temp={2} last_updated={"15h15"} device_name={"toto"}
                                                install_name={"BE"} uc={1}/>

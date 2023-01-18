@@ -2,15 +2,9 @@ import * as React from 'react';
 import {styled} from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import PlayCircleFilledWhiteRoundedIcon from '@mui/icons-material/PlayCircleFilledWhiteRounded';
@@ -21,18 +15,10 @@ import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartm
 import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import InfoIcon from '@mui/icons-material/Info';
 
 
-const ExpandMore = styled((props) => {
-    const {expand, ...other} = props;
-    return <IconButton {...other} />;
-})(({theme, expand}) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-}));
 
 const DeviceDataBubbleComponent = ({
                                      install_name,
@@ -76,7 +62,7 @@ const DeviceDataBubbleComponent = ({
     }
 
     function getIsconnected(){
-        mode===0? IsConnectedImage=<CircleOutlinedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/> :  IsConnectedImage=<CircleIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
+        uc===0? IsConnectedImage=<CircleOutlinedIcon fontSize={"22%"} sx={{marginTop:"6%"}}/> :  IsConnectedImage=<CircleIcon fontSize={"22%"} sx={{marginTop:"6%"}}/>
         return IsConnectedImage;
     }
 
@@ -86,7 +72,7 @@ const DeviceDataBubbleComponent = ({
 
     return (
 
-        <Card sx={{Width: "60%", maxWidth:"60%",borderRadius:5,flex:"80%",marginTop:"5%", borderStyle:"solid",borderColor:"blue"}}>
+        <Card sx={{Width: "40%", maxWidth:"40%",borderRadius:5,flex:"80%",marginTop:"5%", borderStyle:"solid",borderColor:"blue"}}>
             <CardHeader
                 avatar={
                     <LocationOnIcon fontSize={"large"}>
@@ -109,10 +95,9 @@ const DeviceDataBubbleComponent = ({
                     height:125,
                     maxHeight:150,
                     fontSize:75,
-                    maxWidth:"70%",
-                    width:"70%"
-                   ,
-                    borderStyle:"solid",borderColor:"purple"
+                    maxWidth:"100%",
+                    width:"100%",
+                    borderStyle:"solid",borderColor:"purple",justifyContent:"center",
                 }}>
 
                     {getImageCard()}
@@ -120,11 +105,12 @@ const DeviceDataBubbleComponent = ({
                         {getIsconnected()}
 
                     </div>
-                    <div style={{fontSize:75}}>    {temp} °C</div>
+                    <div style={{fontSize:75, paddingTop:"5%"}}>    {temp} °C  <IconButton> <InfoIcon/></IconButton> </div>
+
                 </div>
 
                 <Typography variant="body2" color="text.secondary"  sx={{marginTop:'5%',fontSize:40}} >
-                    Last update : {last_updated}
+                    Last update : {last_updated} <IconButton>  <RefreshIcon /> </IconButton>
                 </Typography>
             </CardContent>
 
