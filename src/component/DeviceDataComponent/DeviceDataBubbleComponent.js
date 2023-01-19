@@ -29,17 +29,18 @@ const DeviceDataBubbleComponent = ({
                                        last_updated,
                                        uc,
                                        keyValue,
-                                       a1
+                                        a1,
+                                        rows,
                                    }) => {
 
-    const [Refresh, setRefresh] = React.useState(false);
 
 
     let ImageCard, IsConnectedImage;
 
 
     function refreshData() {
-        setRefresh()
+
+
 
     }
 
@@ -120,11 +121,13 @@ const DeviceDataBubbleComponent = ({
                         width: "80%"
                     }}>    {temp} °C
                     </div>
-                    <PopupWattsType/>
+                 <div> <PopupWattsType row={rows}/></div>
+
+
                 </div>
 
                 <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
-                    Last update : {last_updated} <IconButton > <RefreshIcon/> </IconButton>
+                    Last update : {last_updated} <IconButton onClick={refreshData} > <RefreshIcon/> </IconButton>
                 </Typography>
             </CardContent>
 

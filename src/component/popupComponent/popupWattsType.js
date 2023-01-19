@@ -6,6 +6,11 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import PageStatistics from "../PageStatistics";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
+import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid";
+import LoadingButton from "@mui/lab/LoadingButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {Tooltip} from "@mui/material";
+import moment from "moment/moment";
 
 const style = {
     position: 'absolute',
@@ -22,7 +27,82 @@ const style = {
 
 let popupData;
 
-const Popup = ({classes, value}) => {
+function CustomToolbar() {
+    const [loading, setLoading] = React.useState(false);
+
+    const handleClick = () => {
+
+        setLoading(!loading);
+
+
+        for (let i = 0; i < 150; i++) {
+            console.log("tototo")
+        }
+
+        setLoading(!loading);
+
+
+    }
+
+
+    return (
+        <GridToolbarContainer>
+            {/*search feature*/}
+            <GridToolbarQuickFilter onBlur={handleClick}
+
+                                    quickFilterParser={(searchInput) =>
+                                        searchInput.split(',').map((value) => value.trim())
+                                    }
+                                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                                    debounceMs={200} // time before applying the new quick filter value
+
+            />
+
+
+            <LoadingButton
+                loading={loading}
+                onClick={() => {
+                    setLoading(!loading);
+                    for (let i = 0; i < 150; i++) {
+                        console.log("tototo")
+                    }
+                    setLoading(!loading);
+                }}
+                endIcon={<RefreshIcon/>}
+                loadingPosition="end"
+                variant="text"
+            >
+                SEND UC=1
+            </LoadingButton>
+        </GridToolbarContainer>
+    )
+}
+
+
+
+
+const Popup = ({classes, value, row}) => {
+    const columns: GridColDef[] = [
+        {
+            field: 'col1',
+            headerName: 'Last Updated',
+            width: 150,
+            //hover effect on Last Updated -> timestamp conversion
+            renderCell: (params: any) => (
+                <Tooltip title={moment.unix(params.value).format("YYYY-MM-DD HH:mm:ss")}>
+                    <span className="table-cell-trucate">{params.value}</span>
+                </Tooltip>
+            ),
+        },
+        {field: 'col2', headerName: 'Value', width: 150},
+        {field: 'col3', headerName: 'WattsType', width: 400},
+
+    ];
+
+
+
+
+
     const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
     const handleOpenPopupComponent = () => {
         if (classes === "popupData") {
@@ -33,9 +113,10 @@ const Popup = ({classes, value}) => {
     const handleClosePopupComponent = () => {
         setOpenPopupComponent(false);
     }
-    
+
+
     return (
-        <div style={{borderStyle:"solid",borderColor:"red",}}>
+        <div style={{borderStyle: "solid", borderColor: "red",}}>
 
             <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
             <Modal
@@ -46,7 +127,7 @@ const Popup = ({classes, value}) => {
             >
                 <Box sx={style}>
                     {/*component stats*/}
-                    <PageStatistics classes="popupData" value={popupData}/>
+                    <div><DataGrid rows={row} columns={columns} components={{Toolbar: CustomToolbar}}/></div>
                 </Box>
             </Modal>
         </div>

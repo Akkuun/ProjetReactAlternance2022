@@ -96,3 +96,8 @@ export async function getStatistics(mode, token, A1, installationID, deviceID, w
     
     return statisticsData;
 }
+
+
+export async function refreshData(a1,data){
+
+}
