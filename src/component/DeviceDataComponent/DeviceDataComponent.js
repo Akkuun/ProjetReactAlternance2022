@@ -10,7 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import CottageIcon from '@mui/icons-material/Cottage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {Icon, TextField, Tooltip} from "@mui/material";
+import {Icon, TextField, Toolbar, Tooltip} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
 import moment from "moment";
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -37,22 +37,7 @@ const ListItems = ({items}) =>
             </ListItem>
         ));
 //definition colonne de DataGrid
-const columns: GridColDef[] = [
-    {
-        field: 'col1',
-        headerName: 'Last Updated',
-        width: 150,
-        //hover effect on Last Updated -> timestamp conversion
-        renderCell: (params: any) => (
-            <Tooltip title={moment.unix(params.value).format("YYYY-MM-DD HH:mm:ss")}>
-                <span className="table-cell-trucate">{params.value}</span>
-            </Tooltip>
-        ),
-    },
-    {field: 'col2', headerName: 'Value', width: 150},
-    {field: 'col3', headerName: 'WattsType', width: 400},
 
-];
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -162,56 +147,7 @@ const DeviceDataComponent = ({classes}) => {
     }
 
 
-    function CustomToolbar() {
-        const [loading, setLoading] = React.useState(false);
 
-        const handleClick = () => {
-
-            setLoading(!loading);
-
-
-            for (let i = 0; i < 150; i++) {
-                console.log("tototo")
-            }
-
-            setLoading(!loading);
-
-
-        }
-
-
-        return (
-            <GridToolbarContainer>
-                {/*search feature*/}
-                <GridToolbarQuickFilter onBlur={handleClick}
-
-                                        quickFilterParser={(searchInput) =>
-                                            searchInput.split(',').map((value) => value.trim())
-                                        }
-                                        quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
-                                        debounceMs={200} // time before applying the new quick filter value
-
-                />
-
-
-                <LoadingButton
-                    loading={loading}
-                    onClick={() => {
-                        setLoading(!loading);
-                        for (let i = 0; i < 150; i++) {
-                            console.log("tototo")
-                        }
-                        setLoading(!loading);
-                    }}
-                    endIcon={<RefreshIcon/>}
-                    loadingPosition="end"
-                    variant="text"
-                >
-                    SEND UC=1
-                </LoadingButton>
-            </GridToolbarContainer>
-        )
-    }
 
 
     const [installationsList, setInstallationsList] = useState([]);
@@ -243,7 +179,7 @@ const DeviceDataComponent = ({classes}) => {
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
 
-        <Grid container spacing={3} marginTop="0%" key={1}
+        <Grid container spacing={3} marginTop="0%" key={"toto"}
               sx={{borderStyle: "solid", borderColor: "green"}}>
             <Grid item xs={9}>
                 <form>
@@ -354,14 +290,24 @@ const DeviceDataComponent = ({classes}) => {
                     borderStyle: "solid",
                     borderColor: "yellow",
                     width: 1500,
-                    marginLeft: 1
+                    marginLeft: "20%"
 
                 }}>
+
                     {installationsList.map(station => (
                        //<DeviceDataBubbleComponent mode={station.devices.wattsType["Cm"]} />
                        station.devices.map(device=> (
 
-                           <DeviceDataBubbleComponent keyValue={device.wattsType[0].col3} mode={device.wattsType[4].col3} device_name={device.wattsType[20].col3} install_name={device.wattsType[18].col3} temp={((((device.wattsType[1].col3)/10)-32)/1.8).toPrecision(3)} last_updated={device.wattsType[6].col3} />
+                           <DeviceDataBubbleComponent keyValue={device.wattsType[0].col3}
+                                                      mode={device.wattsType[4].col3}
+                                                      device_name={device.wattsType[20].col3}
+                                                      install_name={device.wattsType[18].col3}
+                                                      temp={((((device.wattsType[1].col3)/10)-32)/1.8).toPrecision(3)}
+                                                      last_updated={device.wattsType[6].col3}
+                                                      data={installationsList}
+                                                      a1={a1}
+                                                      rows={device.wattsType}
+                           />
 
                        ))
 
