@@ -6,6 +6,7 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import PageStatistics from "../PageStatistics";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
+
 import {
     DataGrid,
     gridFilteredSortedRowIdsSelector,
@@ -16,6 +17,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
+import {wait} from "@testing-library/user-event/dist/utils";
+import {useEffect} from "react";
 
 const style = {
     position: 'absolute',
@@ -91,53 +94,31 @@ const JsonExportMenuItem = (props) => {
     );
 };
 
+
 function CustomToolbar() {
-    const [loading, setLoading] = React.useState(false);
-
-    const handleClick = () => {
-
-        setLoading(!loading);
 
 
-        for (let i = 0; i < 150; i++) {
-            console.log("tototo")
-        }
-
-        setLoading(!loading);
-
-
+    function RefreshHandler() {
+        console.log("toto")
     }
-
 
     return (
         <GridToolbarContainer>
             {/*search feature*/}
-            <GridToolbarQuickFilter onBlur={handleClick}
+            <GridToolbarQuickFilter
 
-                                    quickFilterParser={(searchInput) =>
-                                        searchInput.split(',').map((value) => value.trim())
-                                    }
-                                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
-                                    debounceMs={200} // time before applying the new quick filter value
+                quickFilterParser={(searchInput) =>
+                    searchInput.split(',').map((value) => value.trim())
+                }
+                quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                debounceMs={200} // time before applying the new quick filter value
 
             />
 
-
-            <LoadingButton
-                loading={loading}
-                onClick={() => {
-                    setLoading(!loading);
-                    for (let i = 0; i < 150; i++) {
-                        console.log("tototo")
-                    }
-                    setLoading(!loading);
-                }}
-                endIcon={<RefreshIcon/>}
-                loadingPosition="end"
-                variant="text"
-            >
+            <Button onClick={RefreshHandler}>
+                <RefreshIcon/>
                 SEND UC=1
-            </LoadingButton>
+            </Button>
             <GridToolbarExportContainer>
                 {/*export feature*/}
                 <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
@@ -148,9 +129,8 @@ function CustomToolbar() {
             </GridToolbarExportContainer>
         </GridToolbarContainer>
     )
+
 }
-
-
 
 
 const Popup = ({classes, value, row}) => {
@@ -172,9 +152,6 @@ const Popup = ({classes, value, row}) => {
     ];
 
 
-
-
-
     const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
     const handleOpenPopupComponent = () => {
         if (classes === "popupData") {
@@ -188,7 +165,7 @@ const Popup = ({classes, value, row}) => {
 
 
     return (
-        <div style={{height:"60%"}}>
+        <div style={{height: "60%"}}>
 
             <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
             <Modal
@@ -199,7 +176,7 @@ const Popup = ({classes, value, row}) => {
             >
                 <Box sx={style}>
                     {/*component stats*/}
-                    <Container sx={{height:"90%",borderStyle: "solid", borderColor: "red",}}>
+                    <Container sx={{height: "90%"}}>
                         <DataGrid rows={row} columns={columns} components={{Toolbar: CustomToolbar}}/>
                     </Container>
                 </Box>

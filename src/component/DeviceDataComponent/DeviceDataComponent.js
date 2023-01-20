@@ -180,7 +180,7 @@ const DeviceDataComponent = ({classes}) => {
     return (
 
         <Grid container spacing={3} marginTop="0%" key={"toto"}
-              sx={{borderStyle: "solid", borderColor: "green"}}>
+            >
             <Grid item xs={9}>
                 <form>
                     <div style={{paddingLeft: "35%", justifyContent: "space-between"}}>
@@ -287,8 +287,6 @@ const DeviceDataComponent = ({classes}) => {
                     display: "flex",
                     flexWrap: "wrap",
                     justifyContent: "space-between",
-                    borderStyle: "solid",
-                    borderColor: "yellow",
                     width: "100%",
                     marginLeft: "20%"
 

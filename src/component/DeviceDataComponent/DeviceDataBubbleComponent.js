@@ -80,8 +80,7 @@ const DeviceDataBubbleComponent = ({
             borderRadius: 5,
             flex: "80%",
             marginTop: "5%",
-            borderStyle: "solid",
-            borderColor: "blue"
+
         }}>
             <CardHeader
                 avatar={
@@ -106,7 +105,7 @@ const DeviceDataBubbleComponent = ({
                     fontSize: 75,
                     maxWidth: "100%",
                     width: "100%",
-                    borderStyle: "solid", borderColor: "purple", justifyContent: "center",
+                    justifyContent: "center",
                 }}>
 
                     {getImageCard()}
@@ -117,8 +116,6 @@ const DeviceDataBubbleComponent = ({
                     <div style={{
                         fontSize: 75,
                         paddingTop: "5%",
-                        borderStyle: "solid",
-                        borderColor: "grey",
                         width: "80%"
                     }}>    {temp} °C
                     </div>
