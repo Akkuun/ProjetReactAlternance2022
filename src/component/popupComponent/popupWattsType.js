@@ -6,10 +6,15 @@ import AssessmentIcon from "@mui/icons-material/Assessment";
 import PageStatistics from "../PageStatistics";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
-import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid";
+import {
+    DataGrid,
+    gridFilteredSortedRowIdsSelector,
+    GridToolbarContainer, GridToolbarExport, GridToolbarExportContainer,
+    GridToolbarQuickFilter, gridVisibleColumnFieldsSelector, useGridApiContext
+} from "@mui/x-data-grid";
 import LoadingButton from "@mui/lab/LoadingButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {Container, Tooltip} from "@mui/material";
+import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 
 const style = {
@@ -26,6 +31,65 @@ const style = {
 };
 
 let popupData;
+
+const exportBlob = (blob, filename) => {
+    // Save the blob in a json file
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    });
+};
+
+//transform data to JSON
+const getJson = (apiRef) => {
+    // Select rows and columns
+    const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
+    const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
+
+    // Format the data. Here we only keep the value
+    const data = filteredSortedRowIds.map((id) => {
+        const row = {};
+        visibleColumnsField.forEach((field) => {
+            row[field] = apiRef.current.getCellParams(id, field).value;
+        });
+        return row;
+    });
+
+    // Stringify with some indentation
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
+    return JSON.stringify(data, null, 2);
+};
+
+
+const JsonExportMenuItem = (props) => {
+    const apiRef = useGridApiContext();
+
+    const {hideMenu} = props;
+
+    return (
+        <MenuItem
+            onClick={() => {
+                const jsonString = getJson(apiRef);
+                const blob = new Blob([jsonString], {
+                    type: 'text/json',
+                });
+
+                exportBlob(blob, 'List_User.json');
+
+                // Hide the export menu after the export
+                hideMenu?.();
+            }}
+        >
+            JSON
+        </MenuItem>
+    );
+};
 
 function CustomToolbar() {
     const [loading, setLoading] = React.useState(false);
@@ -74,6 +138,14 @@ function CustomToolbar() {
             >
                 SEND UC=1
             </LoadingButton>
+            <GridToolbarExportContainer>
+                {/*export feature*/}
+                <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
+                <div className="JsonButton">
+                    <JsonExportMenuItem/>
+                </div>
+
+            </GridToolbarExportContainer>
         </GridToolbarContainer>
     )
 }
