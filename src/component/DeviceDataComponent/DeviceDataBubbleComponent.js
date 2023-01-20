@@ -75,6 +75,7 @@ const DeviceDataBubbleComponent = ({
 
         <Card sx={{
             Width: "40%",
+            height:"40%",
             maxWidth: "40%",
             borderRadius: 5,
             flex: "80%",
