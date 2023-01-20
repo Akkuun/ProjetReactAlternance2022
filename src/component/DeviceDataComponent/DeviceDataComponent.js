@@ -307,6 +307,7 @@ const DeviceDataComponent = ({classes}) => {
                                                       rows={device.wattsType}
                            />
 
+
                        ))
 
                     ))}
