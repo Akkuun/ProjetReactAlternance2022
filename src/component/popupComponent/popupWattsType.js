@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid";
 import LoadingButton from "@mui/lab/LoadingButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {Tooltip} from "@mui/material";
+import {Container, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 
 const style = {
@@ -18,7 +18,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '80%',
-    height: '375px',
+    height: '80%',
     bgcolor: 'background.paper',
     'border-radius': '10px',
     boxShadow: '24',
@@ -116,7 +116,7 @@ const Popup = ({classes, value, row}) => {
 
 
     return (
-        <div style={{borderStyle: "solid", borderColor: "red",}}>
+        <div style={{height:"60%"}}>
 
             <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
             <Modal
@@ -127,7 +127,9 @@ const Popup = ({classes, value, row}) => {
             >
                 <Box sx={style}>
                     {/*component stats*/}
-                    <div><DataGrid rows={row} columns={columns} components={{Toolbar: CustomToolbar}}/></div>
+                    <Container sx={{height:"90%",borderStyle: "solid", borderColor: "red",}}>
+                        <DataGrid rows={row} columns={columns} components={{Toolbar: CustomToolbar}}/>
+                    </Container>
                 </Box>
             </Modal>
         </div>

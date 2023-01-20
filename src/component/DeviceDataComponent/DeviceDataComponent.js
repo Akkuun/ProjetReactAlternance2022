@@ -289,7 +289,7 @@ const DeviceDataComponent = ({classes}) => {
                     justifyContent: "space-between",
                     borderStyle: "solid",
                     borderColor: "yellow",
-                    width: 1500,
+                    width: "100%",
                     marginLeft: "20%"
 
                 }}>
