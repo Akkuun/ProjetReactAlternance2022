@@ -1,9 +1,6 @@
 import axios from "axios";
 
 
-
-
-
 export async function getTokenAPI(mode) {
     let tokenResult;
     switch (mode) {
@@ -19,7 +16,7 @@ export async function getTokenAPI(mode) {
                 }
             });
             return tokenResult.data["access_token"]
-        
+
         case "device":
             tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
                 'grant_type': 'client_credentials',
@@ -68,7 +65,7 @@ export async function getDataByDeviceID(token, deviceID) {
 }
 
 export async function getListOfUser(token) {
-    
+
     return axios.get("https://visionsystem2-identity-dev.azurewebsites.net/api/v1.0/Users", {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -93,11 +90,28 @@ export async function getStatistics(mode, token, A1, installationID, deviceID, w
             'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
         }
     })
-    
+
     return statisticsData;
 }
 
 
-export async function refreshData(a1,data){
+export async function sendUserConnected(a1, installationId, DeviceId) {
+
+
+
+    await axios.put('https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/devices/userconnected', {
+        A1: a1,
+        In: installationId,
+        S1: DeviceId
+    }, {
+        headers: {
+            "Authorization": "Bearer "+await getTokenAPI("device"),
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": "bf20abb55f57449eb5f10783b6bf67e6"
+
+        },
+    }
+    );
+    setTimeout(10000);
 
 }

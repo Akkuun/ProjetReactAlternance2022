@@ -18,7 +18,8 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
-
+import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
+import {useEffect, useState} from "react";
 
 
 const DeviceDataBubbleComponent = ({
@@ -29,17 +30,48 @@ const DeviceDataBubbleComponent = ({
                                        last_updated,
                                        uc,
                                        keyValue,
-                                        a1,
-                                        rows,
+                                       rows,
+                                       a1,
+                                       Installation_Id,
+                                       Device_Id
                                    }) => {
 
 
-
     let ImageCard, IsConnectedImage;
+    let RowUpdated = [];
+    const [valueRow, setRow] = useState([]);
 
 
-    function refreshData() {
+    async function refreshData() {
+        let dataRefreshed;
+        await sendUserConnected(a1, Installation_Id, Device_Id);
 
+        let token = await getTokenAPI("device");
+        setTimeout(10000, tot());
+
+        async function tot() {
+            return await getDataByDeviceID(token, Device_Id)
+        }
+
+        console.log("row")
+        console.log(rows)
+
+        console.log("data R")
+        dataRefreshed=await tot();
+        console.log(dataRefreshed)
+        RowUpdated = [];
+        let added = 0;
+        for (const [key, value] of Object.entries(dataRefreshed.data)) {
+            added++;
+            RowUpdated.push({
+                id: added,
+                'col1': value.timestamp,
+                'col2': key,
+                'col3': value.value
+            })
+        }
+        console.log("row upadted")
+        console.log(RowUpdated)
 
 
     }
@@ -75,7 +107,7 @@ const DeviceDataBubbleComponent = ({
 
         <Card sx={{
             Width: "40%",
-            height:"40%",
+            height: "40%",
             maxWidth: "40%",
             borderRadius: 5,
             flex: "80%",
@@ -119,13 +151,13 @@ const DeviceDataBubbleComponent = ({
                         width: "80%"
                     }}>    {temp} °C
                     </div>
-                 <div> <PopupWattsType row={rows}/></div>
+                    <div><PopupWattsType row={valueRow}/></div>
 
 
                 </div>
 
                 <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
-                    Last update : {last_updated} <IconButton onClick={refreshData} > <RefreshIcon/> </IconButton>
+                    Last update : {last_updated} <IconButton onClick={refreshData}> <RefreshIcon/> </IconButton>
                 </Typography>
             </CardContent>
 

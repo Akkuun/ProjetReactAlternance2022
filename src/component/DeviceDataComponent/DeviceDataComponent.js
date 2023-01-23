@@ -305,6 +305,8 @@ const DeviceDataComponent = ({classes}) => {
                                                       data={installationsList}
                                                       a1={a1}
                                                       rows={device.wattsType}
+                                                      Installation_Id={station.installation}
+                                                      Device_Id={device.deviceName}
                            />
 
 
