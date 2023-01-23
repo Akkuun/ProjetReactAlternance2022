@@ -47,17 +47,17 @@ const DeviceDataBubbleComponent = ({
         await sendUserConnected(a1, Installation_Id, Device_Id);
 
         let token = await getTokenAPI("device");
-        setTimeout(10000, tot());
+        setTimeout(5000, test());
 
-        async function tot() {
-            return await getDataByDeviceID(token, Device_Id)
-        }
+
+        dataRefreshed=  await getDataByDeviceID(token, Device_Id)
+
 
         console.log("row")
         console.log(rows)
 
         console.log("data R")
-        dataRefreshed=await tot();
+
         console.log(dataRefreshed)
         RowUpdated = [];
         let added = 0;
@@ -72,10 +72,15 @@ const DeviceDataBubbleComponent = ({
         }
         console.log("row upadted")
         console.log(RowUpdated)
-
+setRow(RowUpdated)
 
     }
 
+    function test(){
+       for(let i =0;i<50000;i++){
+           console.log(i)
+       }
+    }
 
     function getImageCard() {
         if (mode === 1) {
