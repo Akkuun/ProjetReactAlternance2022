@@ -20,6 +20,7 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
 import {useEffect, useState} from "react";
+import {randomPhoneNumber} from "@mui/x-data-grid-generator";
 
 
 const DeviceDataBubbleComponent = ({
@@ -37,9 +38,11 @@ const DeviceDataBubbleComponent = ({
                                    }) => {
 
 
+
     let ImageCard, IsConnectedImage;
     let RowUpdated = [];
-    const [valueRow, setRow] = useState([]);
+
+   // const [rowVal, setVal] = useState(rows)
 
 
     async function refreshData() {
@@ -50,7 +53,7 @@ const DeviceDataBubbleComponent = ({
         setTimeout(5000, test());
 
 
-        dataRefreshed=  await getDataByDeviceID(token, Device_Id)
+        dataRefreshed = await getDataByDeviceID(token, Device_Id)
 
 
         console.log("row")
@@ -71,15 +74,16 @@ const DeviceDataBubbleComponent = ({
             })
         }
         console.log("row upadted")
-        console.log(RowUpdated)
-setRow(RowUpdated)
+         //rows=RowUpdated;
 
     }
 
-    function test(){
-       for(let i =0;i<50000;i++){
-           console.log(i)
-       }
+
+
+    function test() {
+        for (let i = 0; i < 50000; i++) {
+            console.log(i)
+        }
     }
 
     function getImageCard() {
@@ -156,7 +160,7 @@ setRow(RowUpdated)
                         width: "80%"
                     }}>    {temp} °C
                     </div>
-                    <div><PopupWattsType row={valueRow}/></div>
+                    <div><PopupWattsType row={rows}/></div>
 
 
                 </div>
