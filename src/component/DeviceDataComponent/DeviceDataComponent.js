@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {useEffect, useReducer, useState} from 'react';
 import Grid from "@mui/material/Grid";
-import ListItem from "@mui/material/ListItem";
-import {Icon, TextField} from "@mui/material";
+
+import {TextField} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import {
     getDataByDeviceID,
     getListInstallation,
@@ -12,41 +11,48 @@ import {
     getTokenAPI,
     sendUserConnected
 } from "../../services/Api";
+import PopupWattsType, {Popup} from "../popupComponent/popupWattsType"
 
-import {toast, ToastContainer} from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-
+import {SnackbarProvider, useSnackbar} from 'notistack';
 
 //creation item par rapport à une liste de données
 
 
 const DeviceDataComponent = ({classes}) => {
 
-
+    const {enqueueSnackbar} = useSnackbar();
     const [a1, setA1] = useState('');
     const [mac, setMac] = useState('');
-
     const [install_id, setInstallID] = useState('')
     const [device_id, setDeviceID] = useState('')
-    const [selectedDevice, setSelectedDevice] = useState(null)
+    const [installationsList, setInstallationsList] = useState([]);
+    const [mapDevicesData, setMapDevicesData] = useState(new Map())
+    const [ucValue, setUcValue] = useState(0)
 
 
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
             setA1(a1);
-            await getToken(a1);
+            await getDataByA1(a1);
         } else {
             setA1("");
         }
     }
+
+    async function getDataByMac() {
+    }
+
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
             setMac(mac);
-            // await getToken(mac);
+            getDataByMac();
+
         } else {
             setMac("");
         }
@@ -57,7 +63,7 @@ const DeviceDataComponent = ({classes}) => {
     let newMapConfiguration = {};
 
 
-    const getToken = async (a1) => {
+    const getDataByA1 = async (a1) => {
         try {
             let token = await getTokenAPI("device");
 
@@ -101,7 +107,7 @@ const DeviceDataComponent = ({classes}) => {
                         Il: installationResult.data.Il
                     })
                 }
-//installation data
+                //installation data
 
                 installationsList.push({
                     installation: install,
@@ -127,13 +133,9 @@ const DeviceDataComponent = ({classes}) => {
     }
 
 
-    const [installationsList, setInstallationsList] = useState([]);
-    const [mapDevicesData, setMapDevicesData] = useState(new Map())
-    const [ucValue, setUcValue] = useState(0)
-
     const addToClipboard = (content) => {
-        navigator.clipboard.writeText(content.target.innerText);
-        toast.info('Ajouté au presse-papier: ' + content.target.innerText, {
+        navigator.clipboard.writeText(content);
+        toast.info('Ajouté au presse-papier: ', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -184,14 +186,12 @@ const DeviceDataComponent = ({classes}) => {
         console.log(mapDevicesData)
         setUcValue(1);
         forceUpdate();
-
-        setTimeout(function() {
+        setTimeout(function () {
             setUcValue(0)
         }, 300000);
-
+        enqueueSnackbar('Data refreshed !');
 
     }
-
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -211,76 +211,84 @@ const DeviceDataComponent = ({classes}) => {
                                    onChange={(e) => MacHandler(e.target.value)}/>
                     </div>
                 </form>
+                <SnackbarProvider maxSnack={3}>
 
 
-                {mac.length === 0 && a1.length === 12 ? <div style={{
-                    flexDirection: "row",
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    marginLeft: "20%"
+                    {mac.length === 0 && a1.length === 12 ? <div style={{
+                        flexDirection: "row",
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        marginLeft: "20%"
 
-                }}>
+                    }}>
 
-                    {installationsList.map(station => (
+                        {installationsList.map(station => (
 
-                        station.devices.map(device => (
+                            station.devices.map(device => (
 
-                            <div style={{
-                                height: "10%",
-                                width: "45%",
-                                display: "flex",
-                                flexDirection: "row"
-                            }} key={Math.random()}>
-
-
-                                <div>
-
-                                    {<DeviceDataBubbleComponent keyValue={Math.random()}
-                                                                mode={mapDevicesData.get(device.deviceName)[4].col3}
-                                                                device_name={mapDevicesData.get(device.deviceName)[20].col3}
-                                                                install_name={mapDevicesData.get(device.deviceName)[18].col3}
-                                                                temp={((((mapDevicesData.get(device.deviceName)[1].col3) / 10) - 32) / 1.8).toPrecision(3)}
-                                                                last_updated={mapDevicesData.get(device.deviceName)[6].col3}
-                                                                data={installationsList}
-                                                                a1={a1}
-                                                                rows={mapDevicesData.get(device.deviceName)}
-                                                                Installation_Id={station.installation}
-                                                                Device_Id={device.deviceName}
-                                                                uc={ucValue}
-                                    />}
+                                <div style={{
+                                    height: "10%",
+                                    width: "45%",
+                                    display: "flex",
+                                    flexDirection: "row"
+                                }} key={Math.random()}>
 
 
+                                    <div>
+
+                                        {<DeviceDataBubbleComponent keyValue={Math.random()}
+                                                                    mode={mapDevicesData.get(device.deviceName)[4].col3}
+                                                                    device_name={mapDevicesData.get(device.deviceName)[20].col3}
+                                                                    install_name={mapDevicesData.get(device.deviceName)[18].col3}
+                                                                    temp={((((mapDevicesData.get(device.deviceName)[1].col3) / 10) - 32) / 1.8).toPrecision(3)}
+                                                                    last_updated={mapDevicesData.get(device.deviceName)[6].col3}
+                                                                    data={installationsList}
+                                                                    a1={a1}
+                                                                    rows={mapDevicesData.get(device.deviceName)}
+                                                                    Installation_Id={station.installation}
+                                                                    Device_Id={device.deviceName}
+                                                                    uc={ucValue}
+                                        />}
+
+
+                                    </div>
+
+
+                                    <IconButton disableFocusRipple disableRipple disableTouchRipple
+                                                onClick={async () => {
+
+
+                                                    setDeviceID(device.deviceName);
+                                                    setInstallID(station.installation)
+                                                    await DataRefresh();
+                                                }}> <RefreshIcon sx={{
+                                        position: "left",
+                                        float: "20%",
+                                        Width: "10%",
+                                        height: "10%",
+                                    }}/> </IconButton>
                                 </div>
 
+                            ))
 
-                                <IconButton  disableFocusRipple disableRipple disableTouchRipple
-                                 onClick={async () => {
+                        ))}
 
-                                    setSelectedDevice(device);
-                                    setDeviceID(device.deviceName);
-                                    setInstallID(station.installation)
-                                    await DataRefresh()
-                                }}> <RefreshIcon sx={{
-                                    position: "left",
-                                    float: "20%",
-                                    Width: "10%",
-                                    height: "10%",
-                                }} /> </IconButton>
-                            </div>
-                        ))
-
-                    ))}
-
-                </div> : (
-                    <div>rien</div>)
-                }
-
+                    </div> : (
+                        <div>
+                            {/*      <PopupWattsType row={} device_ID={mac} installation_ID={} a1={} />*/}
+                            mac
+                        </div>)
+                    }
+                </SnackbarProvider>
 
             </Grid>
         </Grid>
+
+
     )
+
 }
 
 export default DeviceDataComponent

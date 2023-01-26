@@ -18,9 +18,6 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
-import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
-import {useCallback, useContext, useEffect, useReducer, useState} from "react";
-import {randomPhoneNumber} from "@mui/x-data-grid-generator";
 
 
 const DeviceDataBubbleComponent = ({
@@ -45,44 +42,6 @@ const DeviceDataBubbleComponent = ({
 
 
 
-/*    async function refreshData() {
-        let dataRefreshed;
-        await sendUserConnected(a1, Installation_Id, Device_Id);
-
-        let token = await getTokenAPI("device");
-        setTimeout(5000, test());
-
-
-        dataRefreshed = await getDataByDeviceID(token, Device_Id)
-
-
-        console.log("row")
-        console.log(rows)
-
-        console.log("data R")
-
-        console.log(dataRefreshed)
-        RowUpdated = [];
-        let added = 0;
-        for (const [key, value] of Object.entries(dataRefreshed.data)) {
-            added++;
-            RowUpdated.push({
-                id: added,
-                'col1': value.timestamp,
-                'col2': key,
-                'col3': value.value
-            })
-        }
-
-    }
-
-
-
-    function test() {
-        for (let i = 0; i < 50000; i++) {
-            console.log(i)
-        }
-    }*/
 
     function getImageCard() {
         if (mode === 1) {
