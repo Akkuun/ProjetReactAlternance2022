@@ -129,7 +129,7 @@ const DeviceDataComponent = ({classes}) => {
 
     const [installationsList, setInstallationsList] = useState([]);
     const [mapDevicesData, setMapDevicesData] = useState(new Map())
-
+    const [ucValue, setUcValue] = useState(0)
 
     const addToClipboard = (content) => {
         navigator.clipboard.writeText(content.target.innerText);
@@ -182,7 +182,14 @@ const DeviceDataComponent = ({classes}) => {
         console.log("apres")
         setMapDevicesData(mapDevicesData.set(device_id, RowUpdated))
         console.log(mapDevicesData)
+        setUcValue(1);
         forceUpdate();
+
+        setTimeout(function() {
+            setUcValue(0)
+        }, 300000);
+
+
     }
 
 
@@ -240,7 +247,9 @@ const DeviceDataComponent = ({classes}) => {
                                                                 a1={a1}
                                                                 rows={mapDevicesData.get(device.deviceName)}
                                                                 Installation_Id={station.installation}
-                                                                Device_Id={device.deviceName}/>}
+                                                                Device_Id={device.deviceName}
+                                                                uc={ucValue}
+                                    />}
 
 
                                 </div>
