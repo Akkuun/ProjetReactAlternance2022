@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useReducer, useState} from 'react';
 
 
 import Grid from "@mui/material/Grid";
@@ -145,7 +145,6 @@ const DeviceDataComponent = ({classes}) => {
             console.log(mapDevicesData.get("240AC41C7164")[0])
 
 
-
             console.log("map deivces data après set")
             console.log(mapDevicesData)
 
@@ -182,10 +181,6 @@ const DeviceDataComponent = ({classes}) => {
 
     async function DataRefresh() {
 
-        console.log("install ID")
-        console.log(install_id)
-
-        console.log(device_id)
 
         let dataRefreshed;
 
@@ -211,13 +206,12 @@ const DeviceDataComponent = ({classes}) => {
                 'col3': value.value
             })
         }
-        console.log("row")
 
 
         console.log("apres")
-        //setMapDevicesData(mapDevicesData[device_id] = RowUpdated)
-        console.log("toto")
-        //console.log(mapDevicesData[""][device_id][0].col3)
+        setMapDevicesData(mapDevicesData.set(device_id, RowUpdated))
+        console.log(mapDevicesData)
+        forceUpdate();
     }
 
     function test() {
@@ -226,6 +220,7 @@ const DeviceDataComponent = ({classes}) => {
         }
     }
 
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
     // creation accodion avec tableaux a partir de la map des donnes obtenu
     return (
