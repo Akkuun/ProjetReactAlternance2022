@@ -111,7 +111,7 @@ const DeviceDataComponent = ({classes}) => {
 
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
                    console.log(room.devices[0].Id_deviceId);
-                    setDeviceID(room.devices[0].Id_deviceId)
+
                     //devices data
                     devices.push({
                         roomName: room.Rn,
@@ -133,24 +133,23 @@ const DeviceDataComponent = ({classes}) => {
 
 
 
-            console.log("device id");
-            console.log(device_id)
+
             setInstallationsList(installationsList);
             console.log(installationsList)
-            console.log("tempdevicedata avant set")
-            setMapDevicesData(tempMapDevicesData[device_id]);
-            console.log("tempdevicedata après set")
 
-            console.log("tempDeviceData")
+            console.log("temp")
             console.log(tempMapDevicesData)
-            console.log("map deivces data")
+            for (let [key, value] of Object.entries(tempMapDevicesData)) {
+                console.log(key)
+                console.log(value)
+            }
 
 
-
+//            setMapDevicesData(new Array(mapDevicesData[key]=tempMapDevicesData[key]))
 
             //setMapDevicesData(new Map(mapDevicesData.set(device_id, tempMapDevicesData)))
-            setMapDevicesData(new Array(mapDevicesData[device_id] = tempMapDevicesData))
-            setMapDevicesData(new Array(mapDevicesData[device_id] = tempMapDevicesData))
+            //setMapDevicesData(new Array(mapDevicesData[device_id] = tempMapDevicesData))
+            setMapDevicesData(new Map(tempMapDevicesData))
           /*  console.log(mapDevicesData[""]["240AC41C7164"][6].col3)
             console.log(mapDevicesData[""]["240AC41C7164"][18].col3)
             console.log(mapDevicesData[""]["240AC41C7164"][20].col3)
@@ -160,10 +159,9 @@ const DeviceDataComponent = ({classes}) => {
             console.log("test")
             console.log(mapDevicesData);*/
 
-            mapDevicesData.map(elem=> {
-                console.log("tototoot")
-                console.log(elem)
-            })
+            console.log("map deivces data après set")
+            console.log(mapDevicesData)
+
         } catch (e) {
 
             console.error(e);
@@ -190,8 +188,7 @@ const DeviceDataComponent = ({classes}) => {
     };
 
     useEffect(() => {
-        //setMapDevicesData(getToken(a1))
-        //console.log(mapDevicesData)
+
 
     }, []);
 
@@ -285,17 +282,19 @@ const DeviceDataComponent = ({classes}) => {
                             }} key={Math.random()}>
 
 
-                                <div><DeviceDataBubbleComponent// keyValue={mapDevicesData[""][device.deviceName][0].col3}
-                                    //                          mode={mapDevicesData[""][device.deviceName][6].col3}
-                                    //                          device_name={mapDevicesData[device.deviceName][20].col3}
-                                    //                          install_name={mapDevicesData[device.deviceName][18].col3}
-                                    //                          temp={((((mapDevicesData[device.deviceName][1].col3) / 10) - 32) / 1.8).toPrecision(3)}
-                                                           // last_updated={mapDevicesData[""]["240AC41C7164"][0].col3}
+                                <div>
+
+                                     {/*  <DeviceDataBubbleComponent keyValue={mapDevicesData[""][device.deviceName][0].col3}
+                                                              mode={mapDevicesData[""][device.deviceName][6].col3}
+                                                              device_name={mapDevicesData[device.deviceName][20].col3}
+                                                              install_name={mapDevicesData[device.deviceName][18].col3}
+                                                              temp={((((mapDevicesData[device.deviceName][1].col3) / 10) - 32) / 1.8).toPrecision(3)}
+                                                            last_updated={mapDevicesData[""]["240AC41C7164"][0].col3}
                                                              data={installationsList}
-                                                                 a1={a1}
-                                    // rows={mapDevicesData[device.deviceName]}
-                                                               Installation_Id={station.installation}
-                                                                Device_Id={device.deviceName}/>
+                                                                a1={a1}
+                                    rows={mapDevicesData[device.deviceName]}
+                                                            Installation_Id={station.installation}
+                                                           Device_Id={device.deviceName}/>*/}
 
 
                                 </div>
