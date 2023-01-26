@@ -110,7 +110,7 @@ const DeviceDataComponent = ({classes}) => {
                     }
 
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
-                   console.log(room.devices[0].Id_deviceId);
+                    console.log(room.devices[0].Id_deviceId);
 
                     //devices data
                     devices.push({
@@ -131,9 +131,6 @@ const DeviceDataComponent = ({classes}) => {
             //udate the installationList
 
 
-
-
-
             setInstallationsList(installationsList);
             console.log(installationsList)
 
@@ -142,23 +139,12 @@ const DeviceDataComponent = ({classes}) => {
             for (let [key, value] of Object.entries(tempMapDevicesData)) {
                 console.log(key)
                 console.log(value)
-                setMapDevicesData(new Map(mapDevicesData.set(key,value)))
+                setMapDevicesData(new Map(mapDevicesData.set(key, value)))
             }
+            console.log("TEST")
+            console.log(mapDevicesData.get("240AC41C7164")[0])
 
 
-//            setMapDevicesData(new Array(mapDevicesData[key]=tempMapDevicesData[key]))
-
-            //setMapDevicesData(new Map(mapDevicesData.set(device_id, tempMapDevicesData)))
-            //setMapDevicesData(new Array(mapDevicesData[device_id] = tempMapDevicesData))
-            //setMapDevicesData(new Map(tempMapDevicesData))
-          /*  console.log(mapDevicesData[""]["240AC41C7164"][6].col3)
-            console.log(mapDevicesData[""]["240AC41C7164"][18].col3)
-            console.log(mapDevicesData[""]["240AC41C7164"][20].col3)
-            console.log(mapDevicesData[""]["240AC41C7164"][2].col3)
-            console.log(mapDevicesData[""]["240AC41C7164"][1].col3)
-            console.log(mapDevicesData[""]["240AC41C7164"][12].col3)
-            console.log("test")
-            console.log(mapDevicesData);*/
 
             console.log("map deivces data après set")
             console.log(mapDevicesData)
@@ -285,17 +271,17 @@ const DeviceDataComponent = ({classes}) => {
 
                                 <div>
 
-                                     {  <DeviceDataBubbleComponent// keyValue={mapDevicesData[device.deviceName][0].col3}
-                                         //                   mode={mapDevicesData[device.deviceName][6].col3}
-                                         //                   device_name={mapDevicesData[device.deviceName][20].col3}
-                                         //                   install_name={mapDevicesData[device.deviceName][18].col3}
-                                         //  temp={((((mapDevicesData[device.deviceName][1].col3) / 10) - 32) / 1.8).toPrecision(3)}
-                                                            //last_updated={mapDevicesData[device.deviceName][0].col3}
-                                                             data={installationsList}
+                                    {<DeviceDataBubbleComponent keyValue={Math.random()}
+                                                                mode={mapDevicesData.get(device.deviceName)[4].col3}
+                                                                device_name={mapDevicesData.get(device.deviceName)[20].col3}
+                                                                install_name={mapDevicesData.get(device.deviceName)[18].col3}
+                                                                temp={((((mapDevicesData.get(device.deviceName)[1].col3) / 10) - 32) / 1.8).toPrecision(3)}
+                                                                last_updated={mapDevicesData.get(device.deviceName)[6].col3}
+                                                                data={installationsList}
                                                                 a1={a1}
-                                         //rows={mapDevicesData[device.deviceName]}
-                                                            Installation_Id={station.installation}
-                                                           Device_Id={device.deviceName}/>}
+                                                                rows={mapDevicesData.get(device.deviceName)}
+                                                                Installation_Id={station.installation}
+                                                                Device_Id={device.deviceName}/>}
 
 
                                 </div>
