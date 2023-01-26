@@ -17,6 +17,7 @@ import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 import {useReducer, useState} from "react";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
+import {useSnackbar} from "notistack";
 
 
 const style = {
@@ -102,7 +103,7 @@ const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
 
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
-
+    const { enqueueSnackbar } = useSnackbar();
 
 
 
@@ -140,7 +141,7 @@ const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
 
         setMapWattsType(RowUpdated)
       forceUpdate();
-
+        enqueueSnackbar('Data refreshed !');
 
     }
 
