@@ -32,26 +32,25 @@ const DeviceDataComponent = ({classes}) => {
     const [device_id, setDeviceID] = useState('')
     const [installationsList, setInstallationsList] = useState([]);
     const [mapDevicesData, setMapDevicesData] = useState(new Map())
-    const [ucValue, setUcValue] = useState(0)
-
-
+    const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
+    const [ucValue, setUcValue] = useState('')
+    const [a1ValueForUc, setA1ValueForUc] = useState('');
+    const [installIDForUc, setInstallIDForUc] = useState('')
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
             setA1(a1);
-            await getDataByA1(a1);
+            await getDataByInput(a1, "a1");
         } else {
             setA1("");
         }
     }
 
-    async function getDataByMac() {
-    }
 
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
             setMac(mac);
-            getDataByMac();
+            await getDataByInput(mac, "mac")
 
         } else {
             setMac("");
@@ -63,42 +62,46 @@ const DeviceDataComponent = ({classes}) => {
     let newMapConfiguration = {};
 
 
-    const getDataByA1 = async (a1) => {
-        try {
-            let token = await getTokenAPI("device");
+    function transformData(configurationResult) {
+        let deviceConfigurationData = [];
+        let added = 0;
+        // for each data of the configuration, insert the correct data in the list
+        for (const [key, value] of Object.entries(configurationResult.data)) {
+            added++;
+            deviceConfigurationData.push({
+                id: added,
+                'col1': value.timestamp,
+                'col2': key,
+                'col3': value.value
+            })
+        }
+        return deviceConfigurationData;
+    }
+
+    const getDataByInput = async (value, mode) => {
+        let token = await getTokenAPI("device");
+
+        if (mode === "a1") {
+
 
             // Get the list of installation by a A1
-            let installationsListResult = await getListInstallation(token, a1)
-
-
+            let installationsListResult = await getListInstallation(token, value)
             let installationsList = [];
             let tempMapDevicesData = {};
             for (let install of installationsListResult.data) {
-
-                let installationResult = await getListOfRoomByInstallation(token, a1, install)
-
+                let installationResult = await getListOfRoomByInstallation(token, value, install)
                 let devices = [];
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
 
-                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId);
+                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId)
+
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
-                    let deviceConfigurationData = [];
-                    let added = 0;
-                    // for each data of the configuration, insert the correct data in the list
-                    for (const [key, value] of Object.entries(configurationResult.data)) {
-                        added++;
-                        deviceConfigurationData.push({
-                            id: added,
-                            'col1': value.timestamp,
-                            'col2': key,
-                            'col3': value.value
-                        })
-                    }
+                    let deviceConfigurationData = transformData(configurationResult);
+
 
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
                     console.log(room.devices[0].Id_deviceId);
-
                     //devices data
                     devices.push({
                         roomName: room.Rn,
@@ -106,29 +109,37 @@ const DeviceDataComponent = ({classes}) => {
                         wattsType: deviceConfigurationData,
                         Il: installationResult.data.Il
                     })
+
+                    //installation data
+                    installationsList.push({
+                        installation: install,
+                        devices: devices
+                    });
+
+
+                    //udate the installationList
+                    setInstallationsList(installationsList);
+                    for (let [key, value] of Object.entries(tempMapDevicesData)) {
+                        console.log(key)
+                        console.log(value)
+                        setMapDevicesData(new Map(mapDevicesData.set(key, value)))
+                    }
+
                 }
-                //installation data
 
-                installationsList.push({
-                    installation: install,
-                    devices: devices
-                });
 
             }
-            //udate the installationList
+        } else {
+            let configurationResult = await getDataByDeviceID(token, value)
+            let deviceConfigurationData = transformData(configurationResult);
+            setMapWattsTypeForUc(deviceConfigurationData)
+            console.log(mapWattsTypeForUc)
+           setA1ValueForUc(mapWattsTypeForUc[0])
 
 
-            setInstallationsList(installationsList);
+            // strat faire les même requête qu'en haut mais à l'envers jusste pour extraire install ID du device auquel il est rattaché
 
-            for (let [key, value] of Object.entries(tempMapDevicesData)) {
-                console.log(key)
-                console.log(value)
-                setMapDevicesData(new Map(mapDevicesData.set(key, value)))
-            }
 
-        } catch (e) {
-
-            console.error(e);
         }
     }
 
@@ -155,17 +166,10 @@ const DeviceDataComponent = ({classes}) => {
 
     async function DataRefresh() {
 
-
         let dataRefreshed;
-
         await sendUserConnected(a1, install_id, device_id);
-
         let token = await getTokenAPI("device");
-
-
         dataRefreshed = await getDataByDeviceID(token, device_id)
-
-
         let RowUpdated = [];
         let added = 0;
         let newMap = {};
@@ -277,7 +281,7 @@ const DeviceDataComponent = ({classes}) => {
 
                     </div> : (
                         <div>
-                            {/*      <PopupWattsType row={} device_ID={mac} installation_ID={} a1={} />*/}
+                            {/*   <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={} a1={} />*/}
                             mac
                         </div>)
                     }
