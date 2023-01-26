@@ -246,7 +246,8 @@ const DeviceDataComponent = ({classes}) => {
                                 </div>
 
 
-                                <IconButton onClick={async () => {
+                                <IconButton  disableFocusRipple disableRipple disableTouchRipple
+                                 onClick={async () => {
 
                                     setSelectedDevice(device);
                                     setDeviceID(device.deviceName);
@@ -257,7 +258,7 @@ const DeviceDataComponent = ({classes}) => {
                                     float: "20%",
                                     Width: "10%",
                                     height: "10%",
-                                }}/> </IconButton>
+                                }} /> </IconButton>
                             </div>
                         ))
 
