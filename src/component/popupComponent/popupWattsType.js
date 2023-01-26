@@ -2,8 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import PageStatistics from "../PageStatistics";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
 
@@ -13,12 +11,13 @@ import {
     GridToolbarContainer, GridToolbarExport, GridToolbarExportContainer,
     GridToolbarQuickFilter, gridVisibleColumnFieldsSelector, useGridApiContext
 } from "@mui/x-data-grid";
-import LoadingButton from "@mui/lab/LoadingButton";
+
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
-import {wait} from "@testing-library/user-event/dist/utils";
-import {useEffect} from "react";
+import {useReducer, useState} from "react";
+import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
+
 
 const style = {
     position: 'absolute',
@@ -34,6 +33,7 @@ const style = {
 };
 
 let popupData;
+
 
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
@@ -95,45 +95,56 @@ const JsonExportMenuItem = (props) => {
 };
 
 
-function CustomToolbar() {
 
 
-    function RefreshHandler() {
-        console.log("toto")
+
+const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
+
+    const [mapWattsType, setMapWattsType] = useState(row)
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
+
+
+
+
+    async function RefreshHandler() {
+
+        let dataRefreshed;
+
+
+         await sendUserConnected(a1, installation_ID, device_ID);
+
+         let token = await getTokenAPI("device");
+
+
+         dataRefreshed = await getDataByDeviceID(token, device_ID)
+        console.log(row)
+        console.log("CAMION")
+        console.log(dataRefreshed.data)
+      //  setMapWattsType(dataRefreshed.data)
+        //forceUpdate();
+
+
+         let RowUpdated = [];
+         let added = 0;
+         let newMap = {};
+         for (const [key, value] of Object.entries(dataRefreshed.data)) {
+
+             added++;
+             RowUpdated.push({
+                 id: added,
+                 'col1': value.timestamp,
+                 'col2': key,
+                 'col3': value.value
+             })
+         }
+
+        setMapWattsType(RowUpdated)
+      forceUpdate();
+
+
     }
 
-    return (
-        <GridToolbarContainer>
-            {/*search feature*/}
-            <GridToolbarQuickFilter
 
-                quickFilterParser={(searchInput) =>
-                    searchInput.split(',').map((value) => value.trim())
-                }
-                quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
-                debounceMs={200} // time before applying the new quick filter value
-
-            />
-
-            <Button onClick={RefreshHandler}>
-                <RefreshIcon/>
-                SEND UC=1
-            </Button>
-            <GridToolbarExportContainer>
-                {/*export feature*/}
-                <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
-                <div className="JsonButton">
-                    <JsonExportMenuItem/>
-                </div>
-
-            </GridToolbarExportContainer>
-        </GridToolbarContainer>
-    )
-
-}
-
-
-const Popup = ({classes, value, row}) => {
     const columns: GridColDef[] = [
         {
             field: 'col1',
@@ -162,6 +173,40 @@ const Popup = ({classes, value, row}) => {
     const handleClosePopupComponent = () => {
         setOpenPopupComponent(false);
     }
+    function CustomToolbar() {
+
+
+
+
+        return (
+            <GridToolbarContainer>
+                {/*search feature*/}
+                <GridToolbarQuickFilter
+
+                    quickFilterParser={(searchInput) =>
+                        searchInput.split(',').map((value) => value.trim())
+                    }
+                    quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
+                    debounceMs={200} // time before applying the new quick filter value
+
+                />
+
+                <Button onClick={RefreshHandler}>
+                    <RefreshIcon/>
+                    SEND UC=1
+                </Button>
+                <GridToolbarExportContainer>
+                    {/*export feature*/}
+                    <GridToolbarExport printOptions={{disableToolbarButton: true}}/>
+                    <div className="JsonButton">
+                        <JsonExportMenuItem/>
+                    </div>
+
+                </GridToolbarExportContainer>
+            </GridToolbarContainer>
+        )
+
+    }
 
 
     return (
@@ -177,7 +222,7 @@ const Popup = ({classes, value, row}) => {
                 <Box sx={style}>
                     {/*component stats*/}
                     <Container sx={{height: "90%"}}>
-                        <DataGrid rows={row} columns={columns} components={{Toolbar: CustomToolbar}}/>
+                        <DataGrid rows={mapWattsType} columns={columns} components={{Toolbar: CustomToolbar}}/>
                     </Container>
                 </Box>
             </Modal>
