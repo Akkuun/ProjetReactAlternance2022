@@ -1,16 +1,10 @@
 import * as React from 'react';
 import {useEffect, useReducer, useState} from 'react';
-
-
 import Grid from "@mui/material/Grid";
-
 import ListItem from "@mui/material/ListItem";
-
-import {Icon, TextField, Toolbar, Tooltip} from "@mui/material";
-import {AccountCircle, Login} from "@mui/icons-material";
+import {Icon, TextField} from "@mui/material";
+import {AccountCircle} from "@mui/icons-material";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {DataGrid, GridToolbarContainer, GridToolbarQuickFilter} from "@mui/x-data-grid"
-import Popup from "../popupComponent/popup";
 import {
     getDataByDeviceID,
     getListInstallation,
@@ -24,22 +18,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import Typography from "@mui/material/Typography";
 
 
 //creation item par rapport à une liste de données
-const ListItems = ({items}) =>
-    items
-        .filter(({hidden}) => !hidden)
-        .map(({label, disabled, Icon}, i) => (
-            <ListItem key={i}>
-                <ListItemIcon>
-                    <Icon/>
-                </ListItemIcon>
-                {label}
-            </ListItem>
-        ));
-//definition colonne de DataGrid
 
 
 const DeviceDataComponent = ({classes}) => {
@@ -132,21 +113,12 @@ const DeviceDataComponent = ({classes}) => {
 
 
             setInstallationsList(installationsList);
-            console.log(installationsList)
 
-            console.log("temp")
-            console.log(tempMapDevicesData)
             for (let [key, value] of Object.entries(tempMapDevicesData)) {
                 console.log(key)
                 console.log(value)
                 setMapDevicesData(new Map(mapDevicesData.set(key, value)))
             }
-            console.log("TEST")
-            console.log(mapDevicesData.get("240AC41C7164")[0])
-
-
-            console.log("map deivces data après set")
-            console.log(mapDevicesData)
 
         } catch (e) {
 
@@ -187,7 +159,6 @@ const DeviceDataComponent = ({classes}) => {
         await sendUserConnected(a1, install_id, device_id);
 
         let token = await getTokenAPI("device");
-        // setTimeout(5000, test());
 
 
         dataRefreshed = await getDataByDeviceID(token, device_id)
@@ -214,15 +185,10 @@ const DeviceDataComponent = ({classes}) => {
         forceUpdate();
     }
 
-    function test() {
-        for (let i = 0; i < 10000; i++) {
-            console.log(i)
-        }
-    }
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-    // creation accodion avec tableaux a partir de la map des donnes obtenu
+
     return (
 
         <Grid container spacing={3} marginTop="0%" key={Math.random()}
@@ -255,8 +221,6 @@ const DeviceDataComponent = ({classes}) => {
                         station.devices.map(device => (
 
                             <div style={{
-                                borderStyle: "solid",
-                                borderColor: "red" /* red */,
                                 height: "10%",
                                 width: "45%",
                                 display: "flex",

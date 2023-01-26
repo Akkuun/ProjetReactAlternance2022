@@ -119,8 +119,7 @@ const DeviceDataBubbleComponent = ({
             borderRadius: 5,
             flex: "80%",
             marginTop: "5%",
-            borderStyle: "dotted",
-            borderColor: "yellow",
+
 
         }}>
             <CardHeader
@@ -161,13 +160,13 @@ const DeviceDataBubbleComponent = ({
                         width: "80%"
                     }}>    {temp} °C
                     </div>
-                    <div ><PopupWattsType row={rows}/></div>
+                    <div ><PopupWattsType row={rows} device_ID={Device_Id} installation_ID={Installation_Id} a1={a1} /></div>
 
 
                 </div>
 
                 <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
-                    Last update : {last_updated} <IconButton > <RefreshIcon/> </IconButton>
+                    Last update : {last_updated}
                 </Typography>
             </CardContent>
 
