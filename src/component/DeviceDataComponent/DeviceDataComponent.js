@@ -39,6 +39,7 @@ const DeviceDataComponent = ({classes}) => {
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
+            setMac("")
             setA1(a1);
             await getDataByInput(a1, "a1");
         } else {
@@ -49,6 +50,7 @@ const DeviceDataComponent = ({classes}) => {
 
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
+            setA1("")
             setMac(mac);
             await getDataByInput(mac, "mac")
 
@@ -101,7 +103,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
-                    console.log(room.devices[0].Id_deviceId);
+
                     //devices data
                     devices.push({
                         roomName: room.Rn,
@@ -120,8 +122,8 @@ const DeviceDataComponent = ({classes}) => {
                     //udate the installationList
                     setInstallationsList(installationsList);
                     for (let [key, value] of Object.entries(tempMapDevicesData)) {
-                        console.log(key)
-                        console.log(value)
+
+
                         setMapDevicesData(new Map(mapDevicesData.set(key, value)))
                     }
 
@@ -131,16 +133,38 @@ const DeviceDataComponent = ({classes}) => {
             }
         } else {
             let configurationResult = await getDataByDeviceID(token, value)
+            console.log(configurationResult)
             let deviceConfigurationData = transformData(configurationResult);
+            console.log(deviceConfigurationData)
             setMapWattsTypeForUc(deviceConfigurationData)
-            console.log(mapWattsTypeForUc)
-           setA1ValueForUc(mapWattsTypeForUc[0])
+            //valeur du A1 correspondant au device
+            let temp = mapWattsTypeForUc[0]["col3"]
+
+            setA1ValueForUc(temp)
+//avec le a1 obtenu on obtient la liste des installation lié à L'A1
+            let installationsListResult = await getListInstallation(token, a1ValueForUc)
+
+            console.log("liste result")
+            console.log(installationsListResult)
 
 
-            // strat faire les même requête qu'en haut mais à l'envers jusste pour extraire install ID du device auquel il est rattaché
+            for (let install of installationsListResult.data) {
+                console.log(install)
+                let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install)
+                console.log("result")
+
+                console.log(installationResult)
+                console.log(installationResult.data.rooms[0].devices[0].Id_deviceId)
+
+                if (installationResult.data.rooms[0].devices[0].Id_deviceId===value)  setInstallID(install)
+
+
+            }
 
 
         }
+        console.log("log final")
+        console.log(install_id)
     }
 
 
@@ -185,9 +209,8 @@ const DeviceDataComponent = ({classes}) => {
         }
 
 
-        console.log("apres")
         setMapDevicesData(mapDevicesData.set(device_id, RowUpdated))
-        console.log(mapDevicesData)
+
         setUcValue(1);
         forceUpdate();
         setTimeout(function () {
@@ -281,8 +304,8 @@ const DeviceDataComponent = ({classes}) => {
 
                     </div> : (
                         <div>
-                            {/*   <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={} a1={} />*/}
-                            mac
+                            {   <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id} a1={a1ValueForUc} mode={"MAC"} />}
+
                         </div>)
                     }
                 </SnackbarProvider>

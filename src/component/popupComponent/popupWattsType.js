@@ -96,51 +96,47 @@ const JsonExportMenuItem = (props) => {
 };
 
 
-
-
-
-const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
+const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
-    const { enqueueSnackbar } = useSnackbar();
-
-
+    const {enqueueSnackbar} = useSnackbar();
+    const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
 
     async function RefreshHandler() {
 
         let dataRefreshed;
 
 
-         await sendUserConnected(a1, installation_ID, device_ID);
+        await sendUserConnected(a1, installation_ID, device_ID);
 
-         let token = await getTokenAPI("device");
+        let token = await getTokenAPI("device");
 
 
-         dataRefreshed = await getDataByDeviceID(token, device_ID)
+        dataRefreshed = await getDataByDeviceID(token, device_ID)
         console.log(row)
         console.log("CAMION")
         console.log(dataRefreshed.data)
-      //  setMapWattsType(dataRefreshed.data)
+        //  setMapWattsType(dataRefreshed.data)
         //forceUpdate();
 
 
-         let RowUpdated = [];
-         let added = 0;
-         let newMap = {};
-         for (const [key, value] of Object.entries(dataRefreshed.data)) {
+        let RowUpdated = [];
+        let added = 0;
+        let newMap = {};
+        for (const [key, value] of Object.entries(dataRefreshed.data)) {
 
-             added++;
-             RowUpdated.push({
-                 id: added,
-                 'col1': value.timestamp,
-                 'col2': key,
-                 'col3': value.value
-             })
-         }
+            added++;
+            RowUpdated.push({
+                id: added,
+                'col1': value.timestamp,
+                'col2': key,
+                'col3': value.value
+            })
+        }
 
         setMapWattsType(RowUpdated)
-      forceUpdate();
+        forceUpdate();
         enqueueSnackbar('Data refreshed !');
 
     }
@@ -164,7 +160,10 @@ const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
     ];
 
 
-    const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
+    const AffichageComponentSelonMode = () => {
+        if (mode === "MAC") setOpenPopupComponent(true)
+    }
+
     const handleOpenPopupComponent = () => {
         if (classes === "popupData") {
             popupData = value;
@@ -174,9 +173,8 @@ const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
     const handleClosePopupComponent = () => {
         setOpenPopupComponent(false);
     }
+
     function CustomToolbar() {
-
-
 
 
         return (
@@ -211,6 +209,7 @@ const Popup = ({classes, value, row,installation_ID,device_ID,a1}) => {
 
 
     return (
+
         <div style={{height: "60%"}}>
 
             <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
