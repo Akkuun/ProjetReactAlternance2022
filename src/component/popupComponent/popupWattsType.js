@@ -105,6 +105,8 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     const {enqueueSnackbar} = useSnackbar();
+    // ici ce state nous permet d'afficher ou non le datagrid avec nos infos, pour savoir s'il doit etre affiche ou non, on détermine cette valeur via une fonction qui regarde la valeur du props mode
+    // si le mode est mac , alors on affiche directement car on ne veut pas de la bulle, sinon on affiche tout
     const [openPopupComponent, setOpenPopupComponent] = React.useState(setOpenComponentByMode);
 
 
@@ -225,8 +227,8 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
         <div style={{height: "60%"}}>
 
 
+            {mode ==="MAC"? <div> </div> :<IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>  }
 
-            <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
             <Modal
                 open={openPopupComponent}
                 onClose={handleClosePopupComponent}
