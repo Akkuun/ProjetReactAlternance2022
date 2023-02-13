@@ -22,6 +22,7 @@ import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
 import {useSnackbar} from "notistack";
+import {toast} from "react-toastify";
 
 
 const style = {
@@ -168,7 +169,21 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
     ];
 
-
+    const addToClipboard = (content) => {
+        console.log(content)
+        navigator.clipboard.writeText(content.value);
+        toast.info('Ajouté au presse-papier: ', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+        });
+        enqueueSnackbar('Added to clipboard !');
+    };
 
 
     const handleOpenPopupComponent = () => {
@@ -238,7 +253,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
                 <Box sx={style}>
                     {/*component stats*/}
                     <Container sx={{height: "90%"}}>
-                        <DataGrid rows={mapWattsType} columns={columns} components={{Toolbar: CustomToolbar}}/>
+                        <DataGrid rows={mapWattsType} columns={columns} components={{Toolbar: CustomToolbar}} onCellDoubleClick={addToClipboard}/>
                     </Container>
                 </Box>
             </Modal>
