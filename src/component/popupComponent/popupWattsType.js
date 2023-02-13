@@ -127,13 +127,11 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
         console.log(row)
         console.log("CAMION")
         console.log(dataRefreshed.data)
-        //  setMapWattsType(dataRefreshed.data)
-        //forceUpdate();
+
 
 
         let RowUpdated = [];
         let added = 0;
-        let newMap = {};
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
 
             added++;
