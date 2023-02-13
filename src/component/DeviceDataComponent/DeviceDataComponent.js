@@ -133,29 +133,23 @@ const DeviceDataComponent = ({classes}) => {
             }
         } else {
             let configurationResult = await getDataByDeviceID(token, value)
-            console.log(configurationResult)
             let deviceConfigurationData = transformData(configurationResult);
-            console.log(deviceConfigurationData)
             setMapWattsTypeForUc(deviceConfigurationData)
             //valeur du A1 correspondant au device
             let temp = mapWattsTypeForUc[0]["col3"]
 
             setA1ValueForUc(temp)
-//avec le a1 obtenu on obtient la liste des installation lié à L'A1
+            //avec le a1 obtenu on obtient la liste des installation lié à L'A1
             let installationsListResult = await getListInstallation(token, a1ValueForUc)
 
-            console.log("liste result")
-            console.log(installationsListResult)
 
-
+            //la strat ici est de faire une comparaison sur les intallationId que l'utilisateur possède par rapport au A1 obtenu avec la mac donné
             for (let install of installationsListResult.data) {
-                console.log(install)
+
                 let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install)
-                console.log("result")
 
-                console.log(installationResult)
-                console.log(installationResult.data.rooms[0].devices[0].Id_deviceId)
-
+                //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
+                // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
                 if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) setInstallID(install)
 
 
@@ -163,8 +157,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
         }
-        console.log("log final")
-        console.log(install_id)
+
     }
 
 
@@ -241,7 +234,7 @@ const DeviceDataComponent = ({classes}) => {
                 <SnackbarProvider maxSnack={3}>
 
 
-                    { mac.length === 0 && a1.length === 12 ? <div style={{
+                    {mac.length === 0 && a1.length === 12 ? <div style={{
                         flexDirection: "row",
                         display: "flex",
                         flexWrap: "wrap",
@@ -302,12 +295,12 @@ const DeviceDataComponent = ({classes}) => {
 
                         ))}
 
-                    </div> :  (
+                    </div> : (
                         <div>
-                            {mac.length === 12 && a1.length === 0 ? (<PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                                                                     a1={a1ValueForUc} mode={"MAC"}/>) : (<div> rien </div>)}
-                           {/*  {<PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                             a1={a1ValueForUc} mode={"MAC"}/>}*/}
+                            {mac.length === 12 && a1.length === 0 ? (
+                                <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
+                                                a1={a1ValueForUc} mode={"MAC"}/>) : (<div> rien </div>)}
+
 
                         </div>)
                     }
