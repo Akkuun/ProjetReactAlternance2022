@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useReducer, useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -8,14 +9,17 @@ import IconButton from "@mui/material/IconButton";
 import {
     DataGrid,
     gridFilteredSortedRowIdsSelector,
-    GridToolbarContainer, GridToolbarExport, GridToolbarExportContainer,
-    GridToolbarQuickFilter, gridVisibleColumnFieldsSelector, useGridApiContext
+    GridToolbarContainer,
+    GridToolbarExport,
+    GridToolbarExportContainer,
+    GridToolbarQuickFilter,
+    gridVisibleColumnFieldsSelector,
+    useGridApiContext
 } from "@mui/x-data-grid";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
-import {useReducer, useState} from "react";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
 import {useSnackbar} from "notistack";
 
@@ -101,7 +105,10 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     const {enqueueSnackbar} = useSnackbar();
-    const [openPopupComponent, setOpenPopupComponent] = React.useState(false);
+    const [openPopupComponent, setOpenPopupComponent] = React.useState(setOpenComponentByMode);
+
+
+
 
     async function RefreshHandler() {
 
@@ -160,9 +167,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     ];
 
 
-    const AffichageComponentSelonMode = () => {
-        if (mode === "MAC") setOpenPopupComponent(true)
-    }
+
 
     const handleOpenPopupComponent = () => {
         if (classes === "popupData") {
@@ -207,10 +212,19 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
     }
 
+    function setOpenComponentByMode(){
+        console.log("set")
+        console.log(mode==="MAC")
+        return mode === "MAC";
+
+
+    }
 
     return (
 
         <div style={{height: "60%"}}>
+
+
 
             <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>
             <Modal
