@@ -38,7 +38,6 @@ const style = {
     p: 4,
 };
 
-let popupData;
 
 
 const exportBlob = (blob, filename) => {
@@ -185,9 +184,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
 
     const handleOpenPopupComponent = () => {
-        if (classes === "popupData") {
-            popupData = value;
-        }
+
         setOpenPopupComponent(true)
     };
     const handleClosePopupComponent = () => {

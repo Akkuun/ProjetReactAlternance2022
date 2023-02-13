@@ -1,9 +1,15 @@
 import * as React from 'react';
 import {useEffect, useReducer, useState} from 'react';
-import Grid from "@mui/material/Grid";
-
 import {TextField} from "@mui/material";
+
+import 'react-toastify/dist/ReactToastify.css';
+
+import Grid from "@mui/material/Grid";
 import {AccountCircle} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
+
+
 import {
     getDataByDeviceID,
     getListInstallation,
@@ -11,19 +17,15 @@ import {
     getTokenAPI,
     sendUserConnected
 } from "../../services/Api";
-import PopupWattsType, {Popup} from "../popupComponent/popupWattsType"
 
-import {toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import PopupWattsType  from "../popupComponent/popupWattsType"
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
-import IconButton from "@mui/material/IconButton";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import {SnackbarProvider, useSnackbar} from 'notistack';
 
 //creation item par rapport à une liste de données
 
 
-const DeviceDataComponent = ({classes}) => {
+const DeviceDataComponent = () => {
 
     const {enqueueSnackbar} = useSnackbar();
     const [a1, setA1] = useState('');
@@ -35,7 +37,6 @@ const DeviceDataComponent = ({classes}) => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState('')
     const [a1ValueForUc, setA1ValueForUc] = useState('');
-    const [installIDForUc, setInstallIDForUc] = useState('')
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
@@ -179,7 +180,6 @@ const DeviceDataComponent = ({classes}) => {
         dataRefreshed = await getDataByDeviceID(token, device_id)
         let RowUpdated = [];
         let added = 0;
-        let newMap = {};
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
 
             added++;
