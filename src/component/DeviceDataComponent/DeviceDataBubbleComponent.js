@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {styled} from '@mui/material/styles';
+
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import PlayCircleFilledWhiteRoundedIcon from '@mui/icons-material/PlayCircleFilledWhiteRounded';
+
 import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -15,7 +15,7 @@ import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartm
 import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
-import RefreshIcon from '@mui/icons-material/Refresh';
+
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
 
@@ -37,7 +37,6 @@ const DeviceDataBubbleComponent = ({
 
 
     let ImageCard, IsConnectedImage;
-    let RowUpdated = [];
 
 
 
