@@ -156,7 +156,7 @@ const DeviceDataComponent = ({classes}) => {
                 console.log(installationResult)
                 console.log(installationResult.data.rooms[0].devices[0].Id_deviceId)
 
-                if (installationResult.data.rooms[0].devices[0].Id_deviceId===value)  setInstallID(install)
+                if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) setInstallID(install)
 
 
             }
@@ -241,7 +241,7 @@ const DeviceDataComponent = ({classes}) => {
                 <SnackbarProvider maxSnack={3}>
 
 
-                    {mac.length === 0 && a1.length === 12 ? <div style={{
+                    { mac.length === 0 && a1.length === 12 ? <div style={{
                         flexDirection: "row",
                         display: "flex",
                         flexWrap: "wrap",
@@ -302,9 +302,12 @@ const DeviceDataComponent = ({classes}) => {
 
                         ))}
 
-                    </div> : (
+                    </div> :  (
                         <div>
-                            {   <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id} a1={a1ValueForUc} mode={"MAC"} />}
+                            {mac.length === 12 && a1.length === 0 ? (<PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
+                                                                                     a1={a1ValueForUc} mode={"MAC"}/>) : (<div> rien </div>)}
+                           {/*  {<PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
+                                             a1={a1ValueForUc} mode={"MAC"}/>}*/}
 
                         </div>)
                     }
