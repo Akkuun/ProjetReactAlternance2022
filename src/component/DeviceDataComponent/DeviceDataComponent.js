@@ -131,6 +131,7 @@ const DeviceDataComponent = ({classes}) => {
 
 
             }
+            enqueueSnackbar('Data received !');
         } else {
             let configurationResult = await getDataByDeviceID(token, value)
             let deviceConfigurationData = transformData(configurationResult);
@@ -161,19 +162,7 @@ const DeviceDataComponent = ({classes}) => {
     }
 
 
-    const addToClipboard = (content) => {
-        navigator.clipboard.writeText(content);
-        toast.info('Ajouté au presse-papier: ', {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-        });
-    };
+
 
     useEffect(() => {
 
