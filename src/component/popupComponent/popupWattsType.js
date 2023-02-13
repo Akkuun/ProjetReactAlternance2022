@@ -108,8 +108,17 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     // ici ce state nous permet d'afficher ou non le datagrid avec nos infos, pour savoir s'il doit etre affiche ou non, on détermine cette valeur via une fonction qui regarde la valeur du props mode
     // si le mode est mac , alors on affiche directement car on ne veut pas de la bulle, sinon on affiche tout
     const [openPopupComponent, setOpenPopupComponent] = React.useState(setOpenComponentByMode);
+    console.log("a1")
+    console.log(a1)
+    console.log("d id")
 
+    console.log(device_ID)
+    console.log("rpw")
 
+    console.log(row)
+    console.log("I ID")
+
+    console.log(installation_ID)
 
 
     async function RefreshHandler() {

@@ -18,7 +18,7 @@ import {
     sendUserConnected
 } from "../../services/Api";
 
-import PopupWattsType  from "../popupComponent/popupWattsType"
+import PopupWattsType from "../popupComponent/popupWattsType"
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import {SnackbarProvider, useSnackbar} from 'notistack';
 
@@ -83,7 +83,7 @@ const DeviceDataComponent = () => {
 
     const getDataByInput = async (value, mode) => {
         let token = await getTokenAPI("device");
-
+        console.log(token)
         if (mode === "a1") {
 
 
@@ -127,43 +127,56 @@ const DeviceDataComponent = () => {
 
                         setMapDevicesData(new Map(mapDevicesData.set(key, value)))
                     }
-
+                    console.log("MAPPPP")
+                    console.log(mapDevicesData)
                 }
 
 
             }
             enqueueSnackbar('Data received !');
         } else {
-            let configurationResult = await getDataByDeviceID(token, value)
+            let tempMapDevicesData = {};
+            let configurationResult = await getDataByDeviceID(token, value);
             let deviceConfigurationData = transformData(configurationResult);
             setMapWattsTypeForUc(deviceConfigurationData)
-            //valeur du A1 correspondant au device
-            let temp = mapWattsTypeForUc[0]["col3"]
+            console.log("congi data")
+            console.log(deviceConfigurationData[0]["col3"])
 
+
+            //valeur du A1 correspondant au device
+            let temp = deviceConfigurationData[0]["col3"]
             setA1ValueForUc(temp)
+            console.log("temps")
+
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
             let installationsListResult = await getListInstallation(token, a1ValueForUc)
-
+            alert("TEST")
+            alert(installationsListResult)
 
             //la strat ici est de faire une comparaison sur les intallationId que l'utilisateur possède par rapport au A1 obtenu avec la mac donné
             for (let install of installationsListResult.data) {
 
                 let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install)
-
+                console.log(install)
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
-                if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) setInstallID(install)
+                if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) {
 
-
+                    setInstallID(install)
+                    console.log("IDDDD")
+                    console.log(install)
+                }
+                for (let room of installationResult.data.rooms) {
+                    tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
+                }
+                console.log("TEMP")
+                console.log(tempMapDevicesData)
             }
-
 
 
         }
 
     }
-
-
 
 
     useEffect(() => {
