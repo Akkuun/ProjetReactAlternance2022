@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom"
 import {SnackbarProvider} from "notistack";
 
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // element pour creer le routeur

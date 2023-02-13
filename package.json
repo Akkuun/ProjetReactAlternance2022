@@ -18,6 +18,7 @@
     "axios": "^1.2.0",
     "chart.js": "^4.1.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "dotenv": "^16.0.3",
     "faker": "^6.6.6",
     "jquery": "^3.6.1",
     "moment": "^2.29.4",

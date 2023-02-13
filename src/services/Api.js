@@ -1,15 +1,17 @@
 import axios from "axios";
 
 
+
 export async function getTokenAPI(mode) {
+    console.log(process.env.REACT_APP_YOURVARIABLE)
     let tokenResult;
     switch (mode) {
         case "user":
-            tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
+            tokenResult = await axios.post(process.env.REACT_APP_URL_TOKEN_USER, {
                 'grant_type': 'client_credentials',
-                'scope': 'https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/schemas/user_impersonation https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/firmware/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation',
-                'client_id': '428d5523-cb72-47ef-8602-8a63a8836d68',
-                'client_secret': '4040ABD71CA1FA1F268A38E825E3E3158577330F70F19A1913C3571A8FD5E58A'
+                'scope': process.env.REACT_APP_SCOPE_TOKEN_USER,
+                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_USER,
+                'client_secret': process.env.REACT_APP_CLIENT_SECRET_TOKEN_USER
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -18,17 +20,20 @@ export async function getTokenAPI(mode) {
             return tokenResult.data["access_token"]
 
         case "device":
-            tokenResult = await axios.post("https://visionsystem2-identity-dev.azurewebsites.net/connect/token", {
+            tokenResult = await axios.post( process.env.REACT_APP_URL_TOKEN_DEVICE, {
                 'grant_type': 'client_credentials',
-                'scope': 'Device.Write Installation.Read IOTManagement.Write TermOfUse.Read TermOfUse.Write Commissionings.Read Commissionings.Write DataProcessing.Read DataProcessing.Write Device.Read Firmware.Read Firmware.Write HistoricalData.Read HistoricalData.Write Installation.Write IOTManagement.Read Room.Read Room.Write Schema.Read Schema.Write https://visionsystem2.com/iotmanagement/user_impersonation https://visionsystem2.com/operations/user_impersonation https://visionsystem2.com/tou/user_impersonation https://visionsystem2.com/businessmodule/user_impersonation https://visionsystem2.com/identity/user_impersonation https://visionsystem2.com/dataprocessing/user_impersonation',
-                'client_id': '2b64fa79-35c3-418f-8a78-3ef6f9df9c53',
-                'client_secret': 'EB44AA55C51AD31B87D139528CD5DE7E89BE925B301A4351B918E4CB568B3252'
+                'scope':  process.env.REACT_APP_SCOPE_TOKEN_DEVICE,
+                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_DEVICE,
+                'client_secret':  process.env.REACT_APP_CLIENT_SECRET_TOKEN_DEVICE
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
             return tokenResult.data["access_token"]
+
+        default :
+            console.log("ERREUR")
     }
 }
 
@@ -76,23 +81,6 @@ export async function getListOfUser(token) {
 }
 
 
-export async function getStatistics(mode, token, A1, installationID, deviceID, wattsType, realDataInterval, minInterval, maxInterval) {
-    let url;
-    if (mode === "installation") {
-        url = `https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/installation/${installationID}/${A1}/${realDataInterval}/${wattsType}/${minInterval}/${maxInterval}`;
-    } else {
-        url = `https://visionsystem2-apim-dev.azure-api.net/DataProcessing/v1/metricsAggregat/consommation/device/${installationID}/${deviceID}/${A1}/${realDataInterval}/${wattsType}/${minInterval}/${maxInterval}`;
-    }
-    let statisticsData = await axios.get(url, {
-        headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
-        }
-    })
-
-    return statisticsData;
-}
 
 
 export async function sendUserConnected(a1, installationId, DeviceId) {

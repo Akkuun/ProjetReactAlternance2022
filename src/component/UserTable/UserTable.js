@@ -20,7 +20,7 @@ const columns = [
         ],
         width: 225
     }
-// note pour plus tard, go to https://mui.com/material-ui/react-chip/ pour signaler si le mec a son compte validé / bloquer ect ..
+
 ];
 
 const userTableStyles = {
