@@ -39,11 +39,12 @@ export async function getTokenAPI(mode) {
 
 // Get the list of installation by a A1
 export async function getListInstallation(token, a1) {
-    return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/security/v1/security/getInstallationsByUser/${a1}`, {
+    console.log(`${process.env.REACT_APP_URL_GET_LIST_INSTALLATION}${a1}`)
+    return await axios.get(`${process.env.REACT_APP_URL_GET_LIST_INSTALLATION}${a1}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
+            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_LIST_INSTALLATION
         }
     })
 }
