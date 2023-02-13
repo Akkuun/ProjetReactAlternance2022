@@ -51,7 +51,7 @@ export async function getListInstallation(token, a1) {
 
 // get the list of room for a specific a1 and installationID
 export async function getListOfRoomByInstallation(token, a1, installID) {
-    return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/businessmodule/v1/installations/${a1}/${installID}`, {
+    return await axios.get(`${process.env.REACT_APP_URL_GET_LIST_OF_ROOM_BY_INSTALLATION}${a1}/${installID}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
