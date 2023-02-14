@@ -109,7 +109,9 @@ const DrawerSections = ({ classes }) => {
 
                         </div>
                     </List>
+                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>V.1.0</div>
                 </Drawer>
+
             </Grid>
             <Grid item>
                 <Button onClick={() => setOpen(!open)}>
