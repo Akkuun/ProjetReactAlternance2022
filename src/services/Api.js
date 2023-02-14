@@ -55,24 +55,24 @@ export async function getListOfRoomByInstallation(token, a1, installID) {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
+            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_LIST_OF_ROOM_BY_INSTALLATION
         }
     })
 }
 
 export async function getDataByDeviceID(token, deviceID) {
-    return await axios.get(`https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/configuration/${deviceID}/${deviceID}/v1/content/`, {
+    return await axios.get(`${process.env.REACT_APP_URL_GET_DATA_BY_DEVICE_PART1}${deviceID}/${deviceID}${process.env.REACT_APP_URL_GET_DATA_BY_DEVICE_PART2}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': 'bf20abb55f57449eb5f10783b6bf67e6'
+            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_DATA_BY_DEVICE
         }
     })
 }
 
 export async function getListOfUser(token) {
 
-    return axios.get("https://visionsystem2-identity-dev.azurewebsites.net/api/v1.0/Users", {
+    return axios.get(process.env.REACT_APP_URL_GET_LIST_OF_USER, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -88,7 +88,7 @@ export async function sendUserConnected(a1, installationId, DeviceId) {
 
 
 
-    await axios.put('https://visionsystem2-apim-dev.azure-api.net/iotmanagement/v1/devices/userconnected', {
+    await axios.put(process.env.REACT_APP_URL_SEND_USER_CONNECTED, {
         A1: a1,
         In: installationId,
         S1: DeviceId
@@ -96,7 +96,7 @@ export async function sendUserConnected(a1, installationId, DeviceId) {
         headers: {
             "Authorization": "Bearer "+await getTokenAPI("device"),
             "Content-Type": "application/json",
-            "Ocp-Apim-Subscription-Key": "bf20abb55f57449eb5f10783b6bf67e6"
+            "Ocp-Apim-Subscription-Key": process.env.REACT_APP_OCP_API_KEY_SEND_USER_CONNECTED
 
         },
     }
