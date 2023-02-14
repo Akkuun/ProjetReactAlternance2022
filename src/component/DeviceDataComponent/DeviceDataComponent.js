@@ -18,7 +18,7 @@ import {
     sendUserConnected
 } from "../../services/Api";
 
-import PopupWattsType from "../popupComponent/popupWattsType"
+import PopupWattsType from "../popupComponent/popupWattsType";
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import {SnackbarProvider, useSnackbar} from 'notistack';
 
