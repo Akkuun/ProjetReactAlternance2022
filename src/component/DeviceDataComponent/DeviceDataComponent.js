@@ -161,7 +161,7 @@ const DeviceDataComponent = () => {
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
                 if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) {
-
+                    alert(install)
                     setInstallID(install)
                     console.log("IDDDD")
                     console.log(install)
