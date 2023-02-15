@@ -280,13 +280,13 @@ const DeviceDataComponent = () => {
 
                                     <div>
 
-                                        console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "At"))
+
                                         {<DeviceDataBubbleComponent keyValue={Math.random()}
-                                                                    mode={mapDevicesData.get(device.deviceName)[4].col3}
-                                                                    device_name={mapDevicesData.get(device.deviceName)[20].col3}
-                                                                    install_name={mapDevicesData.get(device.deviceName)[18].col3}
-                                                                    temp={((((mapDevicesData.get(device.deviceName)[1].col3) / 10) - 32) / 1.8).toPrecision(3)}
-                                                                    last_updated={mapDevicesData.get(device.deviceName)[6].col3}
+                                                                    mode={getDataByColName(mapDevicesData.get(device.deviceName),"Cm")}
+                                                                    device_name={getDataByColName(mapDevicesData.get(device.deviceName),"S2")}
+                                                                    install_name={getDataByColName(mapDevicesData.get(device.deviceName),"Rn")}
+                                                                    temp={((((getDataByColName(mapDevicesData.get(device.deviceName), "At")) / 10) - 32) / 1.8).toPrecision(3)}
+                                                                    last_updated={getDataByColName(mapDevicesData.get(device.deviceName),"Dd")}
                                                                     data={installationsList}
                                                                     a1={a1}
                                                                     rows={mapDevicesData.get(device.deviceName)}
