@@ -40,14 +40,25 @@ const DeviceDataComponent = () => {
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
-            //setMac("")
+            setMac("")
             setA1(a1);
             await getDataByInput(a1, "a1");
         } else {
-            //setA1("");
+            setA1("");
         }
     }
 
+
+    function getDataByColName(mapData, attr) {
+
+        for (let element of mapData) {
+
+            if (element.col2 === attr) {
+                return element.col3
+            }
+
+        }
+    }
 
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
@@ -127,8 +138,16 @@ const DeviceDataComponent = () => {
 
                         setMapDevicesData(new Map(mapDevicesData.set(key, value)))
                     }
-                    console.log("MAPPPP")
-                    console.log(mapDevicesData)
+                    console.log("MAPPPP complete")
+                    console.log(mapDevicesData);
+                    console.log("MAPPPP avec get")
+                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "At"))
+                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "Dd"))
+                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "Rn"))
+
+                    console.log("VALUE")
+                    console.log(mapDevicesData.get('C44F331B0C0D'));
+
                 }
 
 
@@ -261,6 +280,7 @@ const DeviceDataComponent = () => {
 
                                     <div>
 
+                                        console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "At"))
                                         {<DeviceDataBubbleComponent keyValue={Math.random()}
                                                                     mode={mapDevicesData.get(device.deviceName)[4].col3}
                                                                     device_name={mapDevicesData.get(device.deviceName)[20].col3}
