@@ -39,7 +39,6 @@ const style = {
 };
 
 
-
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
@@ -137,7 +136,6 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
         console.log(dataRefreshed.data)
 
 
-
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -178,16 +176,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     const addToClipboard = (content) => {
         console.log(content)
         navigator.clipboard.writeText(content.value);
-        toast.info('Ajouté au presse-papier: ', {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-        });
+        alert(content)
         enqueueSnackbar('Added to clipboard !');
     };
 
@@ -233,9 +222,9 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
     }
 
-    function setOpenComponentByMode(){
+    function setOpenComponentByMode() {
         console.log("set")
-        console.log(mode==="MAC")
+        console.log(mode === "MAC")
         return mode === "MAC";
 
 
@@ -246,7 +235,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
         <div style={{height: "60%"}}>
 
 
-            {mode ==="MAC"? <div> </div> :<IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>  }
+            {mode === "MAC" ? <div></div> : <IconButton onClick={handleOpenPopupComponent}> <InfoIcon/> </IconButton>}
 
             <Modal
                 open={openPopupComponent}
@@ -257,7 +246,8 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
                 <Box sx={style}>
                     {/*component stats*/}
                     <Container sx={{height: "90%"}}>
-                        <DataGrid rows={mapWattsType} columns={columns} components={{Toolbar: CustomToolbar}} onCellDoubleClick={addToClipboard}/>
+                        <DataGrid rows={mapWattsType} columns={columns} components={{Toolbar: CustomToolbar}}
+                                  onCellDoubleClick={addToClipboard}/>
                     </Container>
                 </Box>
             </Modal>
