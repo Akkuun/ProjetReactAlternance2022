@@ -1,6 +1,14 @@
 echo "switching branch master.."
 git checkout master
 
+git add .
+
+git commit -m "deployement on git ..."
+
+echo "pushing on master ....."
+git push origin master
+echo "push finished !"
+
 echo "Building App..."
 npm run build
 
