@@ -20,3 +20,13 @@ implémenter une fonction de loading pour montrer que ça a bien mis à jour (pe
 
 - pour le User connected lire connectionState dans les twins du device ( 2 méthodes , soit boucle (pas ouf car trop de requête) ou toutes les X mins on fait une requête pour demander l'état de la variable
 ) soit uniquement quad on demande un refresh
+
+#Ouverture du projet
+
+Pour ouvrir le projet, il faut l'ouvrir dans un onglet internet avec la séricurité du navigateur désactivé :
+
+- Windows + R 
+
+- tapez chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security
+
+- tapez dans la barre de recherche http://10.99.3.47/
