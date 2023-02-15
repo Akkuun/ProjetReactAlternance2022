@@ -40,23 +40,23 @@ const DeviceDataComponent = () => {
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
         if (a1.length === 12) {
-            setMac("")
+            //setMac("")
             setA1(a1);
             await getDataByInput(a1, "a1");
         } else {
-            setA1("");
+            //setA1("");
         }
     }
 
 
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
-            setA1("")
+            //setA1("")
             setMac(mac);
             await getDataByInput(mac, "mac")
 
         } else {
-            setMac("");
+            //setMac("");
         }
     }
 
