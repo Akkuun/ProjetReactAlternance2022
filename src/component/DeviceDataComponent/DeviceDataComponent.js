@@ -62,12 +62,12 @@ const DeviceDataComponent = () => {
 
     const MacHandler = async (mac) => {
         if (mac.length === 12) {
-            //setA1("")
+            setA1("")
             setMac(mac);
             await getDataByInput(mac, "mac")
 
         } else {
-            //setMac("");
+            setMac("");
         }
     }
 
@@ -102,14 +102,18 @@ const DeviceDataComponent = () => {
             let installationsListResult = await getListInstallation(token, value)
             let installationsList = [];
             let tempMapDevicesData = {};
+            console.log("installation List Result")
+            console.log(installationsListResult)
             for (let install of installationsListResult.data) {
                 let installationResult = await getListOfRoomByInstallation(token, value, install)
                 let devices = [];
+                console.log("installaionResult")
+                console.log(installationResult)
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-
+                    console.log("configuration Result")
                     let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId)
-
+                    console.log(configurationResult)
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
 
@@ -130,7 +134,8 @@ const DeviceDataComponent = () => {
                         devices: devices
                     });
 
-
+                    console.log("MAP TEMP")
+                    console.log(tempMapDevicesData)
                     //udate the installationList
                     setInstallationsList(installationsList);
                     for (let [key, value] of Object.entries(tempMapDevicesData)) {
@@ -140,13 +145,7 @@ const DeviceDataComponent = () => {
                     }
                     console.log("MAPPPP complete")
                     console.log(mapDevicesData);
-                    console.log("MAPPPP avec get")
-                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "At"))
-                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "Dd"))
-                    console.log(getDataByColName(mapDevicesData.get('C44F331B0C0D'), "Rn"))
 
-                    console.log("VALUE")
-                    console.log(mapDevicesData.get('C44F331B0C0D'));
 
                 }
 
@@ -163,8 +162,9 @@ const DeviceDataComponent = () => {
 
 
             //valeur du A1 correspondant au device
-            let temp = deviceConfigurationData[0]["col3"]
-            setA1ValueForUc(temp)
+
+
+            setA1ValueForUc(getDataByColName(deviceConfigurationData, "A1"))
             console.log("temps")
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
@@ -180,10 +180,7 @@ const DeviceDataComponent = () => {
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
                 if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) {
-                    alert(install)
-                    setInstallID(install)
-                    console.log("IDDDD")
-                    console.log(install)
+
                 }
                 for (let room of installationResult.data.rooms) {
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
@@ -282,11 +279,11 @@ const DeviceDataComponent = () => {
 
 
                                         {<DeviceDataBubbleComponent keyValue={Math.random()}
-                                                                    mode={getDataByColName(mapDevicesData.get(device.deviceName),"Cm")}
-                                                                    device_name={getDataByColName(mapDevicesData.get(device.deviceName),"S2")}
-                                                                    install_name={getDataByColName(mapDevicesData.get(device.deviceName),"Rn")}
+                                                                    mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
+                                                                    device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
+                                                                    install_name={getDataByColName(mapDevicesData.get(device.deviceName), "Rn")}
                                                                     temp={((((getDataByColName(mapDevicesData.get(device.deviceName), "At")) / 10) - 32) / 1.8).toPrecision(3)}
-                                                                    last_updated={getDataByColName(mapDevicesData.get(device.deviceName),"Dd")}
+                                                                    last_updated={getDataByColName(mapDevicesData.get(device.deviceName), "Dd")}
                                                                     data={installationsList}
                                                                     a1={a1}
                                                                     rows={mapDevicesData.get(device.deviceName)}
