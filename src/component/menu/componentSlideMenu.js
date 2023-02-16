@@ -109,7 +109,7 @@ const DrawerSections = ({ classes }) => {
 
                         </div>
                     </List>
-                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>V.1.0</div>
+                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>`${process.env.REACT_APP_VERSION}`</div>
                 </Drawer>
 
             </Grid>
