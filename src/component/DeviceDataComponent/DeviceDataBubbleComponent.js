@@ -8,16 +8,15 @@ import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRound
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
+import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
 import CircleIcon from '@mui/icons-material/Circle';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
-
+import NightlightRoundedIcon from '@mui/icons-material/NightlightRounded';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
-
+import NightShelterIcon from '@mui/icons-material/NightShelter';
 
 const DeviceDataBubbleComponent = ({
                                        install_name,
@@ -34,28 +33,26 @@ const DeviceDataBubbleComponent = ({
                                    }) => {
 
 
-
     let ImageCard, IsConnectedImage;
 
 
-
-
-
     function getImageCard() {
-        if (mode === 1) {
-            ImageCard = <LocalFireDepartmentRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
-        } else if (mode === 5) {
-            ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
-        } else if (mode === 0) {
+        if (mode === 0) {
             ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
-        } else if (mode === 4) {
-            ImageCard = <AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
-        } else if (mode === 3) {
-            ImageCard = <AccessTimeRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
-        } else if (mode === 6) {
-            ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 1) {
+            ImageCard = <NightlightRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
         } else if (mode === 2) {
             ImageCard = <WatchLaterIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 3) {
+            ImageCard = <LightModeRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 4) {
+            ImageCard = <AcUnitRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 5) {
+            ImageCard = <HourglassBottomRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 6) {
+            ImageCard = <PanToolRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
+        } else if (mode === 7) {
+            ImageCard = <NightShelterIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
         }
         return ImageCard;
     }
@@ -117,7 +114,8 @@ const DeviceDataBubbleComponent = ({
                         width: "80%"
                     }}>    {temp} °C
                     </div>
-                    <div ><PopupWattsType row={rows} device_ID={Device_Id} installation_ID={Installation_Id} a1={a1} /></div>
+                    <div><PopupWattsType row={rows} device_ID={Device_Id} installation_ID={Installation_Id} a1={a1}/>
+                    </div>
 
 
                 </div>
