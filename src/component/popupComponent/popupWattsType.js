@@ -174,9 +174,7 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
     ];
 
     const addToClipboard = (content) => {
-        console.log(content)
         navigator.clipboard.writeText(content.value);
-        alert(content)
         enqueueSnackbar('Added to clipboard !');
     };
 

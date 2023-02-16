@@ -100,6 +100,7 @@ const DeviceDataBubbleComponent = ({
                     maxWidth: "100%",
                     width: "100%",
                     justifyContent: "center",
+                    marginTop:"5%"
 
                 }}>
 
