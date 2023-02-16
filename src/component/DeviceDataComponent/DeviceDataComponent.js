@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useEffect, useReducer, useState} from 'react';
-import {TextField} from "@mui/material";
+import {breadcrumbsClasses, TextField} from "@mui/material";
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -37,8 +37,13 @@ const DeviceDataComponent = () => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState('')
     const [a1ValueForUc, setA1ValueForUc] = useState('');
+    const [style, SetStyle] = useState(''
+    )
+
+
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
+
         if (a1.length === 12) {
             setMac("")
             setA1(a1);
@@ -64,6 +69,7 @@ const DeviceDataComponent = () => {
     }
 
     const MacHandler = async (mac) => {
+
         if (mac.length === 12) {
             setA1("")
             setMac(mac);
@@ -96,6 +102,7 @@ const DeviceDataComponent = () => {
     }
 
     const getDataByInput = async (value, mode) => {
+        ManageDisplay()
         let token = await getTokenAPI("device");
         console.log(token)
         if (mode === "a1") {
@@ -107,6 +114,10 @@ const DeviceDataComponent = () => {
             let tempMapDevicesData = {};
             console.log("installation List Result")
             console.log(installationsListResult)
+            if (installationsListResult.data === '') {
+                ManageDisplay()
+            }
+
             for (let install of installationsListResult.data) {
                 let installationResult = await getListOfRoomByInstallation(token, value, install)
                 let devices = [];
@@ -240,12 +251,13 @@ const DeviceDataComponent = () => {
 
 
     function ManageDisplay() {
-        if (installationsList.length === 0) {
-            for (let i; i < mapDevicesData.size; i++) {
-                mapDevicesData.get(i).remove()
-            }
-            return <div> y'a rien</div>
+        if (mapDevicesData.size > 0) {
+
+
+            document.querySelectorAll(".Test").forEach(elem => elem.style.backgroundColor = 'blue');
+
         }
+        return <div> y'a R</div>
     }
 
     return (
@@ -275,7 +287,7 @@ const DeviceDataComponent = () => {
                         marginLeft: "20%"
 
                     }}>
-                        {installationsList.length === 0 ? <div> {ManageDisplay()}</div> :
+                        {mapDevicesData.length === 0 ? <div></div> :
                             installationsList.map(station => (
 
                                 station.devices.map(device => (
@@ -285,8 +297,8 @@ const DeviceDataComponent = () => {
                                         width: "45%",
                                         display: "flex",
                                         flexDirection: "row",
-                                        paddingTop: "5%"
-                                    }} key={Math.random()}>
+                                        paddingTop: "5%",
+                                    }} className="Test" key={Math.random()}>
 
 
                                         <div>
@@ -304,6 +316,8 @@ const DeviceDataComponent = () => {
                                                                         Installation_Id={station.installation}
                                                                         Device_Id={device.deviceName}
                                                                         uc={ucValue}
+
+
                                             />}
 
 
@@ -311,6 +325,7 @@ const DeviceDataComponent = () => {
 
 
                                         <IconButton disableFocusRipple disableRipple disableTouchRipple
+
                                                     onClick={async () => {
 
 
@@ -321,7 +336,7 @@ const DeviceDataComponent = () => {
                                             position: "left",
                                             float: "20%",
                                             Width: "10%",
-                                            height: "10%",
+                                            height: "10%"
                                         }}/> </IconButton>
                                     </div>
 
