@@ -53,11 +53,14 @@ const DeviceDataComponent = () => {
 
         for (let element of mapData) {
 
+
             if (element.col2 === attr) {
                 return element.col3
             }
 
         }
+        //si il n'y a pas de données, on retoune --
+        return "--"
     }
 
     const MacHandler = async (mac) => {
@@ -262,16 +265,17 @@ const DeviceDataComponent = () => {
                         marginLeft: "20%"
 
                     }}>
-
-                        {installationsList.map(station => (
+                        {installationsList.length===0? <div> y'a rien</div>:
+                        installationsList.map(station => (
 
                             station.devices.map(device => (
 
                                 <div style={{
-                                    height: "10%",
+                                    height: "9%",
                                     width: "45%",
                                     display: "flex",
-                                    flexDirection: "row"
+                                    flexDirection: "row",
+                                    paddingTop: "5%"
                                 }} key={Math.random()}>
 
 
