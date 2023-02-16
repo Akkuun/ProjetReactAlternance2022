@@ -154,7 +154,7 @@ const DeviceDataComponent = () => {
 
 
             }
-            enqueueSnackbar('Data received !');
+            enqueueSnackbar('Data received ! With ' + installationsList.length + " Devices");
         } else {
             let tempMapDevicesData = {};
             let configurationResult = await getDataByDeviceID(token, value);
@@ -169,6 +169,7 @@ const DeviceDataComponent = () => {
 
             setA1ValueForUc(getDataByColName(deviceConfigurationData, "A1"))
             console.log("temps")
+
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
             let installationsListResult = await getListInstallation(token, a1ValueForUc)
@@ -238,6 +239,15 @@ const DeviceDataComponent = () => {
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
 
+    function ManageDisplay() {
+        if (installationsList.length === 0) {
+            for (let i; i < mapDevicesData.size; i++) {
+                mapDevicesData.get(i).remove()
+            }
+            return <div> y'a rien</div>
+        }
+    }
+
     return (
 
         <Grid container spacing={3} marginTop="0%" key={Math.random()}
@@ -265,65 +275,66 @@ const DeviceDataComponent = () => {
                         marginLeft: "20%"
 
                     }}>
-                        {installationsList.length===0? <div> y'a rien</div>:
-                        installationsList.map(station => (
+                        {installationsList.length === 0 ? <div> {ManageDisplay()}</div> :
+                            installationsList.map(station => (
 
-                            station.devices.map(device => (
+                                station.devices.map(device => (
 
-                                <div style={{
-                                    height: "9%",
-                                    width: "45%",
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    paddingTop: "5%"
-                                }} key={Math.random()}>
-
-
-                                    <div>
+                                    <div style={{
+                                        height: "9%",
+                                        width: "45%",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        paddingTop: "5%"
+                                    }} key={Math.random()}>
 
 
-                                        {<DeviceDataBubbleComponent keyValue={Math.random()}
-                                                                    mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
-                                                                    device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
-                                                                    install_name={getDataByColName(mapDevicesData.get(device.deviceName), "Rn")}
-                                                                    temp={((((getDataByColName(mapDevicesData.get(device.deviceName), "At")) / 10) - 32) / 1.8).toPrecision(3)}
-                                                                    last_updated={getDataByColName(mapDevicesData.get(device.deviceName), "Dd")}
-                                                                    data={installationsList}
-                                                                    a1={a1}
-                                                                    rows={mapDevicesData.get(device.deviceName)}
-                                                                    Installation_Id={station.installation}
-                                                                    Device_Id={device.deviceName}
-                                                                    uc={ucValue}
-                                        />}
+                                        <div>
 
 
+                                            {<DeviceDataBubbleComponent keyValue={Math.random()}
+                                                                        mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
+                                                                        device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
+                                                                        install_name={getDataByColName(mapDevicesData.get(device.deviceName), "Rn")}
+                                                                        temp={((((getDataByColName(mapDevicesData.get(device.deviceName), "At")) / 10) - 32) / 1.8).toPrecision(3)}
+                                                                        last_updated={getDataByColName(mapDevicesData.get(device.deviceName), "Dd")}
+                                                                        data={installationsList}
+                                                                        a1={a1}
+                                                                        rows={mapDevicesData.get(device.deviceName)}
+                                                                        Installation_Id={station.installation}
+                                                                        Device_Id={device.deviceName}
+                                                                        uc={ucValue}
+                                            />}
+
+
+                                        </div>
+
+
+                                        <IconButton disableFocusRipple disableRipple disableTouchRipple
+                                                    onClick={async () => {
+
+
+                                                        setDeviceID(device.deviceName);
+                                                        setInstallID(station.installation)
+                                                        await DataRefresh();
+                                                    }}> <RefreshIcon sx={{
+                                            position: "left",
+                                            float: "20%",
+                                            Width: "10%",
+                                            height: "10%",
+                                        }}/> </IconButton>
                                     </div>
 
+                                ))
 
-                                    <IconButton disableFocusRipple disableRipple disableTouchRipple
-                                                onClick={async () => {
-
-
-                                                    setDeviceID(device.deviceName);
-                                                    setInstallID(station.installation)
-                                                    await DataRefresh();
-                                                }}> <RefreshIcon sx={{
-                                        position: "left",
-                                        float: "20%",
-                                        Width: "10%",
-                                        height: "10%",
-                                    }}/> </IconButton>
-                                </div>
-
-                            ))
-
-                        ))}
+                            ))}
 
                     </div> : (
                         <div>
                             {mac.length === 12 && a1.length === 0 ? (
                                 <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                                a1={a1ValueForUc} mode={"MAC"}/>) : (<div> rien </div>)}
+                                                a1={a1ValueForUc} mode={"MAC"}/>) : (
+                                <div style={{paddingLeft: "35%"}}>Rien </div>)}
 
 
                         </div>)
