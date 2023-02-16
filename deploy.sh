@@ -3,7 +3,7 @@ git checkout master
 
 git add .
 
-git commit -m "release on server"
+git commit -m "release on server ...."
 
 echo "pushing on master ....."
 git push origin master
