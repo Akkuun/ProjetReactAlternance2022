@@ -29,7 +29,8 @@ const DeviceDataBubbleComponent = ({
                                        rows,
                                        a1,
                                        Installation_Id,
-                                       Device_Id
+                                       Device_Id,
+
                                    }) => {
 
 
@@ -66,16 +67,12 @@ const DeviceDataBubbleComponent = ({
 
     return (
 
-        <Card sx={{
-            Width: "100%",
+        <Card sx={{Width: "100%",
             height: "100%",
             maxWidth: "100%",
             borderRadius: 5,
             flex: "80%",
-            marginTop: "5%",
-
-
-        }}>
+            marginTop: "5%"}}>
             <CardHeader
                 avatar={
                     <LocationOnIcon fontSize={"large"}>
