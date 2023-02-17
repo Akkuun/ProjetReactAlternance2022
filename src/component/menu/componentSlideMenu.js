@@ -33,6 +33,18 @@ const ListItems = ({ items, onClick }) =>
             </ListItem>
         ));
 
+function getVersionAndData() {
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+// This arrangement can be altered based on how we want the date's format to appear.
+    let currentDate = `${day}/${month}/${year}`;
+    return "V   1.1 "+ currentDate;
+}
+
 // contenu  des boutons pour redirection
 const DrawerSections = ({ classes }) => {
     const [open, setOpen] = useState(false);
@@ -109,7 +121,7 @@ const DrawerSections = ({ classes }) => {
 
                         </div>
                     </List>
-                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>{process.env.REACT_APP_VERSION}</div>
+                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>{getVersionAndData()  }</div>
                 </Drawer>
 
             </Grid>

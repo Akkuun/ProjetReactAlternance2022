@@ -37,8 +37,8 @@ const DeviceDataComponent = () => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState('')
     const [a1ValueForUc, setA1ValueForUc] = useState('');
-    const [style, SetStyle] = useState(''
-    )
+    const [style, SetStyle] = useState('')
+    const [listPourModif, updateList] = useState(new Map());
 
 
 //recuperation du a1 pour requêtes
@@ -47,10 +47,14 @@ const DeviceDataComponent = () => {
         if (a1.length === 12) {
             setMac("")
             setA1(a1);
+
             await getDataByInput(a1, "a1");
+
         } else {
             setA1("");
+
         }
+
     }
 
 
@@ -78,6 +82,7 @@ const DeviceDataComponent = () => {
         } else {
             setMac("");
         }
+
     }
 
 // recuperation data
@@ -104,7 +109,6 @@ const DeviceDataComponent = () => {
     const getDataByInput = async (value, mode) => {
         ManageDisplay()
         let token = await getTokenAPI("device");
-        console.log(token)
         if (mode === "a1") {
 
 
@@ -112,8 +116,7 @@ const DeviceDataComponent = () => {
             let installationsListResult = await getListInstallation(token, value)
             let installationsList = [];
             let tempMapDevicesData = {};
-            console.log("installation List Result")
-            console.log(installationsListResult)
+
             if (installationsListResult.data === '') {
                 ManageDisplay()
             }
@@ -121,13 +124,12 @@ const DeviceDataComponent = () => {
             for (let install of installationsListResult.data) {
                 let installationResult = await getListOfRoomByInstallation(token, value, install)
                 let devices = [];
-                console.log("installaionResult")
-                console.log(installationResult)
+
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
-                    console.log("configuration Result")
+
                     let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId)
-                    console.log(configurationResult)
+
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
 
@@ -135,12 +137,15 @@ const DeviceDataComponent = () => {
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
 
                     //devices data
-                    devices.push({
-                        roomName: room.Rn,
-                        deviceName: room.devices[0].Id_deviceId,
-                        wattsType: deviceConfigurationData,
-                        Il: installationResult.data.Il
-                    })
+                    if (!devices.includes(room.Rn)) {
+
+                        devices.push({
+                            roomName: room.Rn,
+                            deviceName: room.devices[0].Id_deviceId,
+                            wattsType: deviceConfigurationData,
+                            Il: installationResult.data.Il
+                        })
+                    }
 
                     //installation data
                     installationsList.push({
@@ -148,38 +153,46 @@ const DeviceDataComponent = () => {
                         devices: devices
                     });
 
-                    console.log("MAP TEMP")
-                    console.log(tempMapDevicesData)
+
                     //udate the installationList
                     setInstallationsList(installationsList);
                     for (let [key, value] of Object.entries(tempMapDevicesData)) {
 
-
                         setMapDevicesData(new Map(mapDevicesData.set(key, value)))
                     }
-                    console.log("MAPPPP complete")
+
+                    console.log("MAPPPP device data")
                     console.log(mapDevicesData);
 
 
-                }
+                    console.log("instllationListtttttt")
+                    console.log(installationsList)
 
+                }
+                let uniq = [...new Set(installationsList)];
+                console.log("uniq")
+                console.log(uniq)
+                for (let [key, value] of Object.entries(uniq)) {
+
+                    setMapDevicesData(new Map(mapDevicesData.set(key, value)))
+                }
+                console.log("mapdevicedata after")
+                console.log(mapDevicesData)
 
             }
+
             enqueueSnackbar('Data received ! With ' + installationsList.length + " Devices");
         } else {
             let tempMapDevicesData = {};
             let configurationResult = await getDataByDeviceID(token, value);
             let deviceConfigurationData = transformData(configurationResult);
             setMapWattsTypeForUc(deviceConfigurationData)
-            console.log("congi data")
-            console.log(deviceConfigurationData[0]["col3"])
 
 
             //valeur du A1 correspondant au device
 
 
             setA1ValueForUc(getDataByColName(deviceConfigurationData, "A1"))
-            console.log("temps")
 
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
@@ -191,7 +204,7 @@ const DeviceDataComponent = () => {
             for (let install of installationsListResult.data) {
 
                 let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install)
-                console.log(install)
+
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
                 if (installationResult.data.rooms[0].devices[0].Id_deviceId === value) {
@@ -200,8 +213,7 @@ const DeviceDataComponent = () => {
                 for (let room of installationResult.data.rooms) {
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
                 }
-                console.log("TEMP")
-                console.log(tempMapDevicesData)
+
             }
 
 
@@ -253,8 +265,8 @@ const DeviceDataComponent = () => {
     function ManageDisplay() {
         if (mapDevicesData.size > 0) {
 
-
-            document.querySelectorAll(".Test").forEach(elem => elem.style.backgroundColor = 'blue');
+//si y' apas de device, on n'affiche aucun component
+            document.querySelectorAll(".Test").forEach(elem => elem.style.visibility = 'hidden');
 
         }
         return <div> y'a R</div>
@@ -265,16 +277,16 @@ const DeviceDataComponent = () => {
         <Grid container spacing={3} marginTop="0%" key={Math.random()}
         >
             <Grid item xs={9} key={Math.random()}>
-                <form>
-                    <div style={{paddingLeft: "35%", justifyContent: "space-between"}}>
-                        <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                        <TextField id="outlined-basic" label="A1" variant="outlined"
-                                   onChange={(e) => a1Handler(e.target.value)}/>
-                        <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                        <TextField id="outlined-basic2" label="MAC" variant="outlined"
-                                   onChange={(e) => MacHandler(e.target.value)}/>
-                    </div>
-                </form>
+
+                <div style={{paddingLeft: "35%", justifyContent: "space-between"}}>
+                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                    <TextField id="outlined-basic" label="A1" variant="outlined"
+                               onChange={(e) => a1Handler(e.target.value)}/>
+                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                    <TextField id="outlined-basic2" label="MAC" variant="outlined"
+                               onChange={(e) => MacHandler(e.target.value)}/>
+                </div>
+
                 <SnackbarProvider maxSnack={3}>
 
 
