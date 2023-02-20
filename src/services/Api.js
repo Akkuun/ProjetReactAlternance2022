@@ -1,18 +1,17 @@
 import axios from "axios";
 
 
-
-export async function getTokenAPI(mode) {
+export async function getTokenAPI(mode,cloud) {
 
 
     let tokenResult;
     switch (mode) {
         case "user":
-            tokenResult = await axios.post(process.env.REACT_APP_URL_TOKEN_DEV, {
+            tokenResult = await axios.post(process.env.REACT_APP_URL_TOKEN_WATTSDEV, {
                 'grant_type': 'client_credentials',
-                'scope': process.env.REACT_APP_SCOPE_TOKEN_USER_DEV,
-                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_USER_DEV,
-                'client_secret': process.env.REACT_APP_CLIENT_SECRET_TOKEN_USER_DEV
+                'scope': process.env.REACT_APP_SCOPE_TOKEN_USER_WATTSDEV,
+                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_USER_WATTSDEV,
+                'client_secret': process.env.REACT_APP_CLIENT_SECRET_TOKEN_USER_WATTSDEV
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
