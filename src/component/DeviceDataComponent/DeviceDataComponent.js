@@ -115,7 +115,8 @@ const DeviceDataComponent = () => {
 
 
         console.log(cloud_varible)
-        let token = await getTokenAPI("device",cloud);
+        console.log(`process.env.REACT_APP_URL_TOKEN_${cloud}`)
+        let token = await getTokenAPI("device",cloud_varible);
         if (mode === "a1") {
 
 
