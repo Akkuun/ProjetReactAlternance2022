@@ -132,34 +132,14 @@ const DeviceDataComponent = () => {
 
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
-
-
+                    console.log("devicefonfigdta")
+                    console.log(deviceConfigurationData)
+                    console.log("config result")
+                    console.log(configurationResult)
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
 
                     //devices data
-                    if (!devices.includes(room.Rn)) {
 
-                        devices.push({
-                            roomName: room.Rn,
-                            deviceName: room.devices[0].Id_deviceId,
-                            wattsType: deviceConfigurationData,
-                            Il: installationResult.data.Il
-                        })
-                    }
-
-                    //installation data
-                    installationsList.push({
-                        installation: install,
-                        devices: devices
-                    });
-
-
-                    //udate the installationList
-                    setInstallationsList(installationsList);
-                    for (let [key, value] of Object.entries(tempMapDevicesData)) {
-
-                        setMapDevicesData(new Map(mapDevicesData.set(key, value)))
-                    }
 
                     console.log("MAPPPP device data")
                     console.log(mapDevicesData);
@@ -168,16 +148,30 @@ const DeviceDataComponent = () => {
                     console.log("instllationListtttttt")
                     console.log(installationsList)
 
+
+                    devices.push({
+                        roomName: room.Rn,
+                        deviceName: room.devices[0].Id_deviceId,
+                        wattsType: deviceConfigurationData,
+                        Il: installationResult.data.Il
+                    })
+
                 }
-                let uniq = [...new Set(installationsList)];
-                console.log("uniq")
-                console.log(uniq)
-                for (let [key, value] of Object.entries(uniq)) {
+
+
+                //installation data
+                installationsList.push({
+                    installation: install,
+                    devices: devices
+                });
+
+                //udate the installationList
+                setInstallationsList(installationsList);
+                for (let [key, value] of Object.entries(tempMapDevicesData)) {
 
                     setMapDevicesData(new Map(mapDevicesData.set(key, value)))
                 }
-                console.log("mapdevicedata after")
-                console.log(mapDevicesData)
+
 
             }
 
@@ -311,15 +305,15 @@ const DeviceDataComponent = () => {
                                         flexDirection: "row",
                                         paddingTop: "5%",
                                     }} className="Test" key={Math.random()}>
-
-
+                                        {console.log("TEST")}
+                                        {console.log(device.roomName)}
                                         <div>
 
 
                                             {<DeviceDataBubbleComponent keyValue={Math.random()}
                                                                         mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
                                                                         device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
-                                                                        install_name={getDataByColName(mapDevicesData.get(device.deviceName), "Rn")}
+                                                                        install_name={device.roomName}
                                                                         temp={((((getDataByColName(mapDevicesData.get(device.deviceName), "At")) / 10) - 32) / 1.8).toPrecision(3)}
                                                                         last_updated={getDataByColName(mapDevicesData.get(device.deviceName), "Dd")}
                                                                         data={installationsList}
