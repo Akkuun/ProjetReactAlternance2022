@@ -14,6 +14,7 @@ function App() {
                 {<Route path="/" element={<PageHome/>}/>}
                 <Route path="/wattsProd" element={<PageHome/>}/>
                 <Route path="/wattsDev" element={<PageHome/>}/>
+                <Route path="/GKP" element={<PageHome/>}/>
                 
 
                 
