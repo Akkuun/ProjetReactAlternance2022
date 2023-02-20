@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
@@ -19,17 +19,18 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // creation des objets web par rapport a drawerSections
-const ListItems = ({ items, onClick }) =>
+const ListItems = ({items, onClick}) =>
     items
-        .filter(({ hidden }) => !hidden)
-        .map(({ label, disabled, Icon, lien }, i) => (
+        .filter(({hidden}) => !hidden)
+        .map(({label, disabled, Icon, lien}, i) => (
 
-            <ListItem button key={i} disabled={disabled}     onClick={onClick(label)}>
+            <ListItem button key={i} disabled={disabled} onClick={onClick(label)}>
                 <ListItemIcon>
 
-                    <Icon />
+                    <Icon/>
                 </ListItemIcon>
-                <Link  to={`${lien}`} style={{textDecoration : "none", color : "black"}} >  <ListItemText>{label}</ListItemText> </Link>
+                <Link to={`${lien}`} style={{textDecoration: "none", color: "black"}}>
+                    <ListItemText>{label}</ListItemText> </Link>
             </ListItem>
         ));
 
@@ -42,32 +43,41 @@ function getVersionAndData() {
 
 // This arrangement can be altered based on how we want the date's format to appear.
     let currentDate = `${day}/${month}/${year}`;
-    return "V   1.1 "+ currentDate;
+    return "V   1.1 " + currentDate;
 }
 
 // contenu  des boutons pour redirection
-const DrawerSections = ({ classes }) => {
+const DrawerSections = ({classes}) => {
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('Home');
 
     const [itemsWattsProd] = useState({
         Clouds: [
-            { label: 'Watts Prod', Icon:CloudIcon,lien : '/wattsProd'  },
+            {label: 'Watts Prod', Icon: CloudIcon, lien: '/wattsProd'},
         ],
         Pages: [
-            { label: 'User Data', Icon:PersonIcon,lien: '/wattsProd/pageUserData'  },
-            { label: 'Device Data', Icon: DeviceHubIcon,lien: '/wattsProd/pageDeviceData' },
+            {label: 'User Data', Icon: PersonIcon, lien: '/wattsProd/pageUserData'},
+            {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsProd/pageDeviceData'},
         ]
     });
 
 
     const [itemsWattsDev] = useState({
         Clouds: [
-            { label: 'Watts Dev', Icon:CloudIcon,lien : '/wattsDev'  },
+            {label: 'Watts Dev', Icon: CloudIcon, lien: '/wattsDev'},
         ],
         Pages: [
-            { label: 'User Data', Icon:PersonIcon,lien: '/wattsDev/pageUserData'  },
-            { label: 'Device Data', Icon: DeviceHubIcon,lien: '/wattsDev/pageDeviceData' },
+            {label: 'User Data', Icon: PersonIcon, lien: '/wattsDev/pageUserData'},
+            {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsDev/pageDeviceData'},
+        ]
+    });
+    const [itemsGKP] = useState({
+        Clouds: [
+            {label: 'GKP', Icon: CloudIcon, lien: '/GKP'},
+        ],
+        Pages: [
+            {label: 'User Data', Icon: PersonIcon, lien: '/GKP/pageUserData'},
+            {label: 'Device Data', Icon: DeviceHubIcon, lien: '/GKP/pageDeviceData'},
         ]
     });
 
@@ -89,23 +99,24 @@ const DrawerSections = ({ classes }) => {
                     <List>
 
                         <div>
-                        <Accordion>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography><ListItems items={itemsWattsDev.Clouds} onClick={onClick}/></Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+                                        <ListItems items={itemsWattsDev.Pages} onClick={onClick}>
+                                        </ListItems>
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                            <Accordion>
                             <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography><ListItems items={itemsWattsDev.Clouds} onClick={onClick}/></Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography>
-                                    <ListItems items={itemsWattsDev.Pages} onClick={onClick}>
-                                    </ListItems>
-                                </Typography>
-                            </AccordionDetails>
-                        </Accordion><Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
+                                expandIcon={<ExpandMoreIcon/>}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
@@ -118,10 +129,25 @@ const DrawerSections = ({ classes }) => {
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography><ListItems items={itemsGKP.Clouds} onClick={onClick}/></Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+                                        <ListItems items={itemsGKP.Pages} onClick={onClick}>
+                                        </ListItems>
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
 
                         </div>
                     </List>
-                    <div style={{paddingTop:"90%",paddingLeft:"5%"}}>{getVersionAndData()  }</div>
+                    <div style={{paddingTop: "90%", paddingLeft: "5%"}}>{getVersionAndData()}</div>
                 </Drawer>
 
             </Grid>

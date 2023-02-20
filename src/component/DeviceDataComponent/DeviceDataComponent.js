@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useEffect, useReducer, useState} from 'react';
-import {breadcrumbsClasses, TextField} from "@mui/material";
+
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,6 +21,8 @@ import {
 import PopupWattsType from "../popupComponent/popupWattsType";
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import {SnackbarProvider, useSnackbar} from 'notistack';
+import {useParams} from "react-router-dom";
+import {TextField} from "@mui/material";
 
 //creation item par rapport à une liste de données
 
@@ -37,9 +39,10 @@ const DeviceDataComponent = () => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState('')
     const [a1ValueForUc, setA1ValueForUc] = useState('');
-    const [style, SetStyle] = useState('')
-    const [listPourModif, updateList] = useState(new Map());
 
+
+    let {cloud} = useParams();
+    let cloud_varible =cloud.toUpperCase();
 
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
@@ -106,9 +109,13 @@ const DeviceDataComponent = () => {
         return deviceConfigurationData;
     }
 
+
     const getDataByInput = async (value, mode) => {
         ManageDisplay()
-        let token = await getTokenAPI("device");
+
+
+        console.log(cloud_varible)
+        let token = await getTokenAPI("device",cloud);
         if (mode === "a1") {
 
 
@@ -132,21 +139,10 @@ const DeviceDataComponent = () => {
 
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
-                    console.log("devicefonfigdta")
-                    console.log(deviceConfigurationData)
-                    console.log("config result")
-                    console.log(configurationResult)
+
                     tempMapDevicesData[room.devices[0].Id_deviceId] = deviceConfigurationData;
 
                     //devices data
-
-
-                    console.log("MAPPPP device data")
-                    console.log(mapDevicesData);
-
-
-                    console.log("instllationListtttttt")
-                    console.log(installationsList)
 
 
                     devices.push({
@@ -159,13 +155,13 @@ const DeviceDataComponent = () => {
                 }
 
 
-                //installation data
+                //installation data on doit push en dehors de la boucle sinon on a un duplicata de données non voulu
                 installationsList.push({
                     installation: install,
                     devices: devices
                 });
 
-                //udate the installationList
+                //udate the installationList state
                 setInstallationsList(installationsList);
                 for (let [key, value] of Object.entries(tempMapDevicesData)) {
 
@@ -191,8 +187,7 @@ const DeviceDataComponent = () => {
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
             let installationsListResult = await getListInstallation(token, a1ValueForUc)
-            alert("TEST")
-            alert(installationsListResult)
+
 
             //la strat ici est de faire une comparaison sur les intallationId que l'utilisateur possède par rapport au A1 obtenu avec la mac donné
             for (let install of installationsListResult.data) {
@@ -293,6 +288,8 @@ const DeviceDataComponent = () => {
                         marginLeft: "20%"
 
                     }}>
+                        {/*la strat ici est de boucler sur la map installationListe qui ocntient toutes les installations de l'utilisateur,*/}
+                        {/*ensuite pour chaque résultat on voir  les données correspondant pour le device associté à l'installation en cours de boucle (dans deviceDataMap)*/}
                         {mapDevicesData.length === 0 ? <div></div> :
                             installationsList.map(station => (
 
@@ -305,11 +302,10 @@ const DeviceDataComponent = () => {
                                         flexDirection: "row",
                                         paddingTop: "5%",
                                     }} className="Test" key={Math.random()}>
-                                        {console.log("TEST")}
-                                        {console.log(device.roomName)}
+
                                         <div>
 
-
+                                            {/*ici pour roomName, on a pas la bonne data dans DeviceMap, on prends donc dans la map installationListe pour le device en question*/}
                                             {<DeviceDataBubbleComponent keyValue={Math.random()}
                                                                         mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
                                                                         device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
