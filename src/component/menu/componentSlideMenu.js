@@ -43,7 +43,7 @@ function getVersionAndData() {
 
 // This arrangement can be altered based on how we want the date's format to appear.
     let currentDate = `${day}/${month}/${year}`;
-    return "V   1.2 " + currentDate;
+    return "V  "+ process.env.REACT_APP_VERSION +"     " + currentDate;
 }
 
 // contenu  des boutons pour redirection
