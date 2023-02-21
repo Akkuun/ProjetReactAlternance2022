@@ -24,3 +24,5 @@ yarn-error.log*
 
 # SSL keys for security
 *.pem
+#exclusion du fichier secret JSON d'envrionnement qui contient toutes les données relatives à l'API
+/src/services/API_Secret.json
