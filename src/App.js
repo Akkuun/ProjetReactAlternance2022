@@ -15,12 +15,19 @@ function App() {
                 <Route path="/wattsProd" element={<PageHome/>}/>
                 <Route path="/wattsDev" element={<PageHome/>}/>
                 <Route path="/GKP" element={<PageHome/>}/>
+                <Route path="/FENIX" element={<PageHome/>}/>
+                <Route path="/DELTACALOR" element={<PageHome/>}/>
+
                 
 
                 
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
                 
+                <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
+                <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
+                <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
+                <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
             </Routes>
