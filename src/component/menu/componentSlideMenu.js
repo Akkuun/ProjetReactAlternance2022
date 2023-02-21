@@ -89,6 +89,15 @@ const DrawerSections = ({classes}) => {
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/FENIX/pageDeviceData'},
         ]
     });
+    const [itemsDELTACALOR] = useState({
+        Clouds: [
+            {label: 'DELTACALOR', Icon: CloudIcon, lien: '/DELTACALOR'},
+        ],
+        Pages: [
+            {label: 'User Data', Icon: PersonIcon, lien: '/DELTACALOR/pageUserData'},
+            {label: 'Device Data', Icon: DeviceHubIcon, lien: '/DELTACALOR/pageDeviceData'},
+        ]
+    });
 
 
     const onClick = (content) => () => {
@@ -164,6 +173,21 @@ const DrawerSections = ({classes}) => {
                                 <AccordionDetails>
                                     <Typography>
                                         <ListItems items={itemsFENIX.Pages} onClick={onClick}>
+                                        </ListItems>
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography><ListItems items={itemsDELTACALOR.Clouds} onClick={onClick}/></Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+                                        <ListItems items={itemsDELTACALOR.Pages} onClick={onClick}>
                                         </ListItems>
                                     </Typography>
                                 </AccordionDetails>
