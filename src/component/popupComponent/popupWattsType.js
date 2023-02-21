@@ -22,7 +22,8 @@ import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
 import {useSnackbar} from "notistack";
-import {toast} from "react-toastify";
+import {useParams} from "react-router-dom";
+
 
 
 const style = {
@@ -99,7 +100,10 @@ const JsonExportMenuItem = (props) => {
 };
 
 
-const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
+const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
+//obligé de remettre ce paramètre ici car, il passe à null lorsqu'il est en props et impossible de le mettre en tête de fichier
+    let {cloud} = useParams();
+    let cloud_Name =cloud.toUpperCase();
 
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
@@ -114,13 +118,12 @@ const Popup = ({classes, value, row, installation_ID, device_ID, a1, mode}) => {
 
         let dataRefreshed;
 
+        await sendUserConnected(a1, installation_ID, device_ID,cloud_Name);
 
-        await sendUserConnected(a1, installation_ID, device_ID);
-
-        let token = await getTokenAPI("device");
+        let token = await getTokenAPI("device",cloud_Name);
 
 
-        dataRefreshed = await getDataByDeviceID(token, device_ID)
+        dataRefreshed = await getDataByDeviceID(token, device_ID,cloud_Name)
 
 
         let RowUpdated = [];

@@ -32,11 +32,13 @@ const userTableStyles = {
 
 const UserTable = () => {
     //get the current cloud by the cookie
-    const {cloud} = useParams();
+    let {cloud} = useParams();
+    let cloud_Name =cloud.toUpperCase();
+
     const getAllUser = async () => {
         console.log("get all users")
-        let tokenResult = await getTokenAPI("user");
-        let userListResult =  getListOfUser(tokenResult)
+        let tokenResult = await getTokenAPI("user",cloud_Name);
+        let userListResult =  getListOfUser(tokenResult,cloud_Name)
         
         userListResult.then(function (result) {
             const sizeUser = result.data;
