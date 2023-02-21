@@ -80,6 +80,15 @@ const DrawerSections = ({classes}) => {
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/GKP/pageDeviceData'},
         ]
     });
+    const [itemsFENIX] = useState({
+        Clouds: [
+            {label: 'FENIX', Icon: CloudIcon, lien: '/FENIX'},
+        ],
+        Pages: [
+            {label: 'User Data', Icon: PersonIcon, lien: '/FENIX/pageUserData'},
+            {label: 'Device Data', Icon: DeviceHubIcon, lien: '/FENIX/pageDeviceData'},
+        ]
+    });
 
 
     const onClick = (content) => () => {
@@ -140,6 +149,21 @@ const DrawerSections = ({classes}) => {
                                 <AccordionDetails>
                                     <Typography>
                                         <ListItems items={itemsGKP.Pages} onClick={onClick}>
+                                        </ListItems>
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography><ListItems items={itemsFENIX.Clouds} onClick={onClick}/></Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Typography>
+                                        <ListItems items={itemsFENIX.Pages} onClick={onClick}>
                                         </ListItems>
                                     </Typography>
                                 </AccordionDetails>
