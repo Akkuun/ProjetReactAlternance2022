@@ -42,7 +42,8 @@ const DeviceDataComponent = () => {
 
 
     let {cloud} = useParams();
-    let cloud_varible =cloud.toUpperCase();
+    let cloud_Name =cloud.toUpperCase();
+
 
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
@@ -51,7 +52,7 @@ const DeviceDataComponent = () => {
             setMac("")
             setA1(a1);
 
-            await getDataByInput(a1, "a1");
+            await GetDataByInput(a1, "a1");
 
         } else {
             setA1("");
@@ -80,7 +81,7 @@ const DeviceDataComponent = () => {
         if (mac.length === 12) {
             setA1("")
             setMac(mac);
-            await getDataByInput(mac, "mac")
+            await GetDataByInput(mac, "mac")
 
         } else {
             setMac("");
@@ -110,18 +111,23 @@ const DeviceDataComponent = () => {
     }
 
 
-    const getDataByInput = async (value, mode) => {
+    const GetDataByInput = async (value, mode) => {
         ManageDisplay()
 
 
-        console.log(cloud_varible)
-        console.log(`process.env.REACT_APP_URL_TOKEN_${cloud}`)
-        let token = await getTokenAPI("device",cloud_varible);
+
+
+
+
+
+        console.log(cloud_Name)
+
+        let token = await getTokenAPI("device",cloud_Name);
         if (mode === "a1") {
 
 
             // Get the list of installation by a A1
-            let installationsListResult = await getListInstallation(token, value)
+            let installationsListResult = await getListInstallation(token, value,cloud_Name)
             let installationsList = [];
             let tempMapDevicesData = {};
 
@@ -130,13 +136,13 @@ const DeviceDataComponent = () => {
             }
 
             for (let install of installationsListResult.data) {
-                let installationResult = await getListOfRoomByInstallation(token, value, install)
+                let installationResult = await getListOfRoomByInstallation(token, value, install,cloud_Name)
                 let devices = [];
 
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
 
-                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId)
+                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId,cloud_Name)
 
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
@@ -175,7 +181,7 @@ const DeviceDataComponent = () => {
             enqueueSnackbar('Data received ! With ' + installationsList.length + " Devices");
         } else {
             let tempMapDevicesData = {};
-            let configurationResult = await getDataByDeviceID(token, value);
+            let configurationResult = await getDataByDeviceID(token, value,cloud_Name);
             let deviceConfigurationData = transformData(configurationResult);
             setMapWattsTypeForUc(deviceConfigurationData)
 
@@ -187,13 +193,13 @@ const DeviceDataComponent = () => {
 
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
-            let installationsListResult = await getListInstallation(token, a1ValueForUc)
+            let installationsListResult = await getListInstallation(token, a1ValueForUc,cloud_Name)
 
 
             //la strat ici est de faire une comparaison sur les intallationId que l'utilisateur possède par rapport au A1 obtenu avec la mac donné
             for (let install of installationsListResult.data) {
 
-                let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install)
+                let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install,cloud_Name)
 
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
@@ -219,11 +225,11 @@ const DeviceDataComponent = () => {
 
 
     async function DataRefresh() {
-
+        console.log(cloud_Name)
         let dataRefreshed;
-        await sendUserConnected(a1, install_id, device_id);
-        let token = await getTokenAPI("device");
-        dataRefreshed = await getDataByDeviceID(token, device_id)
+        await sendUserConnected(a1, install_id, device_id,cloud_Name);
+        let token = await getTokenAPI("device",cloud_Name);
+        dataRefreshed = await getDataByDeviceID(token, device_id,cloud_Name)
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -351,7 +357,7 @@ const DeviceDataComponent = () => {
                         <div>
                             {mac.length === 12 && a1.length === 0 ? (
                                 <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                                a1={a1ValueForUc} mode={"MAC"}/>) : (
+                                                a1={a1ValueForUc} mode={"MAC"} cloud={cloud_Name}/>) : (
                                 <div style={{paddingLeft: "35%"}}>Rien </div>)}
 
 

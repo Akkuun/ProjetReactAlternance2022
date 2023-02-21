@@ -1,17 +1,17 @@
 import axios from "axios";
 
-
+const json = require('./API_Secret.json')
 export async function getTokenAPI(mode,cloud) {
 
 
     let tokenResult;
     switch (mode) {
         case "user":
-            tokenResult = await axios.post(process.env.REACT_APP_URL_TOKEN_WATTSDEV, {
+            tokenResult = await axios.post(json.clouds[cloud]["Url_token"], {
                 'grant_type': 'client_credentials',
-                'scope': process.env.REACT_APP_SCOPE_TOKEN_USER_WATTSDEV,
-                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_USER_WATTSDEV,
-                'client_secret': process.env.REACT_APP_CLIENT_SECRET_TOKEN_USER_WATTSDEV
+                'scope': json.clouds[cloud]["Scope_user"],
+                'client_id': json.clouds[cloud]["Client_ID_Token_user"],
+                'client_secret': json.clouds[cloud]["Client_SECRET_Token_user"]
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -20,11 +20,11 @@ export async function getTokenAPI(mode,cloud) {
             return tokenResult.data["access_token"]
 
         case "device":
-            tokenResult = await axios.post(process.env.REACT_APP_URL_TOKEN_DEVICE_DEV, {
+            tokenResult = await axios.post(json.clouds[cloud]["Url_token"], {
                 'grant_type': 'client_credentials',
-                'scope':  process.env.REACT_APP_SCOPE_TOKEN_DEVICE_DEV,
-                'client_id': process.env.REACT_APP_CLIENT_ID_TOKEN_DEVICE_DEV,
-                'client_secret':  process.env.REACT_APP_CLIENT_SECRET_TOKEN_DEVICE_DEV
+                'scope': json.clouds[cloud]["Scope_device"],
+                'client_id': json.clouds[cloud]["Client_ID_Token_device"],
+                'client_secret': json.clouds[cloud]["Client_SECRET_Token_device"]
             }, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,41 +38,45 @@ export async function getTokenAPI(mode,cloud) {
 }
 
 // Get the list of installation by a A1
-export async function getListInstallation(token, a1) {
+export async function getListInstallation(token, a1,cloud) {
+    console.log("get install ")
+    console.log(`${json.clouds[cloud]["Url_get_list_installation"]}${a1}`)
 
-    return await axios.get(`${process.env.REACT_APP_URL_GET_LIST_INSTALLATION_DEV}${a1}`, {
+
+    return await axios.get(`${json.clouds[cloud]["Url_get_list_installation"]}${a1}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_LIST_INSTALLATION_DEV
+            'Ocp-Apim-Subscription-Key': json.clouds[cloud]["OCP_API_KEY_GET_LIST_INSTALLATION"]
         }
     })
 }
 
 // get the list of room for a specific a1 and installationID
-export async function getListOfRoomByInstallation(token, a1, installID) {
-    return await axios.get(`${process.env.REACT_APP_URL_GET_LIST_OF_ROOM_BY_INSTALLATION_DEV}${a1}/${installID}`, {
+export async function getListOfRoomByInstallation(token, a1, installID,cloud) {
+    console.log()
+    return await axios.get(`${json.clouds[cloud]["Url_get_list_of_room_by_installation"]}${a1}/${installID}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_LIST_OF_ROOM_BY_INSTALLATION_DEV
+            'Ocp-Apim-Subscription-Key':  json.clouds[cloud]["OCP_API_KEY_GET_LIST_INSTALLATION"]
         }
     })
 }
 
-export async function getDataByDeviceID(token, deviceID) {
-    return await axios.get(`${process.env.REACT_APP_URL_GET_DATA_BY_DEVICE_PART1_DEV}${deviceID}/${deviceID}${process.env.REACT_APP_URL_GET_DATA_BY_DEVICE_PART2_DEV}`, {
+export async function getDataByDeviceID(token, deviceID,cloud) {
+    return await axios.get(`${json.clouds[cloud]["Url_get_data_by_device_part1"]}${deviceID}/${deviceID}${json.clouds[cloud]["Url_get_data_by_device_part2"]}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Ocp-Apim-Subscription-Key': process.env.REACT_APP_OCP_API_KEY_GET_DATA_BY_DEVICE_DEV
+            'Ocp-Apim-Subscription-Key': json.clouds[cloud]["OCP_API_KEY_GET_LIST_INSTALLATION"]
         }
     })
 }
 
-export async function getListOfUser(token) {
+export async function getListOfUser(token,cloud) {
 
-    return axios.get(process.env.REACT_APP_URL_GET_LIST_OF_USER_DEV, {
+    return axios.get(json.clouds[cloud]["Url_get_list_of_user"], {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,24 +86,21 @@ export async function getListOfUser(token) {
 }
 
 
+export async function sendUserConnected(a1, installationId, DeviceId,cloud) {
+    console.log("send user connec")
+    console.log(json.clouds[cloud]["Url_send_user_connected"])
+    await axios.put( json.clouds[cloud]["Url_send_user_connected"], {
+            A1: a1,
+            In: installationId,
+            S1: DeviceId
+        }, {
+            headers: {
+                "Authorization": "Bearer " + await getTokenAPI("device",cloud),
+                "Content-Type": "application/json",
+                "Ocp-Apim-Subscription-Key":  json.clouds[cloud]["OCP_API_KEY_GET_LIST_INSTALLATION"]
 
-
-export async function sendUserConnected(a1, installationId, DeviceId) {
-
-
-
-    await axios.put(process.env.REACT_APP_URL_SEND_USER_CONNECTED_DEV, {
-        A1: a1,
-        In: installationId,
-        S1: DeviceId
-    }, {
-        headers: {
-            "Authorization": "Bearer "+await getTokenAPI("device"),
-            "Content-Type": "application/json",
-            "Ocp-Apim-Subscription-Key": process.env.REACT_APP_OCP_API_KEY_SEND_USER_CONNECTED_DEV
-
-        },
-    }
+            },
+        }
     );
     setTimeout(10000);
 
