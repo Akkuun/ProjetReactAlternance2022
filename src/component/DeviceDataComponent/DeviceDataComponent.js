@@ -8,8 +8,6 @@ import Grid from "@mui/material/Grid";
 import {AccountCircle} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-
-
 import {
     getDataByDeviceID,
     getListInstallation,
@@ -21,7 +19,7 @@ import {
 import PopupWattsType from "../popupComponent/popupWattsType";
 import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import {SnackbarProvider, useSnackbar} from 'notistack';
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {TextField} from "@mui/material";
 
 //creation item par rapport à une liste de données
@@ -40,10 +38,12 @@ const DeviceDataComponent = () => {
     const [ucValue, setUcValue] = useState('')
     const [a1ValueForUc, setA1ValueForUc] = useState('');
 
-
     let {cloud} = useParams();
-    let cloud_Name =cloud.toUpperCase();
+    let cloud_Name = cloud.toUpperCase();
+    let newMapConfiguration = {};
+    const location = useLocation();
 
+    ManageDisplay()
 
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
@@ -66,13 +66,12 @@ const DeviceDataComponent = () => {
 
         for (let element of mapData) {
 
-
             if (element.col2 === attr) {
                 return element.col3
             }
 
         }
-        //si il n'y a pas de données, on retoune --
+        //si il n'y a pas de données, on retourne --
         return "--"
     }
 
@@ -90,8 +89,6 @@ const DeviceDataComponent = () => {
     }
 
 // recuperation data
-
-    let newMapConfiguration = {};
 
 
     function transformData(configurationResult) {
@@ -115,19 +112,12 @@ const DeviceDataComponent = () => {
         ManageDisplay()
 
 
-
-
-
-
-
-        console.log(cloud_Name)
-
-        let token = await getTokenAPI("device",cloud_Name);
+        let token = await getTokenAPI("device", cloud_Name);
         if (mode === "a1") {
 
 
             // Get the list of installation by a A1
-            let installationsListResult = await getListInstallation(token, value,cloud_Name)
+            let installationsListResult = await getListInstallation(token, value, cloud_Name)
             let installationsList = [];
             let tempMapDevicesData = {};
 
@@ -136,13 +126,13 @@ const DeviceDataComponent = () => {
             }
 
             for (let install of installationsListResult.data) {
-                let installationResult = await getListOfRoomByInstallation(token, value, install,cloud_Name)
+                let installationResult = await getListOfRoomByInstallation(token, value, install, cloud_Name)
                 let devices = [];
 
                 //for each room, get the data of
                 for (let room of installationResult.data.rooms) {
 
-                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId,cloud_Name)
+                    let configurationResult = await getDataByDeviceID(token, room.devices[0].Id_deviceId, cloud_Name)
 
                     newMapConfiguration[room.devices[0].Id_deviceId] = configurationResult.data;
                     let deviceConfigurationData = transformData(configurationResult);
@@ -181,7 +171,7 @@ const DeviceDataComponent = () => {
             enqueueSnackbar('Data received ! With ' + installationsList.length + " Devices");
         } else {
             let tempMapDevicesData = {};
-            let configurationResult = await getDataByDeviceID(token, value,cloud_Name);
+            let configurationResult = await getDataByDeviceID(token, value, cloud_Name);
             let deviceConfigurationData = transformData(configurationResult);
             setMapWattsTypeForUc(deviceConfigurationData)
 
@@ -193,13 +183,13 @@ const DeviceDataComponent = () => {
 
 
             //avec le a1 obtenu on obtient la liste des installation lié à L'A1
-            let installationsListResult = await getListInstallation(token, a1ValueForUc,cloud_Name)
+            let installationsListResult = await getListInstallation(token, a1ValueForUc, cloud_Name)
 
 
             //la strat ici est de faire une comparaison sur les intallationId que l'utilisateur possède par rapport au A1 obtenu avec la mac donné
             for (let install of installationsListResult.data) {
 
-                let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install,cloud_Name)
+                let installationResult = await getListOfRoomByInstallation(token, a1ValueForUc, install, cloud_Name)
 
                 //ici on réalise une boucle sur toutes les intallationsID de l'utilisateur et si on trouve une installation qui possède la mac donnée, cela veut dire que on a bien trouvé notre instalaltionID par rapport à notre MAC
                 // on rapelle qu'on utilise installationId pour créer le compoenent permettant d'afficher nos informations a traverse le compoenent wattstype
@@ -220,16 +210,15 @@ const DeviceDataComponent = () => {
 
     useEffect(() => {
 
-
-    }, []);
+        setMac("")
+    },  [location]);
 
 
     async function DataRefresh() {
-        console.log(cloud_Name)
         let dataRefreshed;
-        await sendUserConnected(a1, install_id, device_id,cloud_Name);
-        let token = await getTokenAPI("device",cloud_Name);
-        dataRefreshed = await getDataByDeviceID(token, device_id,cloud_Name)
+        await sendUserConnected(a1, install_id, device_id, cloud_Name);
+        let token = await getTokenAPI("device", cloud_Name);
+        dataRefreshed = await getDataByDeviceID(token, device_id, cloud_Name)
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -262,8 +251,12 @@ const DeviceDataComponent = () => {
         if (mapDevicesData.size > 0) {
 
 //si y' apas de device, on n'affiche aucun component
-            document.querySelectorAll(".Test").forEach(elem => elem.style.visibility = 'hidden');
+            document.querySelectorAll(".DeviceDataBubble").forEach(elem => elem.style.visibility = 'hidden');
 
+        }
+        if( mapWattsTypeForUc.length>0){
+            console.log("cas on rentre maptypeuc")
+            document.querySelectorAll(".MuiBox-root,.css-2oorrx").forEach(ele=> ele.style.visibility='hidden')
         }
         return <div> y'a R</div>
     }
@@ -308,12 +301,12 @@ const DeviceDataComponent = () => {
                                         display: "flex",
                                         flexDirection: "row",
                                         paddingTop: "5%",
-                                    }} className="Test" key={Math.random()}>
+                                    }} className="DeviceDataBubble" key={Math.random()}>
 
                                         <div>
 
                                             {/*ici pour roomName, on a pas la bonne data dans DeviceMap, on prends donc dans la map installationListe pour le device en question*/}
-                                            {<DeviceDataBubbleComponent keyValue={Math.random()}
+                                            {<DeviceDataBubbleComponent  keyValue={Math.random()}
                                                                         mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
                                                                         device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
                                                                         install_name={device.roomName}
@@ -345,7 +338,8 @@ const DeviceDataComponent = () => {
                                             position: "left",
                                             float: "20%",
                                             Width: "10%",
-                                            height: "10%"
+                                            height: "10%",
+                                            display: "flex"
                                         }}/> </IconButton>
                                     </div>
 
@@ -356,12 +350,16 @@ const DeviceDataComponent = () => {
                     </div> : (
                         <div>
                             {mac.length === 12 && a1.length === 0 ? (
+                                <div id={"popupWattsType"} style={{borderWidth: "1em",borderColor:"blue"}}>
                                 <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                                a1={a1ValueForUc} mode={"MAC"} cloud={cloud_Name}/>) : (
+                                                a1={a1ValueForUc} mode={"MAC"} cloud={cloud_Name}/> </div>) : (
                                 <div style={{paddingLeft: "35%"}}>Rien </div>)}
 
 
-                        </div>)
+                        </div>
+
+                    )
+
                     }
                 </SnackbarProvider>
 

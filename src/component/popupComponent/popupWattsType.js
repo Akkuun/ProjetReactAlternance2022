@@ -37,6 +37,7 @@ const style = {
     borderRadius: '10px',
     boxShadow: '24',
     p: 4,
+
 };
 
 
@@ -174,6 +175,7 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
         setOpenPopupComponent(true)
     };
     const handleClosePopupComponent = () => {
+
         setOpenPopupComponent(false);
     }
 
