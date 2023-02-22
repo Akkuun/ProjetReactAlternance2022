@@ -6,7 +6,6 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-
 import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
@@ -30,12 +29,8 @@ const DeviceDataBubbleComponent = ({
                                        a1,
                                        Installation_Id,
                                        Device_Id,
-
                                    }) => {
-
-
     let ImageCard, IsConnectedImage;
-
 
     function getImageCard() {
         if (mode === 0) {
@@ -91,8 +86,8 @@ const DeviceDataBubbleComponent = ({
                 <div style={{
                     display: 'flex',
                     alignItems: 'left',
-                    height: 125,
-                    maxHeight: 150,
+                    height: "15%",
+                    maxHeight: "15%",
                     fontSize: 75,
                     maxWidth: "100%",
                     width: "100%",
@@ -107,7 +102,7 @@ const DeviceDataBubbleComponent = ({
 
                     </div>
                     <div style={{
-                        fontSize: 75,
+                        fontSize: "80%",
                         paddingTop: "5%",
                         width: "80%"
                     }}>    {temp} °C
