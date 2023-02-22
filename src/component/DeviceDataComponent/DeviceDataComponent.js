@@ -43,7 +43,6 @@ const DeviceDataComponent = () => {
     let newMapConfiguration = {};
     const location = useLocation();
 
-    ManageDisplay()
 
 //recuperation du a1 pour requêtes
     const a1Handler = async (a1) => {
@@ -210,15 +209,20 @@ const DeviceDataComponent = () => {
 
     useEffect(() => {
 
+        ManageDisplay()
         setMac("")
-    },  [location]);
+    }, [location]);
 
 
-    async function DataRefresh() {
+    async function DataRefresh(test,toto) {
         let dataRefreshed;
-        await sendUserConnected(a1, install_id, device_id, cloud_Name);
+        console.log("test id")
+        console.log(test)
+        console.log("toto")
+        console.log(toto)
+        await sendUserConnected(a1, test, toto, cloud_Name);
         let token = await getTokenAPI("device", cloud_Name);
-        dataRefreshed = await getDataByDeviceID(token, device_id, cloud_Name)
+        dataRefreshed = await getDataByDeviceID(token, toto, cloud_Name)
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -241,6 +245,7 @@ const DeviceDataComponent = () => {
             setUcValue(0)
         }, 300000);
         enqueueSnackbar('Data refreshed !');
+        console.log(mapDevicesData)
 
     }
 
@@ -254,10 +259,8 @@ const DeviceDataComponent = () => {
             document.querySelectorAll(".DeviceDataBubble").forEach(elem => elem.style.visibility = 'hidden');
 
         }
-        if( mapWattsTypeForUc.length>0){
-            console.log("cas on rentre maptypeuc")
-            document.querySelectorAll(".MuiBox-root,.css-2oorrx").forEach(ele=> ele.style.visibility='hidden')
-        }
+
+
         return <div> y'a R</div>
     }
 
@@ -306,7 +309,7 @@ const DeviceDataComponent = () => {
                                         <div>
 
                                             {/*ici pour roomName, on a pas la bonne data dans DeviceMap, on prends donc dans la map installationListe pour le device en question*/}
-                                            {<DeviceDataBubbleComponent  keyValue={Math.random()}
+                                            {<DeviceDataBubbleComponent keyValue={Math.random()}
                                                                         mode={getDataByColName(mapDevicesData.get(device.deviceName), "Cm")}
                                                                         device_name={getDataByColName(mapDevicesData.get(device.deviceName), "S2")}
                                                                         install_name={device.roomName}
@@ -329,11 +332,21 @@ const DeviceDataComponent = () => {
                                         <IconButton disableFocusRipple disableRipple disableTouchRipple
 
                                                     onClick={async () => {
-
-
+                                                        let Device_id_for_refresh;
                                                         setDeviceID(device.deviceName);
                                                         setInstallID(station.installation)
-                                                        await DataRefresh();
+                                                        console.log(installationsList)
+                                                        for (let element in installationsList){
+                                                            for(let a in installationsList[element].devices){
+                                                                console.log(installationsList[element].devices[a].roomName===device.roomName)
+                                                            if(installationsList[element].devices[a].roomName===device.roomName)  Device_id_for_refresh = installationsList[element].devices[a].deviceName
+                                                            }
+                                                            //if (device.Il===)
+                                                        }
+                                                        console.log("var")
+                                                        console.log(Device_id_for_refresh)
+
+                                                        await DataRefresh(station.installation,Device_id_for_refresh);
                                                     }}> <RefreshIcon sx={{
                                             position: "left",
                                             float: "20%",
@@ -350,9 +363,9 @@ const DeviceDataComponent = () => {
                     </div> : (
                         <div>
                             {mac.length === 12 && a1.length === 0 ? (
-                                <div id={"popupWattsType"} style={{borderWidth: "1em",borderColor:"blue"}}>
+
                                 <PopupWattsType row={mapWattsTypeForUc} device_ID={mac} installation_ID={install_id}
-                                                a1={a1ValueForUc} mode={"MAC"} cloud={cloud_Name}/> </div>) : (
+                                                a1={a1ValueForUc} mode={"MAC"} cloud={cloud_Name}/>) : (
                                 <div style={{paddingLeft: "35%"}}>Rien </div>)}
 
 
