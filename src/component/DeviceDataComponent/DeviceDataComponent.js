@@ -278,9 +278,9 @@ const DeviceDataComponent = () => {
 
                 <div style={{paddingLeft: "35%", justifyContent: "space-between"}}>
                     <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
-                    <TextField id="outlined-basic" label="A1" variant="outlined"
+                    <TextField  id="outlined-basic" label="A1" variant="outlined"
                                onChange={(e) => a1Handler(e.target.value)}/>
-                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2}}/>
+                    <AccountCircle sx={{color: 'action.active', mr: 1, my: 2,paddingLeft:"30%"}}/>
                     <TextField id="outlined-basic2" label="MAC" variant="outlined"
                                onChange={(e) => MacHandler(e.target.value)}/>
                 </div>

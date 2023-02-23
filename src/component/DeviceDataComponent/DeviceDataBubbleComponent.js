@@ -67,20 +67,21 @@ const DeviceDataBubbleComponent = ({
             maxWidth: "100%",
             borderRadius: 5,
             flex: "80%",
-            marginTop: "5%"}}>
-            <CardHeader
-                avatar={
-                    <LocationOnIcon fontSize={"large"}>
+            marginTop: "5%",
 
-                    </LocationOnIcon>
-                }
+
+        }}>
+            <CardHeader
+
 
                 title={
                     <Typography gutterBottom variant="h5" component="h2" fontSize={40}>
                         {install_name} - {device_name}
                     </Typography>
                 }/>
-
+            <Typography gutterBottom variant="h5" component="h2" fontSize={28}>
+                {Device_Id}
+            </Typography>
 
             <CardContent key={keyValue}>
                 <div style={{
