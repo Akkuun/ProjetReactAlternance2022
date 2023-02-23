@@ -10,6 +10,7 @@ import {useState} from "react";
 import {LinearProgress, MenuItem, Pagination, Tooltip} from "@mui/material";
 import Cookies from "universal-cookie";
 import '../../styleComponent/JsonButton.css';
+import {useSnackbar} from "notistack";
 
 
 //export to JSSON & CSV function
@@ -131,6 +132,13 @@ const DataTable = ({
                    }) => {
 
     const [pageSize, setPageSize] = useState(13)
+    const {enqueueSnackbar} = useSnackbar()
+
+    const addToClipboard = (content) => {
+        navigator.clipboard.writeText(content.value);
+        enqueueSnackbar('Added to clipboard !');
+    };
+
 
     return (
         <DataGrid
@@ -149,6 +157,7 @@ const DataTable = ({
                 , Pagination: CustomPagination,
                 LoadingOverlay: LinearProgress,
             }}
+            onCellDoubleClick={addToClipboard}
         />
     )
 }

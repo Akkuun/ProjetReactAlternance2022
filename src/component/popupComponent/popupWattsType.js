@@ -139,7 +139,6 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
                 'col3': value.value
             })
         }
-
         setMapWattsType(RowUpdated)
         forceUpdate();
         enqueueSnackbar('Data refreshed !');
