@@ -8,7 +8,6 @@ import {SnackbarProvider} from "notistack";
 
 
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // element pour creer le routeur
