@@ -220,9 +220,9 @@ const DeviceDataComponent = () => {
         console.log(installation_id_param)
         console.log("device_id_param")
         console.log(device_id_param)
-        await sendUserConnected(a1, installation_id_param, device_id_param, cloud_Name);
+        await sendUserConnected(a1, install_id, device_id, cloud_Name);
         let token = await getTokenAPI("device", cloud_Name);
-        dataRefreshed = await getDataByDeviceID(token, device_id_param, cloud_Name)
+        dataRefreshed = await getDataByDeviceID(token, device_id, cloud_Name)
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -238,15 +238,16 @@ const DeviceDataComponent = () => {
 
 
         setMapDevicesData(mapDevicesData.set(device_id, RowUpdated))
-        console.log("uc va")
+        console.log("mapDevicesData")
+        console.log(mapDevicesData)
+        forceUpdate()
+               console.log("uc va")
         console.log(ucValue)
         setUcValue(ucValue.set(device_id_param,1));
         console.log("uc val apr")
         console.log(ucValue)
-        forceUpdate();
         setTimeout(function () {
             setUcValue(ucValue.set(device_id_param,0))
-            forceUpdate()
         }, 300000);
         enqueueSnackbar('Data refreshed !');
         console.log(ucValue)
@@ -346,10 +347,10 @@ const DeviceDataComponent = () => {
                                                                 console.log(installationsList[element].devices[a].roomName===device.roomName)
                                                             if(installationsList[element].devices[a].roomName===device.roomName)  Device_id_for_refresh = installationsList[element].devices[a].deviceName
                                                             }
-                                                            //if (device.Il===)
                                                         }
-                                                        console.log("var")
+                                                        console.log("Device_id_for_refresh")
                                                         console.log(Device_id_for_refresh)
+                                                        setDeviceID(Device_id_for_refresh)
 
                                                         await DataRefresh(station.installation,Device_id_for_refresh);
                                                     }}> <RefreshIcon sx={{
