@@ -55,7 +55,7 @@ const UserTable = () => {
     }, []);
     
     return (
-        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles}/>
+        <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles} />
     )
     
 }

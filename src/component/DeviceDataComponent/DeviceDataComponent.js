@@ -35,7 +35,7 @@ const DeviceDataComponent = () => {
     const [installationsList, setInstallationsList] = useState([]);
     const [mapDevicesData, setMapDevicesData] = useState(new Map())
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
-    const [ucValue, setUcValue] = useState('')
+    const [ucValue, setUcValue] = useState(new Map())
     const [a1ValueForUc, setA1ValueForUc] = useState('');
 
     let {cloud} = useParams();
@@ -214,15 +214,15 @@ const DeviceDataComponent = () => {
     }, [location]);
 
 
-    async function DataRefresh(test,toto) {
+    async function DataRefresh(installation_id_param,device_id_param) {
         let dataRefreshed;
-        console.log("test id")
-        console.log(test)
-        console.log("toto")
-        console.log(toto)
-        await sendUserConnected(a1, test, toto, cloud_Name);
+        console.log("installation_id_param id")
+        console.log(installation_id_param)
+        console.log("device_id_param")
+        console.log(device_id_param)
+        await sendUserConnected(a1, installation_id_param, device_id_param, cloud_Name);
         let token = await getTokenAPI("device", cloud_Name);
-        dataRefreshed = await getDataByDeviceID(token, toto, cloud_Name)
+        dataRefreshed = await getDataByDeviceID(token, device_id_param, cloud_Name)
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
@@ -238,14 +238,19 @@ const DeviceDataComponent = () => {
 
 
         setMapDevicesData(mapDevicesData.set(device_id, RowUpdated))
-
-        setUcValue(1);
+        console.log("uc va")
+        console.log(ucValue)
+        setUcValue(ucValue.set(device_id_param,1));
+        console.log("uc val apr")
+        console.log(ucValue)
         forceUpdate();
         setTimeout(function () {
-            setUcValue(0)
+            setUcValue(ucValue.set(device_id_param,0))
+            forceUpdate()
         }, 300000);
         enqueueSnackbar('Data refreshed !');
-        console.log(mapDevicesData)
+        console.log(ucValue)
+
 
     }
 
@@ -320,7 +325,7 @@ const DeviceDataComponent = () => {
                                                                         rows={mapDevicesData.get(device.deviceName)}
                                                                         Installation_Id={station.installation}
                                                                         Device_Id={device.deviceName}
-                                                                        uc={ucValue}
+                                                                        uc={ucValue.get(device.deviceName)}
 
 
                                             />}
