@@ -26,3 +26,6 @@ yarn-error.log*
 *.pem
 #exclusion du fichier secret JSON d'envrionnement qui contient toutes les données relatives à l'API
 /src/services/API_Secret.json
+
+
+/.idea
