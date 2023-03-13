@@ -103,7 +103,7 @@ const DeviceDataBubbleComponent = ({
 
                     </div>
                     <div style={{
-                        fontSize: "80%",
+                        fontSize: "70%",
                         paddingTop: "5%",
                         width: "80%"
                     }}>    {temp} °C

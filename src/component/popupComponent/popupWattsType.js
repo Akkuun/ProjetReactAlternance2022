@@ -223,7 +223,7 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
         <div style={{height: "60%"}}>
 
 
-            {mode === "MAC" ? <div></div> : <IconButton  onClick={handleOpenPopupComponent}> <InfoIcon sx={{height:"20%",width:"20%"}}/> </IconButton>}
+            {mode === "MAC" ? <div></div> : <IconButton  onClick={handleOpenPopupComponent}> <InfoIcon sx={{height:"15%",width:"15%"}}/> </IconButton>}
 
             <Modal
                 open={openPopupComponent}
