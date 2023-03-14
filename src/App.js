@@ -4,6 +4,7 @@ import PageUserData from "./component/pageUserData";
 import PageDeviceData from "./component/pageDeviceData";
 import RouterBreadcrumbs from "./component/menu/componentSlideMenu"
 import PageHome from "./component/pages/pageHome";
+import PageLocalisation from "./component/pages/pageLocalisation";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <RouterBreadcrumbs/>
             <Routes>
                 {<Route path="/" element={<PageHome/>}/>}
+
                 <Route path="/wattsProd" element={<PageHome/>}/>
                 <Route path="/wattsDev" element={<PageHome/>}/>
                 <Route path="/GKP" element={<PageHome/>}/>
@@ -30,6 +32,13 @@ function App() {
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
                 <Route path="/:cloud/pageDeviceData" element={<PageDeviceData/>}/>
                 <Route path="/:cloud/pageUserData" element={<PageUserData/>}/>
+
+
+                <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
+                <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
+                <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
+                <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
+
             </Routes>
         </div>
     )

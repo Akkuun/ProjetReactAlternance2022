@@ -17,6 +17,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
 
 // creation des objets web par rapport a drawerSections
 const ListItems = ({items, onClick}) =>
@@ -58,6 +59,8 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsProd/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsProd/pageDeviceData'},
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsProd/pageLocalisation'}
+
         ]
     });
 
@@ -69,6 +72,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsDev/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsDev/pageDeviceData'},
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsDev/pageLocalisation'}
         ]
     });
     const [itemsGKP] = useState({
@@ -78,6 +82,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/GKP/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/GKP/pageDeviceData'},
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/GKP/pageLocalisation'}
         ]
     });
     const [itemsFENIX] = useState({
@@ -87,6 +92,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/FENIX/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/FENIX/pageDeviceData'},
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/FENIX/pageLocalisation'}
         ]
     });
     const [itemsDELTACALOR] = useState({
@@ -96,6 +102,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/DELTACALOR/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/DELTACALOR/pageDeviceData'},
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/DELTACALOR/pageLocalisation'}
         ]
     });
 
