@@ -32,7 +32,7 @@
         container: 'map',
 // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-77.04, 38.907],
+        center: [48.866667, 2.333333],
         zoom: 11.15
     });
 
@@ -55,7 +55,7 @@ let count=0;
                     const feature = {
                         type: 'Feature',
                         properties: {
-                            description: `<strong>${row.name}</strong><p>${row.description}</p>`
+                            description: `<strong>${row.longitude}</strong><p>${row.latitude}</p>`
                         },
                         geometry: {
                             type: 'Point',

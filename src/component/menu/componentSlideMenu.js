@@ -44,7 +44,7 @@ function getVersionAndData() {
 
 // This arrangement can be altered based on how we want the date's format to appear.
     let currentDate = `${day}/${month}/${year}`;
-    return "V  "+ process.env.REACT_APP_VERSION +"     " + currentDate;
+    return "V  "+ "2.2" +"     " + currentDate;
 }
 
 // contenu  des boutons pour redirection
@@ -59,7 +59,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsProd/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsProd/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsProd/pageLocalisation'}
 
         ]
     });
@@ -72,7 +72,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsDev/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsDev/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsDev/pageLocalisation'}
         ]
     });
     const [itemsGKP] = useState({
@@ -82,7 +82,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/GKP/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/GKP/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/GKP/pageLocalisation'}
         ]
     });
     const [itemsFENIX] = useState({
@@ -92,7 +92,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/FENIX/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/FENIX/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/FENIX/pageLocalisation'}
         ]
     });
     const [itemsDELTACALOR] = useState({
@@ -102,7 +102,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/DELTACALOR/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/DELTACALOR/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/DELTACALOR/pageLocalisation'}
         ]
     });
 
