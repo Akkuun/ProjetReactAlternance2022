@@ -3,8 +3,8 @@ const fs = require("fs");
 const lastBackupName = process.argv.slice(2)
 
 function getAllData() {
-    let directory = `/home/brillat/git/backup_cosmos_install/backupFenix/${lastBackupName}`;
-
+    let directory = `/home/brillat/git/backup_cosmos_install/backupDeltacalor/${lastBackupName}`;
+    let count=0;
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Positions.csv`, "id,latitude,longitude,co\r\n")
     for (const file of fs.readdirSync(`${directory}/`)) {
         let data = fs.readFileSync(`${directory}/${file}`, "utf-8");
@@ -13,7 +13,7 @@ function getAllData() {
         // qui renvoie un tableau d'élement après avoir séparé la string de la ,
         let Coordinate = JSON.stringify(JSON.parse(data).Gp)
 
-
+        console.log(count++)
         var CoordinateArray = Coordinate.split(",")
 
 
