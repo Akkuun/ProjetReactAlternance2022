@@ -22,8 +22,38 @@
         max-width: 400px;
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     }
+    #legend {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 1;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    #legend div {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    #legend span {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        border-radius: 50%;
+    }
 </style>
 <div id="map"></div>
+<div id="legend">
+    <div><span style="background-color: #fbb03b"></span>Deltacalor</div>
+    <div><span style="background-color: #940726"></span>Prod</div>
+    <div><span style="background-color: #077f94"></span>Dev</div>
+</div>
 <script>
     // TO MAKE THE MAP APPEAR YOU MUST
     // ADD YOUR ACCESS TOKEN FROM
@@ -82,11 +112,12 @@ let count=0;
                     source: 'places',
                     paint: {
                         'circle-color': [
-                            'case',
-                            ['==', ['get', 'cloud'], 'Deltacalor'], '#00ff00', // if cloud == "clear", green color
-                            ['==', ['get', 'cloud'], 'Prod'], '#ffff00', // if cloud == "partly cloudy", yellow color
-                            ['==', ['get', 'cloud'], 'Dev'], '#ff0000', // if cloud == "cloudy", red color
-                            '#000000' // else, black color
+                            'match',
+                            ['get', 'cloud'],
+                            'Deltacalor', '#fbb03b',
+                            'Prod', '#940726',
+                            'Dev','#077f94',
+
                         ],
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
