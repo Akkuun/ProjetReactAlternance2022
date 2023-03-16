@@ -124,7 +124,14 @@ let count=0;
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        "circle-color": ["get", "cloud", ["literal", getCircleColor("")]],
+                        'circle-color': [
+                            'match',
+                            ['get', 'cloud'],
+                            'Deltacalor', getCircleColor('Deltacalor'),
+                            'Dev', getCircleColor('Dev'),
+                            'Prod', getCircleColor('Prod'),
+                            '#000000' // default color
+                        ],
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': '#ffffff'
