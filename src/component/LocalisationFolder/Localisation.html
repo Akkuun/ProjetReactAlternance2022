@@ -9,19 +9,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
 
     <style>
-        body { margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 <style>
-    body { margin: 0; padding: 0; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
 
     .mapboxgl-popup {
         max-width: 400px;
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     }
+
     #legend {
         position: absolute;
         bottom: 10px;
@@ -71,14 +90,18 @@
 
     function getCircleColor(cloudValue) {
         switch (cloudValue) {
-            case "Deltacalor": return "#00bfff"; // blue
-            case "Dev": return "#f5deb3"; // beige
-            case "Prod": return "#808080"; // dark gray
-            default: return "#000000"; // black (for unknown values)
+            case "Deltacalor":
+                return "#00bfff"; // blue
+            case "Dev":
+                return "#f5deb3"; // beige
+            case "Prod":
+                return "#808080"; // dark gray
+            default:
+                return "#000000"; // black (for unknown values)
         }
     }
 
-let count=0;
+    let count = 0;
     console.log("test")
 
     map.on('load', () => {
@@ -116,26 +139,36 @@ let count=0;
 
                 // Define a function to set the circle color based on the 'cloud' attribute
 
-
+                function setCircleColor(feature) {
+                    const cloudValue = feature.properties.description.match(/<p>(.*?)<\/p>/)[1];
+                    return getCircleColor(cloudValue);
+                }
 
                 // Add a layer showing the places
                 map.addLayer({
                     id: 'places',
                     type: 'circle',
                     source: 'places',
-                    paint: {
-                        'circle-color': [
-                            'match',
-                            ['get', 'cloud'],
-                            'Deltacalor', getCircleColor('Deltacalor'),
-                            'Dev', getCircleColor('Dev'),
-                            'Prod', getCircleColor('Prod'),
-                            '#000000' // default color
-                        ],
-                        'circle-radius': 6,
-                        'circle-stroke-width': 2,
-                        'circle-stroke-color': '#ffffff'
-                    }
+                    paint:
+                        {
+                            property: 'description',
+                            type: 'identity',
+                            stops: [
+                                ['Deltacalor', '#00bfff'],
+                                ['Dev', '#f5deb3'],
+                                ['Prod', '#808080'],
+                                ['unknown', '#000000']
+                            ]
+                        },
+                    'circle-radius': 6,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff'
+
+                });
+                map.setPaintProperty('places', 'circle-color', {
+                    property: 'description',
+                    type: 'identity',
+                    get: setCircleColor,
                 });
             });
         // Create a popup, but don't add it to the map yet.
