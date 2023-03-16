@@ -59,7 +59,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsProd/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsProd/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsProd/pageLocalisation'}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
 
         ]
     });
@@ -72,7 +72,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsDev/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsDev/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsDev/pageLocalisation'}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
         ]
     });
     const [itemsGKP] = useState({
@@ -82,7 +82,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/GKP/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/GKP/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/GKP/pageLocalisation'}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
         ]
     });
     const [itemsFENIX] = useState({
@@ -92,7 +92,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/FENIX/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/FENIX/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/FENIX/pageLocalisation'}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
         ]
     });
     const [itemsDELTACALOR] = useState({
@@ -102,7 +102,7 @@ const DrawerSections = ({classes}) => {
         Pages: [
             {label: 'User Data', Icon: PersonIcon, lien: '/DELTACALOR/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/DELTACALOR/pageDeviceData'},
-            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/DELTACALOR/pageLocalisation'}
+            {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: ''}
         ]
     });
 
