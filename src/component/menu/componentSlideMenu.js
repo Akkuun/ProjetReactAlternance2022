@@ -105,6 +105,12 @@ const DrawerSections = ({classes}) => {
             {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/DELTACALOR/pageLocalisation'}
         ]
     });
+    const [itemLocalisationGlobale] = useState({
+        Clouds: [
+            {label: 'Localisation Device', Icon: CloudIcon, lien: '/ALL/pageLocalisation'},
+        ],
+
+    });
 
 
     const onClick = (content) => () => {
@@ -198,6 +204,13 @@ const DrawerSections = ({classes}) => {
                                         </ListItems>
                                     </Typography>
                                 </AccordionDetails>
+                            </Accordion>
+
+                            <Accordion>
+
+                                    <ListItems items={itemLocalisationGlobale.Clouds} onClick={onClick}/>
+
+
                             </Accordion>
 
                         </div>
