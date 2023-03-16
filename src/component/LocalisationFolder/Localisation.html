@@ -69,6 +69,14 @@
         zoom: 11.15
     });
 
+    function getCircleColor(cloudValue) {
+        switch (cloudValue) {
+            case "Deltacalor": return "#00bfff"; // blue
+            case "Dev": return "#f5deb3"; // beige
+            case "Prod": return "#808080"; // dark gray
+            default: return "#000000"; // black (for unknown values)
+        }
+    }
 
 let count=0;
     console.log("test")
@@ -107,18 +115,7 @@ let count=0;
                 });
 
                 // Define a function to set the circle color based on the 'cloud' attribute
-                const setCircleColor = (cloud) => {
-                    switch (cloud) {
-                        case 'Deltacalor':
-                            return '#1abc9c';
-                        case 'Prod':
-                            return '#f39c12';
-                        case 'Dev':
-                            return '#e74c3c';
-                        default:
-                            return '#4264fb';
-                    }
-                };
+
 
 
                 // Add a layer showing the places
@@ -127,7 +124,7 @@ let count=0;
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': ['get', 'cloud', ['feature']],
+                        "circle-color": ["get", "cloud", ["literal", getCircleColor("")]],
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': '#ffffff'
