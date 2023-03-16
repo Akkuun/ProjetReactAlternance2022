@@ -105,20 +105,29 @@ let count=0;
                         features: features
                     }
                 });
+
+                // Define a function to set the circle color based on the 'cloud' attribute
+                const setCircleColor = (cloud) => {
+                    switch (cloud) {
+                        case 'Deltacalor':
+                            return '#1abc9c';
+                        case 'Prod':
+                            return '#f39c12';
+                        case 'Dev':
+                            return '#e74c3c';
+                        default:
+                            return '#4264fb';
+                    }
+                };
+
+
                 // Add a layer showing the places
                 map.addLayer({
                     id: 'places',
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': [
-                            'match',
-                            ['get', 'cloud'],
-                            'Deltacalor', '#fbb03b',
-                            'Prod', '#940726',
-                            'Dev','#077f94',
-
-                        ],
+                        'circle-color': ['get', 'cloud', ['feature']],
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': '#ffffff'
