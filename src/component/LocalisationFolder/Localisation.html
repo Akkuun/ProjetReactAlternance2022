@@ -42,7 +42,7 @@ let count=0;
 
     map.on('load', () => {
         // Load CSV data
-        fetch('Position.csv')
+        fetch('Positions.csv')
             .then(response => response.text())
             .then(data => {
                 // Parse CSV data
