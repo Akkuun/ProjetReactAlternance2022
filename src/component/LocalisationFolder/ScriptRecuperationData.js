@@ -15,6 +15,7 @@ function getAllData() {
 
         console.log(count++)
         var CoordinateArray = Coordinate.split(",")
+        console.log(CoordinateArray)
 
 
 ///filtre pour enlever les valeurs parasites
