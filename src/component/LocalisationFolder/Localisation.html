@@ -15,6 +15,9 @@
 </head>
 <body>
 <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
     .mapboxgl-popup {
         max-width: 400px;
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -78,7 +81,13 @@ let count=0;
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': '#4264fb',
+                        'circle-color': [
+                            'case',
+                            ['==', ['get', 'cloud'], 'Deltacalor'], '#00ff00', // if cloud == "clear", green color
+                            ['==', ['get', 'cloud'], 'Prod'], '#ffff00', // if cloud == "partly cloudy", yellow color
+                            ['==', ['get', 'cloud'], 'Dev'], '#ff0000', // if cloud == "cloudy", red color
+                            '#000000' // else, black color
+                        ],
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
                         'circle-stroke-color': '#ffffff'
