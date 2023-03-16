@@ -37,7 +37,7 @@
     });
 
 
-
+let count=0;
 
 
     map.on('load', () => {
@@ -50,6 +50,8 @@
                 const features = [];
                 // Loop through parsed data and convert to GeoJSON format
                 parsedData.data.forEach(row => {
+                    count++;
+                    console.log(count)
                     const feature = {
                         type: 'Feature',
                         properties: {
