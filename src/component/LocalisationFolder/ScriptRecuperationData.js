@@ -12,7 +12,7 @@ const lastBackupNameProd = process.argv.slice(5)
 //const lastBackupNameGkp = process.argv.slice(6)
 
 
-const listeCloud=["Deltacalor","Dev","Prod"]
+const listeCloud=["Deltacalor","Dev","WattsProd"]
 let count=0;
 function ExtractDataFromCloudBackupToCSV(directory) {
     console.log(directory)
@@ -54,7 +54,7 @@ function getAllData() {
     console.log("directoryCloud" + directoryCloud)
 
    directoryCloud.forEach( element =>{
-       console.log("element" + element)
+
       ExtractDataFromCloudBackupToCSV(element)
 
    })

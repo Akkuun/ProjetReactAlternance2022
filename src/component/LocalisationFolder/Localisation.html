@@ -41,38 +41,60 @@
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     }
 
-    #legend {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        z-index: 1;
-        background-color: rgba(255, 255, 255, 0.8);
+    .legend {
+        background-color: white;
+        border-radius: 5px;
+        bottom: 30px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+        font-family: Arial, sans-serif;
         padding: 10px;
-        border-radius: 4px;
-        font-size: 14px;
-        line-height: 1.5;
+        position: absolute;
+        z-index: 1;
+        width:5%;
+
     }
 
-    #legend div {
+    .legend h4 {
+        margin: 0 0 10px;
+    }
+
+    .legend-item {
         display: flex;
-        align-items: center;
         margin-bottom: 5px;
+        flex-direction: row;
+      //border: dashed red;
     }
 
-    #legend span {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
+    .legend-item span {
         border-radius: 50%;
+        display: flex;
+        flex-direction: row;;
+        height: 10px;
+        margin-right: 5px;
+        width: 10px;
+
     }
 </style>
 <div id="map"></div>
-<div id="legend">
-    <div><span style="background-color: #fbb03b"></span>Deltacalor</div>
-    <div><span style="background-color: #940726"></span>Prod</div>
-    <div><span style="background-color: #077f94"></span>Dev</div>
+<div class="legend">
+    <h4> Clouds</h4>
+    <div class="legend-item">
+        <span style="background-color:#048db0;"></span>
+        <span> Deltacalor</span>
+    </div>
+    <div class="legend-item">
+        <span style="background-color:#91037a;"></span>
+        <span> Dev</span>
+    </div>
+    <div class="legend-item">
+        <span style="background-color:#82b005;"></span>
+        <span> WattsProd</span>
+    </div>
+
 </div>
+</div>
+
+
 <script>
     // TO MAKE THE MAP APPEAR YOU MUST
     // ADD YOUR ACCESS TOKEN FROM
@@ -88,18 +110,6 @@
         zoom: 11.15
     });
 
-    function getCircleColor(cloudValue) {
-        switch (cloudValue) {
-            case "Deltacalor":
-                return "#00bfff"; // blue
-            case "Dev":
-                return "#f5deb3"; // beige
-            case "Prod":
-                return "#808080"; // dark gray
-            default:
-                return "#000000"; // black (for unknown values)
-        }
-    }
 
     let count = 0;
     console.log("test")
@@ -116,6 +126,21 @@
                 parsedData.data.forEach(row => {
                     count++;
                     console.log(count)
+                    let color;
+                    switch (row.cloud) {
+                        case 'Prod':
+                            color = '#82b005'; // vert pour "Prod"
+                            break;
+                        case 'Dev':
+                            color = '#91037a'; // jaune pour "Dev"
+                            break;
+                        case 'Deltacalor':
+                            color = '#048db0'; // rouge pour "Deltacalor"
+                            break;
+                        default:
+                            color = '#4264fb'; // valeur par défaut pour les autres
+                    }
+
                     const feature = {
                         type: 'Feature',
                         properties: {
@@ -126,6 +151,8 @@
                             coordinates: [row.longitude, row.latitude]
                         }
                     };
+                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriété du feature
+
                     features.push(feature);
                 });
                 // Add GeoJSON data to the map
@@ -136,39 +163,18 @@
                         features: features
                     }
                 });
-
-                // Define a function to set the circle color based on the 'cloud' attribute
-
-                function setCircleColor(feature) {
-                    const cloudValue = feature.properties.description.match(/<p>(.*?)<\/p>/)[1];
-                    return getCircleColor(cloudValue);
-                }
-
                 // Add a layer showing the places
                 map.addLayer({
                     id: 'places',
                     type: 'circle',
                     source: 'places',
-                    paint:
-                        {
-                            property: 'description',
-                            type: 'identity',
-                            stops: [
-                                ['Deltacalor', '#00bfff'],
-                                ['Dev', '#f5deb3'],
-                                ['Prod', '#808080'],
-                                ['unknown', '#000000']
-                            ]
-                        },
-                    'circle-radius': 6,
-                    'circle-stroke-width': 2,
-                    'circle-stroke-color': '#ffffff'
+                    paint: {
+                        'circle-color': ['get', 'marker-color'], // Utilisez la propriété 'marker-color' pour définir la couleur
+                        'circle-stroke-color': '#fff',
+                        'circle-radius': 6,
+                        'circle-stroke-width': 2,
 
-                });
-                map.setPaintProperty('places', 'circle-color', {
-                    property: 'description',
-                    type: 'identity',
-                    get: setCircleColor,
+                    }
                 });
             });
         // Create a popup, but don't add it to the map yet.
