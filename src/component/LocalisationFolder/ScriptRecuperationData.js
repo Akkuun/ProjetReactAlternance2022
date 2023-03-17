@@ -1,21 +1,29 @@
 const fs = require("fs");
 
+
 const lastBackupNameFenix = process.argv.slice(2)
 const lastBackupNameDeltacalor = process.argv.slice(3)
+//remove useless parasites data
 lastBackupNameDeltacalor.pop()
 lastBackupNameDeltacalor.pop()
 
 const lastBackupNameDev = process.argv.slice(4)
+//remove useless parasites data
+
 lastBackupNameDev.pop()
 const lastBackupNameProd = process.argv.slice(5)
 //vide donc erreur
 //const lastBackupNameGkp = process.argv.slice(6)
 
+const Fenix_Device_Csv = "FENIXDEVICES.csv"
 
-const listeCloud=["Deltacalor","Dev","WattsProd"]
-let count=0;
+
+const listeCloud = ["Deltacalor", "Dev", "WattsProd"]
+let count = 0; // compteur qui permet d'associer la valeur cloud à partir de l'index du tableau listeCloud
+
+//Méthode qui prend en paramètre un chemin de répertoire, parcourt tout les fichier, extrait les coordonnées GPS et si elles sont utilisable l'insère dnas le fichier CSV
 function ExtractDataFromCloudBackupToCSV(directory) {
-    console.log(directory)
+
     for (const file of fs.readdirSync(`${directory}/`)) {
         let data = fs.readFileSync(`${directory}/${file}`, "utf-8");
         //On fait d'abord JSON Parse pour récupérer le contenu du JSON
@@ -23,8 +31,7 @@ function ExtractDataFromCloudBackupToCSV(directory) {
         // qui renvoie un tableau d'élement après avoir séparé la string de la ,
         let Coordinate = JSON.stringify(JSON.parse(data).addressGPS)
 
-        console.log(listeCloud[count] + Coordinate)
-        if (Coordinate!=null || Coordinate!==undefined) var CoordinateArray = Coordinate.split(",")
+        if (Coordinate != null || Coordinate !== undefined) var CoordinateArray = Coordinate.split(",")
 
 ///filtre pour enlever les valeurs parasites
         if (!(CoordinateArray.includes("null")) && !(CoordinateArray.includes(null)) && !(CoordinateArray.includes("")) &&
@@ -42,6 +49,10 @@ function ExtractDataFromCloudBackupToCSV(directory) {
     count++;
 }
 
+
+
+
+//fonction qui crée le fichier CSV et qui boucle sur chacun des directory passé en paramètre du script
 function getAllData() {
 
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Positions.csv`, "id,latitude,longitude,cloud\r\n")
@@ -50,14 +61,14 @@ function getAllData() {
         `/home/brillat/git/backup_cosmos_install/backupWattsDev/${lastBackupNameDev}`,
         `/home/brillat/git/backup_cosmos_install/backupWattsProd/${lastBackupNameProd}`
         // `/home/brillat/git/backup_cosmos_install/Gkp/${lastBackupNameGkp}`
-        ]
-    console.log("directoryCloud" + directoryCloud)
+    ]
 
-   directoryCloud.forEach( element =>{
 
-      ExtractDataFromCloudBackupToCSV(element)
+    directoryCloud.forEach(element => {
 
-   })
+        ExtractDataFromCloudBackupToCSV(element)
+
+    })
 
 
 }
