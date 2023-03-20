@@ -1,7 +1,7 @@
 const fs = require("fs");
+const { parse } = require("csv-parse");
 
 
-const lastBackupNameFenix = process.argv.slice(2)
 const lastBackupNameDeltacalor = process.argv.slice(3)
 //remove useless parasites data
 lastBackupNameDeltacalor.pop()
@@ -15,10 +15,10 @@ const lastBackupNameProd = process.argv.slice(5)
 //vide donc erreur
 //const lastBackupNameGkp = process.argv.slice(6)
 
-const Fenix_Device_Csv = "FENIXDEVICES.csv"
+const Fenix_Device_Csv = "Fenix_Devices.csv"
 
 
-const listeCloud = ["Deltacalor", "Dev", "WattsProd"]
+const listeCloud = ["Deltacalor", "Dev", "WattsProd",]
 let count = 0; // compteur qui permet d'associer la valeur cloud à partir de l'index du tableau listeCloud
 
 //Méthode qui prend en paramètre un chemin de répertoire, parcourt tout les fichier, extrait les coordonnées GPS et si elles sont utilisable l'insère dnas le fichier CSV
@@ -69,6 +69,13 @@ function getAllData() {
         ExtractDataFromCloudBackupToCSV(element)
 
     })
+    //add all FENIX Devices Data into the CSV
+    fs.createReadStream(Fenix_Device_Csv)
+        .pipe(parse({ delimiter: ",", from_line: 2 }))
+        .on("data", function (row) {
+
+            fs.appendFileSync(`Positions.csv`, `${row[0]},${row[1]},${row[2]},${"Fenix"}\r\n`)
+        })
 
 
 }
