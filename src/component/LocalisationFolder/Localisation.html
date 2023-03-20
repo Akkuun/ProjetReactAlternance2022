@@ -50,7 +50,7 @@
         padding: 10px;
         position: absolute;
         z-index: 1;
-        width:5%;
+        width: 7%;
 
     }
 
@@ -62,7 +62,7 @@
         display: flex;
         margin-bottom: 5px;
         flex-direction: row;
-      //border: dashed red;
+    / / border: dashed red;
     }
 
     .legend-item span {
@@ -74,7 +74,49 @@
         width: 10px;
 
     }
+
+   #filter{
+
+        background-color: white;
+        border-radius: 5px;
+        bottom: 20%;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        width: 7%;
+
+
+   }
+
+
 </style>
+
+<div id="filter">
+    <h4>Cloud filter:</h4>
+    <div>
+        <input type="checkbox" id="Deltacalor" name="Deltacalor" onchange="filterPoints()">
+        <label for="Deltacalor">Deltacalor</label>
+    </div>
+
+    <div>
+        <input type="checkbox" id="Dev" name="Dev" onchange="filterPoints()">
+        <label for="Dev">Dev</label>
+    </div>
+    <div>
+        <input type="checkbox" id="WattsProd" name="WattsProd" onchange="filterPoints()">
+        <label for="WattsProd">WattsProd</label>
+    </div>
+    <div>
+        <input type="checkbox" id="Fenix" name="Fenix" onchange="filterPoints()">
+        <label for="Fenix">Fenix</label>
+    </div>
+
+
+
+</div>
+
 <div id="map"></div>
 <div class="legend">
     <h4> Clouds</h4>
@@ -90,6 +132,10 @@
         <span style="background-color:#82b005;"></span>
         <span> WattsProd</span>
     </div>
+    <div class="legend-item">
+        <span style="background-color:#7a6f77;"></span>
+        <span> Fenix</span>
+    </div>
 
 </div>
 </div>
@@ -100,6 +146,8 @@
     // ADD YOUR ACCESS TOKEN FROM
     // https://account.mapbox.com
 
+
+    import {v8 as features} from "@mapbox/mapbox-gl-style-spec";
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWF0aGlzd2F0dHMiLCJhIjoiY2xmODR4dm1rMGFyZjN1bzJ0bmFoYnp2byJ9.f3r7lYmiVTLbQJoBf2oNww';
     const map = new mapboxgl.Map({
@@ -199,12 +247,34 @@
             // based on the feature found.
             popup.setLngLat(coordinates).setHTML(description).addTo(map);
         });
+
+
+
+
+
+
+
         // Hide popup on mouseleave
         map.on('mouseleave', 'places', () => {
             map.getCanvas().style.cursor = '';
             popup.remove();
         });
     });
+    function filterPoints() {
+        const checkedClouds = [];
+        document.querySelectorAll('input[type=checkbox]:checked').forEach((checkbox) => {
+            checkedClouds.push(checkbox.id);
+        });
+
+        const filteredFeatures = features.filter(feature => {
+            return checkedClouds.includes(feature.properties.cloud);
+        });
+
+        map.getSource('points').setData({
+            type: 'FeatureCollection',
+            features: filteredFeatures
+        });
+    }
 
 </script>
 
