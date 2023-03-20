@@ -7,7 +7,6 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
-
     <style>
         body {
             margin: 0;
@@ -75,7 +74,7 @@
 
     }
 
-   #filter{
+    #filter {
 
         background-color: white;
         border-radius: 5px;
@@ -88,7 +87,7 @@
         width: 7%;
 
 
-   }
+    }
 
 
 </style>
@@ -96,28 +95,28 @@
 <div id="filter">
     <h4>Cloud filter:</h4>
     <div>
-        <input type="checkbox" id="Deltacalor" name="Deltacalor" onchange="filterPoints()">
-        <label for="Deltacalor">Deltacalor</label>
+        <input type="checkbox" id="DeltacalorCB" name="DeltacalorCB" onchange="update()" checked>
+        <label for="DeltacalorCB">Deltacalor</label>
     </div>
 
     <div>
-        <input type="checkbox" id="Dev" name="Dev" onchange="filterPoints()">
-        <label for="Dev">Dev</label>
+        <input type="checkbox" id="DevCB" name="DevCB" onchange="update()" checked>
+        <label for="DevCB">Dev</label>
     </div>
     <div>
-        <input type="checkbox" id="WattsProd" name="WattsProd" onchange="filterPoints()">
-        <label for="WattsProd">WattsProd</label>
+        <input type="checkbox" id="WattsProdCB" name="WattsProd" onchange="update()" checked>
+        <label for="WattsProdCB">WattsProd</label>
     </div>
     <div>
-        <input type="checkbox" id="Fenix" name="Fenix" onchange="filterPoints()">
-        <label for="Fenix">Fenix</label>
+        <input type="checkbox" id="FenixCB" name="Fenix" onchange="update()" checked>
+        <label for="FenixCB">Fenix</label>
     </div>
-
 
 
 </div>
 
 <div id="map"></div>
+
 <div class="legend">
     <h4> Clouds</h4>
     <div class="legend-item">
@@ -146,8 +145,13 @@
     // ADD YOUR ACCESS TOKEN FROM
     // https://account.mapbox.com
 
+    var filters = {
+        Deltacalor: true,
+        Dev: true,
+        WattsProd: true,
+        Fenix: true
+    };
 
-    import {v8 as features} from "@mapbox/mapbox-gl-style-spec";
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWF0aGlzd2F0dHMiLCJhIjoiY2xmODR4dm1rMGFyZjN1bzJ0bmFoYnp2byJ9.f3r7lYmiVTLbQJoBf2oNww';
     const map = new mapboxgl.Map({
@@ -160,20 +164,22 @@
 
 
     let count = 0;
-    console.log("test")
+
 
     map.on('load', () => {
         // Load CSV data
         fetch('Positions.csv')
             .then(response => response.text())
             .then(data => {
+
+
                 // Parse CSV data
                 const parsedData = Papa.parse(data, {header: true});
                 const features = [];
                 // Loop through parsed data and convert to GeoJSON format
                 parsedData.data.forEach(row => {
                     count++;
-                    console.log(count)
+
                     let color;
                     switch (row.cloud) {
                         case 'Prod':
@@ -202,6 +208,7 @@
                     feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriété du feature
 
                     features.push(feature);
+
                 });
                 // Add GeoJSON data to the map
                 map.addSource('places', {
@@ -211,6 +218,7 @@
                         features: features
                     }
                 });
+
                 // Add a layer showing the places
                 map.addLayer({
                     id: 'places',
@@ -224,57 +232,174 @@
 
                     }
                 });
+
+
+                // Create a popup, but don't add it to the map yet.
+                const popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+                // Show popup on mouseenter
+                map.on('mouseenter', 'places', (e) => {
+                    // Change the cursor style as a UI indicator.
+                    map.getCanvas().style.cursor = 'pointer';
+                    // Copy coordinates array.
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const description = e.features[0].properties.description;
+                    // Ensure that if the map is zoomed out such that multiple
+                    // copies of the feature are visible, the popup appears
+                    // over the copy being pointed to.
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+                    // Populate the popup and set its coordinates
+                    // based on the feature found.
+                    popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                });
+
+
+                // Hide popup on mouseleave
+                map.on('mouseleave', 'places', () => {
+                    map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+
             });
-        // Create a popup, but don't add it to the map yet.
-        const popup = new mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false
-        });
-        // Show popup on mouseenter
-        map.on('mouseenter', 'places', (e) => {
-            // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
-            // Copy coordinates array.
-            const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = e.features[0].properties.description;
-            // Ensure that if the map is zoomed out such that multiple
-            // copies of the feature are visible, the popup appears
-            // over the copy being pointed to.
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-            // Populate the popup and set its coordinates
-            // based on the feature found.
-            popup.setLngLat(coordinates).setHTML(description).addTo(map);
-        });
-
-
-
-
-
-
-
-        // Hide popup on mouseleave
-        map.on('mouseleave', 'places', () => {
-            map.getCanvas().style.cursor = '';
-            popup.remove();
-        });
     });
-    function filterPoints() {
-        const checkedClouds = [];
-        document.querySelectorAll('input[type=checkbox]:checked').forEach((checkbox) => {
-            checkedClouds.push(checkbox.id);
-        });
 
-        const filteredFeatures = features.filter(feature => {
-            return checkedClouds.includes(feature.properties.cloud);
-        });
+    function update() {
 
-        map.getSource('points').setData({
-            type: 'FeatureCollection',
-            features: filteredFeatures
-        });
+        filters.Deltacalor = document.getElementById("DeltacalorCB").checked;
+        filters.Dev = document.getElementById("DevCB").checked;
+        filters.WattsProd = document.getElementById("WattsProdCB").checked;
+        filters.Fenix = document.getElementById("FenixCB").checked;
+
+
+        var CloudAPrendreEnCompteDansLaMap = new Map();
+        if (filters.Deltacalor === false) {
+            CloudAPrendreEnCompteDansLaMap.set('Deltacalor', 0)
+
+        } else CloudAPrendreEnCompteDansLaMap.set('Deltacalor', 1)
+
+
+        if (filters.Dev === false) {
+            CloudAPrendreEnCompteDansLaMap.set('Dev', 0)
+
+        } else CloudAPrendreEnCompteDansLaMap.set('Dev', 1)
+
+        if (filters.WattsProd === false) {
+            CloudAPrendreEnCompteDansLaMap.set('WattsProd', 0)
+
+        } else CloudAPrendreEnCompteDansLaMap.set('WattsProd', 1)
+        if (filters.Fenix === false) {
+            CloudAPrendreEnCompteDansLaMap.set('Fenix', 0)
+        } else CloudAPrendreEnCompteDansLaMap.set('Fenix', 1)
+
+
+        map.removeLayer('places')
+        map.removeSource('places')
+
+        fetch('Positions.csv')
+            .then(response => response.text())
+            .then(data => {
+
+                // Parse CSV data
+                const parsedData = Papa.parse(data, {header: true});
+                const features = [];
+                // Loop through parsed data and convert to GeoJSON format
+                parsedData.data.forEach(row => {
+                    count++;
+
+                    let color;
+                    switch (row.cloud) {
+                        case 'Prod':
+                            color = '#82b005'; // vert pour "Prod"
+                            break;
+                        case 'Dev':
+                            color = '#91037a'; // jaune pour "Dev"
+                            break;
+                        case 'Deltacalor':
+                            color = '#048db0'; // rouge pour "Deltacalor"
+                            break;
+                        default:
+                            color = '#7a6f77'; // valeur par défaut pour les autres
+                    }
+
+                    const feature = {
+                        type: 'Feature',
+                        properties: {
+                            description: `<strong>${row.longitude}</strong><p>${row.latitude}</p><p>${row.cloud}</p>`
+                        },
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [row.longitude, row.latitude]
+                        }
+                    };
+                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriété du feature
+
+                    console.log(row.cloud)
+                    if(CloudAPrendreEnCompteDansLaMap.get(row.cloud)===1)
+                    features.push(feature);
+
+                });
+                // Add GeoJSON data to the map
+                map.addSource('places', {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: features
+                    }
+                });
+
+                // Add a layer showing the places
+                map.addLayer({
+                    id: 'places',
+                    type: 'circle',
+                    source: 'places',
+                    paint: {
+                        'circle-color': ['get', 'marker-color'], // Utilisez la propriété 'marker-color' pour définir la couleur
+                        'circle-stroke-color': '#fff',
+                        'circle-radius': 6,
+                        'circle-stroke-width': 2,
+
+                    }
+                });
+
+
+                // Create a popup, but don't add it to the map yet.
+                const popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                });
+                // Show popup on mouseenter
+                map.on('mouseenter', 'places', (e) => {
+                    // Change the cursor style as a UI indicator.
+                    map.getCanvas().style.cursor = 'pointer';
+                    // Copy coordinates array.
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const description = e.features[0].properties.description;
+                    // Ensure that if the map is zoomed out such that multiple
+                    // copies of the feature are visible, the popup appears
+                    // over the copy being pointed to.
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+                    // Populate the popup and set its coordinates
+                    // based on the feature found.
+                    popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                });
+
+
+                // Hide popup on mouseleave
+                map.on('mouseleave', 'places', () => {
+                    map.getCanvas().style.cursor = '';
+                    popup.remove();
+                });
+
+
+            })
     }
+
 
 </script>
 
