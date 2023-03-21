@@ -12,5 +12,6 @@
     <orderEntry type="module" module-name="web_app" />
     <orderEntry type="library" name="mapbox-gl" level="application" />
     <orderEntry type="library" name="mapbox-gl-supported" level="application" />
+    <orderEntry type="library" name="@lottiefiles/lottie-player" level="application" />
   </component>
 </module>

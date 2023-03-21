@@ -5,6 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@lottiefiles/lottie-player": "^1.7.1",
+    "@lottiefiles/react-lottie-player": "^3.5.3",
     "@mui/icons-material": "^5.10.15",
     "@mui/lab": "^5.0.0-alpha.113",
     "@mui/material": "^5.10.15",
@@ -25,6 +27,7 @@
     "faker": "^6.6.6",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.6.1",
+    "lottie-react": "^2.4.0",
     "mapbox-gl": "^2.13.0",
     "mapbox-gl-react": "^0.1.6",
     "moment": "^2.29.4",
