@@ -43,6 +43,7 @@ function ExtractDataFromCloudBackupToCSV(directory) {
             //ajoute au fichier csv les coordonnées
             fs.appendFileSync(`Positions.csv`, `${JSON.parse(data).id},${long},${lag},${listeCloud[count]}\r\n`)
 
+
         }
 
     }
@@ -56,6 +57,8 @@ function ExtractDataFromCloudBackupToCSV(directory) {
 function getAllData() {
 
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Positions.csv`, "id,latitude,longitude,cloud\r\n")
+
+
 
     let directoryCloud = [`/home/brillat/git/backup_cosmos_install/backupDeltacalor/${lastBackupNameDeltacalor}`,
         `/home/brillat/git/backup_cosmos_install/backupWattsDev/${lastBackupNameDev}`,
@@ -75,6 +78,7 @@ function getAllData() {
         .on("data", function (row) {
 
             fs.appendFileSync(`Positions.csv`, `${row[0]},${row[1]},${row[2]},${"Fenix"}\r\n`)
+
         })
 
 
