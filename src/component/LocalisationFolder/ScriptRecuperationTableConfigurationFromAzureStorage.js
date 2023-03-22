@@ -1,16 +1,19 @@
 const {TableClient, AzureNamedKeyCredential} = require("@azure/data-tables");
 const fs = require("fs");
 
-const account = "vs2feiothubprod";
-const accountKey = "ubk9t3QtmYbXJ56kd6r9RjhNRxx5QkiQ9oXxP7cnp+VpUyxYPAG8BI9UzS4rbYWKkBfPME2p7J8u5scGnNAElw==";
+const accountFenix = "vs2feiothubprod";
+const accountKeyFenix = "ubk9t3QtmYbXJ56kd6r9RjhNRxx5QkiQ9oXxP7cnp+VpUyxYPAG8BI9UzS4rbYWKkBfPME2p7J8u5scGnNAElw==";
 const tableName = "Configurations";
 
-const credential = new AzureNamedKeyCredential(account, accountKey);
-const client = new TableClient(`https://${account}.table.core.windows.net`, tableName, credential);
+const credential = new AzureNamedKeyCredential(accountFenix, accountKeyFenix);
+const clientFenix = new TableClient(`https://${accountFenix}.table.core.windows.net`, tableName, credential);
 
 async function main() {
-    fs.writeFileSync(`/home/dubanm/LocalisationDevice/Fenix_Devices.csv`, "id,latitude,longitude,cloud,Country,CurrentMode,Program,EcoSetPoint,ConfortSetPoint,BoostSetPoint,BoostTimer,H1,H2,ManualSetPoint,RoomType,DefrostSetPoint\r\n")
-    fs.writeFileSync(`/home/dubanm/LocalisationDevice/Pg.csv`, "id,lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche\r\n")
+    var WattsType = ['Co', 'Cm', 'Pf', 'ec', 'cf', 'bo', 'Bt', 'Ma', 'Rt', 'df']
+
+
+    fs.writeFileSync(`/home/dubanm/LocalisationDevice/Fenix_Devices.csv`, "id,latitude,longitude,cloud\r\n")
+    //fs.writeFileSync(`/home/dubanm/LocalisationDevice/Pf.csv`, "id,lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Co.csv`, "id,codePays,ville\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Ec.csv`, "id,ec\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Cf.csv`, "id,cf\r\n")
@@ -21,11 +24,11 @@ async function main() {
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Df.csv`, "id,df\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Cm.csv`, "id,cm\r\n")
 
-    let entitiesIter = client.listEntities();
+    let entitiesIterFenix = clientFenix.listEntities();
     var coordonee = [];
-    var WattsType = ['Co', 'Cm', 'Pf', 'ec', 'cf', 'bo', 'Bt', 'Ma', 'Rt', 'df']
+
     let i = 1;
-    for await (const entity of entitiesIter) {
+    for await (const entity of entitiesIterFenix) {
 
 
 
@@ -48,11 +51,9 @@ async function main() {
                 case 'ec':
                     fs.appendFileSync(`Ec.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "\r\n")
                     break;
-
                 case 'Cm':
                     fs.appendFileSync(`Cm.csv`, entity.partitionKey + "," + (entity.Value.slice(64, 65)) + "\r\n")
                     break;
-
                 case 'Pf':
                     //A faire plus tard mais il faudra boucluer sur chaque heure [0,0,85,2... ici on a une chauffe de set point de 2 h à 3h du mat
                     break;
@@ -70,20 +71,16 @@ async function main() {
                     var bt =entity.Value.slice(64).split(',')
                     fs.appendFileSync(`Bt.csv`, entity.partitionKey + "," + bt[0]+ "\r\n")
                     break;
-
                 case 'Ma':
                     fs.appendFileSync(`Ma.csv`, entity.partitionKey + "," + entity.Value.slice(80,83)+ "\r\n")
                     break;
                 case 'Rt':
-                    console.log(entity.Value)
-                    console.log(entity.Value.slice(64,67))
+                    fs.appendFileSync(`Rt.csv`, entity.partitionKey + "," + (entity.Value.slice(64,66))+ "\n")
                     break;
                 case 'df':
-                    //console.log("cas df")
+                    fs.appendFileSync(`Df.csv`, entity.partitionKey + "," + (entity.Value.slice(80,83))+ "\r\n")
                     break;
             }
-
-
             fs.appendFileSync(`Fenix_Devices.csv`, entity.partitionKey + "," + coordonee[0] + "," + coordonee[1] + ",Fenix_Devices\r\n")
         }
 
@@ -91,6 +88,8 @@ async function main() {
         i++;
 
     }
+    console.log("DONE ! ")
+
 }
 
 
