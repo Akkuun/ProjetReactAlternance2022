@@ -1,18 +1,28 @@
 const {TableClient, AzureNamedKeyCredential} = require("@azure/data-tables");
 const fs = require("fs");
 
+const tableName = "Configurations";
+//Fenix CREDENTIALS
 const accountFenix = "vs2feiothubprod";
 const accountKeyFenix = "ubk9t3QtmYbXJ56kd6r9RjhNRxx5QkiQ9oXxP7cnp+VpUyxYPAG8BI9UzS4rbYWKkBfPME2p7J8u5scGnNAElw==";
-const tableName = "Configurations";
+const credentialFenix = new AzureNamedKeyCredential(accountFenix, accountKeyFenix);
+const clientFenix = new TableClient(`https://${accountFenix}.table.core.windows.net`, tableName, credentialFenix);
+//DEVEX CREDNETIALS
+const accountProd = "";
+const accountKeyProd ="";
+const crendentialProd = new AzureNamedKeyCredential(accountProd, accountProd);
 
-const credential = new AzureNamedKeyCredential(accountFenix, accountKeyFenix);
-const clientFenix = new TableClient(`https://${accountFenix}.table.core.windows.net`, tableName, credential);
+
 
 async function main() {
-    var WattsType = ['Co', 'Cm', 'Pf', 'ec', 'cf', 'bo', 'Bt', 'Ma', 'Rt', 'df']
-
-
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Fenix_Devices.csv`, "id,latitude,longitude,cloud\r\n")
+    var WattsType = ['Co', 'Cm', 'Pf', 'ec', 'cf', 'bo', 'Bt', 'Ma', 'Rt', 'df']
+    var mapCloud = new Map();
+    mapCloud.set('Fenix',)
+
+// après l but sera de factorisé par rapport à un tableau de cloud, pour chacun des cloud on va écrire le fichier csv du wattstype correspondant
+    // avec ${nomcloud}Co.csv et on refactorisé la fonction pour faire un appel pour chacune des cases du tableau
+
     //fs.writeFileSync(`/home/dubanm/LocalisationDevice/Pf.csv`, "id,lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Co.csv`, "id,codePays,ville\r\n")
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Ec.csv`, "id,ec\r\n")
