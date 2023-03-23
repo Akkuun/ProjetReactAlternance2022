@@ -29,9 +29,6 @@ const crendentialGkp = new AzureNamedKeyCredential(accountGkp, accountKeyGkp);
 const clientGkp = new TableClient(`https://${accountGkp}.table.core.windows.net`, tableName, crendentialGkp);
 
 
-
-
-
 async function extractedDataFromEntitiesClient(entitiesFromClient, WattsType, cloudActuel) {
     for await (const entity of entitiesFromClient) {
         var coordonee = [];
@@ -63,7 +60,13 @@ async function extractedDataFromEntitiesClient(entitiesFromClient, WattsType, cl
                     break;
                 case 'Co':
                     var pays = entity.Value.slice(65).split('"')
-                    fs.appendFileSync(`Co.csv`, entity.partitionKey + "," + (entity.Value.slice(65, 67)) + "," + pays[0].slice(3) + "," + cloudActuel + "\r\n")
+
+
+                    if (pays[0].slice(3)!=='') {
+
+                        fs.appendFileSync(`Co.csv`, entity.partitionKey + "," + (entity.Value.slice(65, 67)) + "," + pays[0].slice(3) + "," + cloudActuel + "\r\n")
+                    }
+
                     break;
                 case 'cf':
                     fs.appendFileSync(`Cf.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "," + cloudActuel + "\r\n")
@@ -96,7 +99,6 @@ async function main() {
     fs.writeFileSync(`/home/dubanm/LocalisationDevice/Fenix_Devices.csv`, "id,latitude,longitude,cloud\r\n")
     var WattsType = ['Co', 'Cm', 'Pf', 'ec', 'cf', 'bo', 'Bt', 'Ma', 'Rt', 'df']
     var cloud = ['Dev', 'Prod', 'FENIX', 'Deltacalor', 'Gkp']
-
 
 
     let entitiesIterFenix = clientFenix.listEntities();
