@@ -50,10 +50,10 @@ async function extractedDataFromEntitiesClient(entitiesFromClient, WattsType, cl
 
             switch (WattsTypeActuel) {
                 case 'ec':
-                    fs.appendFileSync(`Ec.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Ec.csv`, entity.partitionKey + "," + (JSON.parse(entity.Value).value) + "," + cloudActuel + "\r\n")
                     break;
                 case 'Cm':
-                    fs.appendFileSync(`Cm.csv`, entity.partitionKey + "," + (entity.Value.slice(64, 65)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Cm.csv`, entity.partitionKey + "," + (JSON.parse(entity.Value).value) + "," + cloudActuel + "\r\n")
                     break;
                 case 'Pf':
                     //A faire plus tard mais il faudra boucluer sur chaque heure [0,0,85,2... ici on a une chauffe de set point de 2 h à 3h du mat
@@ -64,28 +64,28 @@ async function extractedDataFromEntitiesClient(entitiesFromClient, WattsType, cl
 
                     if (pays[0].slice(3)!=='') {
 
-                        fs.appendFileSync(`Co.csv`, entity.partitionKey + "," + (entity.Value.slice(65, 67)) + "," + pays[0].slice(3) + "," + cloudActuel + "\r\n")
+                        fs.appendFileSync(`Co.csv`, entity.partitionKey + "," + JSON.parse(entity.Value).value.slice(0,2) + "," + pays[0].slice(3) + "," + cloudActuel + "\r\n")
                     }
 
                     break;
                 case 'cf':
-                    fs.appendFileSync(`Cf.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Cf.csv`, entity.partitionKey + "," + (JSON.parse(entity.Value).value) + "," + cloudActuel + "\r\n")
                     break;
                 case 'bo':
-                    fs.appendFileSync(`Bo.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Bo.csv`, entity.partitionKey + "," + (JSON.parse(entity.Value).value) + "," + cloudActuel + "\r\n")
                     break;
                 case 'Bt':
                     var bt = entity.Value.slice(64).split(',')
                     fs.appendFileSync(`Bt.csv`, entity.partitionKey + "," + bt[0] + "," + cloudActuel + "\r\n")
                     break;
                 case 'Ma':
-                    fs.appendFileSync(`Ma.csv`, entity.partitionKey + "," + entity.Value.slice(80, 83) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Ma.csv`, entity.partitionKey + "," + JSON.parse(entity.Value).value + "," + cloudActuel + "\r\n")
                     break;
                 case 'Rt':
-                    fs.appendFileSync(`Rt.csv`, entity.partitionKey + "," + (entity.Value.slice(64, 66)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Rt.csv`, entity.partitionKey + "," + JSON.parse(entity.Value).value  + "," + cloudActuel + "\n")
                     break;
                 case 'df':
-                    fs.appendFileSync(`Df.csv`, entity.partitionKey + "," + (entity.Value.slice(80, 83)) + "," + cloudActuel + "\r\n")
+                    fs.appendFileSync(`Df.csv`, entity.partitionKey + "," + (JSON.parse(entity.Value).value) + "," + cloudActuel + "\r\n")
                     break;
             }
 
