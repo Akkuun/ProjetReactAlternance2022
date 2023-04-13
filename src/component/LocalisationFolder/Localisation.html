@@ -41,6 +41,8 @@
     }
 
     .legend {
+        display: flex;
+        flex-direction: column;
         background-color: white;
         border-radius: 5px;
         bottom: 30px;
@@ -49,28 +51,27 @@
         padding: 10px;
         position: absolute;
         z-index: 1;
-        width: 7%;
+        width: 10%;
 
     }
 
     .legend h4 {
-        margin: 0 0 10px;
+        margin: 0 0 20px;
     }
 
     .legend-item {
         display: flex;
         margin-bottom: 5px;
         flex-direction: row;
-    / / border: dashed red;
     }
 
     .legend-item span {
-        border-radius: 50%;
+        border-radius: 60%;
         display: flex;
-        flex-direction: row;;
-        height: 10px;
+        flex-direction: row;
+        height: 20px;
         margin-right: 5px;
-        width: 10px;
+        width: 20px;
 
     }
 
@@ -78,13 +79,13 @@
 
         background-color: white;
         border-radius: 5px;
-        bottom: 20%;
+        bottom: 45%;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
         font-family: Arial, sans-serif;
         padding: 10px;
         position: absolute;
         z-index: 1;
-        width: 7%;
+        width: 10%;
 
 
     }
@@ -95,23 +96,29 @@
 <div id="filter">
     <h4>Cloud filter:</h4>
     <div>
+        <input type="checkbox" id="WattsVisionCB" name="WattsVisionCB" onchange="update()" checked>
+        <label for="WattsVisionCB">Watts Vision</label>
+    </div>
+
+    <div>
         <input type="checkbox" id="DeltacalorCB" name="DeltacalorCB" onchange="update()" checked>
         <label for="DeltacalorCB">Deltacalor</label>
     </div>
 
     <div>
         <input type="checkbox" id="DevCB" name="DevCB" onchange="update()" checked>
-        <label for="DevCB">Dev</label>
+        <label for="DevCB">Watts Dev</label>
     </div>
     <div>
         <input type="checkbox" id="WattsProdCB" name="WattsProd" onchange="update()" checked>
-        <label for="WattsProdCB">WattsProd</label>
+        <label for="WattsProdCB">Watts Prod</label>
     </div>
     <div>
         <input type="checkbox" id="FenixCB" name="Fenix" onchange="update()" checked>
         <label for="FenixCB">Fenix</label>
     </div>
-    Top 3  contry
+
+    <b>Top 3  countries</b>
     <table id="csv-table"></table>
 </div>
 
@@ -122,23 +129,26 @@
 <div class="legend">
     <h4> Clouds</h4>
     <div class="legend-item">
+        <span style="background-color:#005DB9;"></span>
+        <span>WattsVision</span>
+    </div>
+
+    <div class="legend-item">
         <span style="background-color:#F18700;"></span>
         <span> Deltacalor</span>
-    </div>
-    <div class="legend-item">
-        <span style="background-color:#048db0;"></span>
-        <span> Dev</span>
-    </div>
-    <div class="legend-item">
-        <span style="background-color:#82b005;"></span>
-        <span> WattsProd</span>
     </div>
     <div class="legend-item">
         <span style="background-color:#9D1B1B;"></span>
         <span> Fenix</span>
     </div>
-
-
+    <div class="legend-item">
+        <span style="background-color:#048db0;"></span>
+        <span> WattsDev</span>
+    </div>
+    <div class="legend-item">
+        <span style="background-color:#82b005;"></span>
+        <span> WattsProd</span>
+    </div>
 </div>
 
 
@@ -185,6 +195,9 @@
 
                     let color;
                     switch (row.cloud) {
+                        case 'WattsVision':
+                            color = '#005DB9'; // vert pour "Watts Vision"
+                            break;
                         case 'Prod':
                             color = '#82b005'; // vert pour "Prod"
                             break;
@@ -195,7 +208,7 @@
                             color = '#F18700'; // rouge pour "Deltacalor"
                             break;
                         default:
-                            color = '#9D1B1B'; // valeur par défaut pour les autres
+                            color = '#9D1B1B'; // valeur par dÃ©faut pour les autres
                     }
 
                     const feature = {
@@ -208,7 +221,7 @@
                             coordinates: [row.longitude, row.latitude]
                         }
                     };
-                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriété du feature
+                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriÃ©tÃ© du feature
 
                     features.push(feature);
 
@@ -228,7 +241,7 @@
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': ['get', 'marker-color'], // Utilisez la propriété 'marker-color' pour définir la couleur
+                        'circle-color': ['get', 'marker-color'], // Utilisez la propriÃ©tÃ© 'marker-color' pour dÃ©finir la couleur
                         'circle-stroke-color': '#fff',
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
@@ -242,6 +255,7 @@
                     closeButton: false,
                     closeOnClick: false
                 });
+
                 // Show popup on mouseenter
                 map.on('mouseenter', 'places', (e) => {
                     // Change the cursor style as a UI indicator.
@@ -272,6 +286,7 @@
 
     function update() {
 
+        filters.WattsVision = document.getElementById("WattsVisionCB").checked;
         filters.Deltacalor = document.getElementById("DeltacalorCB").checked;
         filters.Dev = document.getElementById("DevCB").checked;
         filters.WattsProd = document.getElementById("WattsProdCB").checked;
@@ -279,6 +294,11 @@
 
 
         var CloudAPrendreEnCompteDansLaMap = new Map();
+        if (filters.WattsVision === false) {
+            CloudAPrendreEnCompteDansLaMap.set('WattsVision', 0)
+
+        } else CloudAPrendreEnCompteDansLaMap.set('WattsVision', 1)
+
         if (filters.Deltacalor === false) {
             CloudAPrendreEnCompteDansLaMap.set('Deltacalor', 0)
 
@@ -315,6 +335,9 @@
 
                     let color;
                     switch (row.cloud) {
+                        case 'WattsVision':
+                            color = '#005DB9'; // vert pour "Prod"
+                            break;
                         case 'WattsProd':
                             color = '#82b005'; // vert pour "Prod"
                             break;
@@ -325,7 +348,7 @@
                             color = '#F18700'; // rouge pour "Deltacalor"
                             break;
                         default:
-                            color = '#9D1B1B'; // valeur par défaut pour les autres
+                            color = '#9D1B1B'; // valeur par dÃ©faut pour les autres
                     }
 
                     const feature = {
@@ -338,11 +361,11 @@
                             coordinates: [row.longitude, row.latitude]
                         }
                     };
-                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriété du feature
+                    feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriÃ©tÃ© du feature
 
-                    console.log(row.cloud)
+                    // console.log(row.cloud)
                     if(CloudAPrendreEnCompteDansLaMap.get(row.cloud)===1)
-                    features.push(feature);
+                        features.push(feature);
 
                 });
                 // Add GeoJSON data to the map
@@ -360,7 +383,7 @@
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': ['get', 'marker-color'], // Utilisez la propriété 'marker-color' pour définir la couleur
+                        'circle-color': ['get', 'marker-color'], // Utilisez la propriÃ©tÃ© 'marker-color' pour dÃ©finir la couleur
                         'circle-stroke-color': '#fff',
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
@@ -407,7 +430,7 @@
         .then(data => {
             const rows = data.split('\n');
             const table = document.getElementById('csv-table');
-            for (let i = 0; i < 3 && i < rows.length; i++) { // limité à 3 lignes
+            for (let i = 0; i < 3 && i < rows.length; i++) { // limitÃ© Ã  3 lignes
                 const cells = rows[i].split(',');
                 const row = document.createElement('tr');
                 for (let j = 0; j < cells.length; j++) {
