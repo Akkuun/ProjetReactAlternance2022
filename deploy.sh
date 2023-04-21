@@ -22,4 +22,6 @@ echo "Deploying Localisation Map Device html file"
 scp -r src/component/LocalisationFolder/Localisation.html dubanm@10.99.3.48:/var/www/html/LocalisationDevice
 echo "Deploying Localisation Map Device html file done !"
 scp -r src/component/LocalisationFolder/Localisation.html dubanm@10.99.3.48:/var/www/html/LocalisationDevice/index.html
+
+
 echo "Done !"
