@@ -18,6 +18,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
+import LeaderboardTwoToneIcon from '@mui/icons-material/LeaderboardTwoTone';
 
 // creation des objets web par rapport a drawerSections
 const ListItems = ({items, onClick}) =>
@@ -108,6 +109,13 @@ const DrawerSections = ({classes}) => {
     const [itemLocalisationGlobale] = useState({
         Clouds: [
             {label: 'Localisation Device', Icon: CloudIcon, lien: '/ALL/pageLocalisation'},
+        ],
+
+    });
+
+    const [itemStatistique] = useState({
+        Clouds: [
+            {label: 'Statistiques Device', Icon: LeaderboardTwoToneIcon, lien: '/ALL/pageStatistique'},
         ],
 
     });
@@ -209,6 +217,13 @@ const DrawerSections = ({classes}) => {
                             <Accordion>
 
                                     <ListItems items={itemLocalisationGlobale.Clouds} onClick={onClick}/>
+
+
+                            </Accordion>
+
+                            <Accordion>
+
+                                <ListItems items={itemStatistique.Clouds} onClick={onClick}/>
 
 
                             </Accordion>
