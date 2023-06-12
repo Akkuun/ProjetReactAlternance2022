@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@influxdata/influxdb-client": "^1.33.2",
     "@lottiefiles/lottie-player": "^1.7.1",
     "@lottiefiles/react-lottie-player": "^3.5.3",
     "@mui/icons-material": "^5.10.15",

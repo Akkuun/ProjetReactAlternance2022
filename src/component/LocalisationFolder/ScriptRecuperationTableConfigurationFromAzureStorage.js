@@ -2,11 +2,11 @@ const {TableClient, AzureNamedKeyCredential} = require("@azure/data-tables");
 const fs = require("fs");
 
 //influx
-//const Influx = require('influx');
+//const InfluxDb = require('influx');
 //const { Point } = require('@influxdata/influxdb-client');
 
 
-// const client = new Influx.InfluxDB({
+// const client = new InfluxDb.InfluxDB({
 //     host: '10.99.3.47',
 //     // url:'http://10.99.3.47:8086',
 //     // port: 8086,

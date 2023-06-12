@@ -5,6 +5,7 @@ import PageDeviceData from "./component/pageDeviceData";
 import RouterBreadcrumbs from "./component/menu/componentSlideMenu"
 import PageHome from "./component/pages/pageHome";
 import PageLocalisation from "./component/pages/pageLocalisation";
+import PageStatistique from "./component/pageStatistique";
 
 function App() {
     return (
@@ -39,6 +40,8 @@ function App() {
                 <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
                 <Route path="/:cloud/pageLocalisation" element={<PageLocalisation/>}/>
 
+
+                <Route path="/:cloud/pageStatistique" element={<PageStatistique/>}/>
             </Routes>
         </div>
     )
