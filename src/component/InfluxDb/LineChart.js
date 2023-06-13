@@ -55,8 +55,8 @@ const dataInfluxRes = {
 
 const LineChart = () => {
     return (
-        <div>
-            <Line data={dataInfluxRes} />
+        <div >
+            <Line data={dataInfluxRes} style={{borderColor:"blue", borderStyle:"solid"}}  />
 
         </div>
     );
