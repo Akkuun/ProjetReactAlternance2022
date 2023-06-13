@@ -16,7 +16,7 @@ const fluxQuery = `from(bucket: "StatsWattsType")
       |> range(start: 2023-04-04T15:48:20Z, stop: 2023-06-12T15:48:20Z)
       |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
       |> filter(fn: (r) => r["cloud"] == "Deltacalor")
-      |> filter(fn: (r) => r["wattsType"] == "Ma")
+      |> filter(fn: (r) => r["wattsType"] == "Bt")
       |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
       |> yield(name: "mean")`
 let dataInflux=[]
@@ -54,6 +54,7 @@ const dataInfluxRes = {
 };
 
 const LineChart = () => {
+
     return (
         <div >
             <Line data={dataInfluxRes} style={{borderColor:"blue", borderStyle:"solid"}}  />
