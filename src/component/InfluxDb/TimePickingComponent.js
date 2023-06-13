@@ -9,6 +9,8 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 import Button from "@mui/material/Button";
 
 import SendIcon from '@mui/icons-material/Send';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
 export default function TimePickingComponent() {
     const [value, setValue] = React.useState();
     const [value2, setValue2] = React.useState();
@@ -30,13 +32,34 @@ export default function TimePickingComponent() {
                     />
                         <Select
                             disabled={false}
-                            placeholder="Choose one…"
+                            placeholder="Choix wattsType…"
                         >
-                            <Option>titi</Option>
-                            <Option>tata</Option>
+                            <Option value={"Bt"}>Bt</Option>
+                            <Option value={"Cm"}>Cm</Option>
+                            <Option value={"Ma"}>Ma</Option>
+                            <Option value={"Rt"}>Rt</Option>
+                            <Option value={"bo"}>bo</Option>
+                            <Option value={"cf"}>cf</Option>
+                            <Option value={"df"}>df</Option>
+                            <Option value={"ec"}>ec</Option>
                         </Select>
 
-                    <Button variant="contained" endIcon={<SendIcon />}>
+                        <Select
+                            disabled={false}
+                            placeholder="Choix cloud…"
+                        >
+                            <Option value={"Deltacalor"}>Deltacalor</Option>
+                            <Option value={"Dev"}>Dev</Option>
+                            <Option value={"FENIX"}>FENIX</Option>
+                            <Option value={"GKP"}>GKP</Option>
+                            <Option value={"Prod"}>Prod</Option>
+                        </Select>
+                    <Button variant="contained" endIcon={<SendIcon /> } onClick={() => {
+                        console.log()
+
+
+
+                    }}>
                         Envoyer requête
                     </Button></div>
                 </DemoContainer>
