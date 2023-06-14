@@ -51,8 +51,8 @@ const InfluxDBComponent = () => {
     const fluxQuery = `from(bucket: "StatsWattsType")
       |> range(start: 2023-04-04T15:48:20Z, stop: 2023-06-12T15:48:20Z)
       |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
-      |> filter(fn: (r) => r["cloud"] == "Deltacalor")
-      |> filter(fn: (r) => r["wattsType"] == "Bt")
+      |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
+      |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
       |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
       |> yield(name: "mean")`
     let dataInflux = []
@@ -67,9 +67,11 @@ const InfluxDBComponent = () => {
         }
         setValueInfluxDataTab(dataInflux)
         setValueInfluxTimeTab(timeInflux)
-        console.log(valueInfluxTimeTab)
-        console.log(valueInfluxDataTab)
-        console.log(valueMode,valueCloud)
+        console.log(valueMode)
+        console.log(valueMode[0].title)
+        console.log(valueCloud)
+
+        console.log(valueCloud[0].title)
     }
 
 
@@ -84,34 +86,19 @@ const InfluxDBComponent = () => {
             },
         ],
     };
-    // const data = {
-    //     labels: ['a','a','a','a','a','a','a'],
-    //     datasets: [
-    //         {
-    //             label: 'My First dataset',
-    //             backgroundColor: 'rgba(255,99,132,0.2)',
-    //             borderColor: 'rgba(255,99,132,1)',
-    //             borderWidth: 1,
-    //             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-    //             hoverBorderColor: 'rgba(255,99,132,1)',
-    //             data: [21, 53, 65, 12, 32,1,1]
-    //         }
-    //     ]
-    // };
+
 
     return (
         <div style={{
-            borderColor: "red",
-            borderStyle: "solid",
             justifyContent: "space-between",
             display: "flex",
             alignItems: "center",
-            flexDirection: "column"
+            flexDirection: "column",
+            height:"100%", width:"100%"
         }}>
-            <div>
-                <Line data={dataInfluxRes}
-                      style={{borderColor: "blue", borderStyle: "solid", display: "flex", height: "30%"}}/>
-            </div>
+
+                <Line data={dataInfluxRes}/>
+
 
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -119,8 +106,6 @@ const InfluxDBComponent = () => {
                     <div style={{
                         display: "flex",
                         flexDirection: "row",
-                        borderColor: "green",
-                        borderStyle: "solid",
                         justifyContent: "space-between"
                     }}>
                         <DateTimePicker
@@ -133,20 +118,6 @@ const InfluxDBComponent = () => {
                             value={valueFin}
                             onChange={(newValue) => setValueFin(newValue)}
                         />
-                        {/*<Autocomplete*/}
-                        {/*    value={valueMode}*/}
-                        {/*    onChange={(event, newValue) => {*/}
-                        {/*        setValueMode(newValue);*/}
-                        {/*    }}*/}
-                        {/*    inputValue={inputValueMode}*/}
-                        {/*    onInputChange={(event, newInputValue) => {*/}
-                        {/*        setInputValueMode(newInputValue);*/}
-                        {/*    }}*/}
-                        {/*    id="mode"*/}
-                        {/*    options={optionsMode}*/}
-                        {/*    sx={{width: 300}}*/}
-                        {/*    renderInput={(params) => <TextField {...params} label="Controllable"/>}*/}
-                        {/*/>*/}
                         <Autocomplete
                             multiple
                             id="mode"
@@ -167,24 +138,11 @@ const InfluxDBComponent = () => {
                                 </li>
                             )}
                             style={{width: 500}}
-                            renderInput={(params) => (
+                            renderinput={(params) => (
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
                         />
-                        {/*<Autocomplete*/}
-                        {/*    value={valueCloud}*/}
-                        {/*    onChange={(event, newValue) => {*/}
-                        {/*        setValueCloud(newValue);*/}
-                        {/*    }}*/}
-                        {/*    inputValue={inputValueCloud}*/}
-                        {/*    onInputChange={(event, newInputValue) => {*/}
-                        {/*        setInputValueCloud(newInputValue);*/}
-                        {/*    }}*/}
-                        {/*    id="cloud"*/}
-                        {/*    options={optionsCloud}*/}
-                        {/*    sx={{ width: "10%" }}*/}
-                        {/*    renderInput={(params) => <TextField {...params} label="tt" />}*/}
-                        {/*/>*/}
+
                         <Autocomplete
                             multiple
                             id="cloud"
@@ -205,7 +163,7 @@ const InfluxDBComponent = () => {
                                 </li>
                             )}
                             style={{width: 500}}
-                            renderInput={(params) => (
+                            renderinput={(params) => (
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
                         />
