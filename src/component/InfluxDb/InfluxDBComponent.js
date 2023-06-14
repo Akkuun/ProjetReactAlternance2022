@@ -12,12 +12,24 @@ import Option from "@mui/joy/Option";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-
+import {InputLabel, MenuItem, TextField} from "@mui/material";
+import {Autocomplete, FormControl, FormHelperText} from "@mui/joy";
+import Box from "@mui/material/Box";
+const optionsMode = ['Bt','Cm','Ma','Rt','bo','cf','df','ec'];
+const optionsCloud = ['Bt','Cm','Ma','Rt','bo','cf','df','ec'];
 const InfluxDBComponent = () => {
 
 
-    const [value, setValue] = React.useState();
-    const [value2, setValue2] = React.useState();
+    const [valueDebut, setValueDebut] = React.useState();
+    const [valueFin, setValueFin] = React.useState();
+    const [valueMode, setValueMode] = React.useState(optionsMode[0]);
+    const [inputValueMode, setInputValueMode] = React.useState('');
+
+    const [valueCloud, setValueCloud] = React.useState(optionsMode[0]);
+    const [inputValueCloud, setInputValueCloud] = React.useState('');
+
+
+
 
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -67,53 +79,62 @@ const InfluxDBComponent = () => {
 
 
     return (
-        <div style={{  borderColor:"red",borderStyle:"solid", height:"70%", width:"60%", position:"center"}}>
+        <div style={{  borderColor:"red",borderStyle:"solid", justifyContent:"space-between", display:"flex", alignItems:"center",flexDirection:"column"}}>
              <div >
-                 <Line data={dataInfluxRes} style={{borderColor:"blue", borderStyle:"solid"}}  />
+                 <Line data={dataInfluxRes} style={{borderColor:"blue", borderStyle:"solid", display:"flex", height:"30%"}}  />
              </div>
+
+
+
+
 
 
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
-                    <div style={{display:"flex", flexDirection:"row" ,borderColor:"green", borderStyle:"solid"}}>
+                    <div style={{display:"flex", flexDirection:"row" ,borderColor:"green", borderStyle:"solid", justifyContent:"space-between"}}>
                         <DateTimePicker
                             label="Début"
-                            value={value}
-                            onChange={(newValue) => setValue(newValue)}
+                            value={valueDebut}
+                            onChange={(newValue) => setValueDebut(newValue)}
                         />
                         <DateTimePicker
                             label="Fin"
-                            value={value2}
-                            onChange={(newValue) => setValue2(newValue)}
+                            value={valueFin}
+                            onChange={(newValue) => setValueFin(newValue)}
                         />
-                        <Select
-                            disabled={false}
-                            placeholder="Choix wattsType…"
-                        >
-                            <Option value={"Bt"}>Bt</Option>
-                            <Option value={"Cm"}>Cm</Option>
-                            <Option value={"Ma"}>Ma</Option>
-                            <Option value={"Rt"}>Rt</Option>
-                            <Option value={"bo"}>bo</Option>
-                            <Option value={"cf"}>cf</Option>
-                            <Option value={"df"}>df</Option>
-                            <Option value={"ec"}>ec</Option>
-                        </Select>
+                        <Autocomplete
+                            value={valueMode}
+                            onChange={(event, newValue) => {
+                                setValueMode(newValue);
+                            }}
+                            inputValue={inputValueMode}
+                            onInputChange={(event, newInputValue) => {
+                                setInputValueMode(newInputValue);
+                            }}
+                            id="mode"
+                            options={optionsMode}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Controllable" />}
+                        />
+                        <Autocomplete
+                            value={valueCloud}
+                            onChange={(event, newValue) => {
+                                setValueCloud(newValue);
+                            }}
+                            inputValue={inputValueCloud}
+                            onInputChange={(event, newInputValue) => {
+                                setInputValueCloud(newInputValue);
+                            }}
+                            id="cloud"
+                            options={optionsCloud}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Controllable" />}
+                        />
 
-                        <Select
-                            disabled={false}
-                            placeholder="Choix cloud…"
-                        >
-                            <Option value={"Deltacalor"}>Deltacalor</Option>
-                            <Option value={"Dev"}>Dev</Option>
-                            <Option value={"FENIX"}>FENIX</Option>
-                            <Option value={"GKP"}>GKP</Option>
-                            <Option value={"Prod"}>Prod</Option>
-                        </Select>
                         <Button variant="contained" endIcon={<SendIcon /> } onClick={() => {
-                            console.log()
-
+alert(valueMode)
+                            alert(valueCloud)
 
 
                         }}>
