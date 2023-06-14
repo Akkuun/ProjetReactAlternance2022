@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
+import {Line} from "react-chartjs-2";
+import {Chart as ChartJS} from "chart.js/auto";
 import {InfluxDB} from "@influxdata/influxdb-client";
 
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -11,11 +11,22 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import { TextField} from "@mui/material";
+import {TextField} from "@mui/material";
 import {Autocomplete} from "@mui/joy";
+import Checkbox from '@mui/material/Checkbox';
 
-const optionsMode = ['Bt','Cm','Ma','Rt','bo','cf','df','ec'];
-const optionsCloud = ['Deltacalor','GKP','Dev','Prod','Fenix'];
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+
+
+const optionsMode = [{title: 'Bt'}, {title: 'Cm'}, {title: 'Ma'}, {title: 'Rt'}, {title: 'bo'}, {title: 'cf'}, {title: 'df'}, {title: 'ec'}];
+const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {title: 'Prod'}, {title: 'Fenix'}]
+
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
+const checkedIcon = <CheckBoxIcon fontSize="small"/>;
+
+
 const InfluxDBComponent = () => {
 
 
@@ -44,9 +55,8 @@ const InfluxDBComponent = () => {
       |> filter(fn: (r) => r["wattsType"] == "Bt")
       |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
       |> yield(name: "mean")`
-    let dataInflux=[]
-    let timeInflux=[]
-
+    let dataInflux = []
+    let timeInflux = []
 
 
     const requestInfluxForChart = async () => {
@@ -59,13 +69,8 @@ const InfluxDBComponent = () => {
         setValueInfluxTimeTab(timeInflux)
         console.log(valueInfluxTimeTab)
         console.log(valueInfluxDataTab)
+        console.log(valueMode,valueCloud)
     }
-
-
-
-
-
-
 
 
     const dataInfluxRes = {
@@ -95,20 +100,29 @@ const InfluxDBComponent = () => {
     // };
 
     return (
-        <div style={{  borderColor:"red",borderStyle:"solid", justifyContent:"space-between", display:"flex", alignItems:"center",flexDirection:"column"}}>
-             <div >
-                 <Line data={dataInfluxRes} style={{borderColor:"blue", borderStyle:"solid", display:"flex", height:"30%"}}  />
-             </div>
-
-
-
-
-
+        <div style={{
+            borderColor: "red",
+            borderStyle: "solid",
+            justifyContent: "space-between",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column"
+        }}>
+            <div>
+                <Line data={dataInfluxRes}
+                      style={{borderColor: "blue", borderStyle: "solid", display: "flex", height: "30%"}}/>
+            </div>
 
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
-                    <div style={{display:"flex", flexDirection:"row" ,borderColor:"green", borderStyle:"solid", justifyContent:"space-between"}}>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        borderColor: "green",
+                        borderStyle: "solid",
+                        justifyContent: "space-between"
+                    }}>
                         <DateTimePicker
                             label="Début"
                             value={valueDebut}
@@ -119,36 +133,84 @@ const InfluxDBComponent = () => {
                             value={valueFin}
                             onChange={(newValue) => setValueFin(newValue)}
                         />
+                        {/*<Autocomplete*/}
+                        {/*    value={valueMode}*/}
+                        {/*    onChange={(event, newValue) => {*/}
+                        {/*        setValueMode(newValue);*/}
+                        {/*    }}*/}
+                        {/*    inputValue={inputValueMode}*/}
+                        {/*    onInputChange={(event, newInputValue) => {*/}
+                        {/*        setInputValueMode(newInputValue);*/}
+                        {/*    }}*/}
+                        {/*    id="mode"*/}
+                        {/*    options={optionsMode}*/}
+                        {/*    sx={{width: 300}}*/}
+                        {/*    renderInput={(params) => <TextField {...params} label="Controllable"/>}*/}
+                        {/*/>*/}
                         <Autocomplete
-                            value={valueMode}
-                            onChange={(event, newValue) => {
-                                setValueMode(newValue);
-                            }}
-                            inputValue={inputValueMode}
-                            onInputChange={(event, newInputValue) => {
-                                setInputValueMode(newInputValue);
-                            }}
+                            multiple
                             id="mode"
+                            placeholder={"choix du mode"}
                             options={optionsMode}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Controllable" />}
+                            onChange={(event, value) => setValueMode(value)}
+                            disableCloseOnSelect
+                            getOptionLabel={(option) => option.title}
+                            renderOption={(props, option, {selected}) => (
+                                <li {...props}>
+                                    <Checkbox
+                                        icon={icon}
+                                        checkedIcon={checkedIcon}
+                                        style={{marginRight: 8}}
+                                        checked={selected}
+                                    />
+                                    {option.title}
+                                </li>
+                            )}
+                            style={{width: 500}}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
+                            )}
                         />
+                        {/*<Autocomplete*/}
+                        {/*    value={valueCloud}*/}
+                        {/*    onChange={(event, newValue) => {*/}
+                        {/*        setValueCloud(newValue);*/}
+                        {/*    }}*/}
+                        {/*    inputValue={inputValueCloud}*/}
+                        {/*    onInputChange={(event, newInputValue) => {*/}
+                        {/*        setInputValueCloud(newInputValue);*/}
+                        {/*    }}*/}
+                        {/*    id="cloud"*/}
+                        {/*    options={optionsCloud}*/}
+                        {/*    sx={{ width: "10%" }}*/}
+                        {/*    renderInput={(params) => <TextField {...params} label="tt" />}*/}
+                        {/*/>*/}
                         <Autocomplete
-                            value={valueCloud}
-                            onChange={(event, newValue) => {
-                                setValueCloud(newValue);
-                            }}
-                            inputValue={inputValueCloud}
-                            onInputChange={(event, newInputValue) => {
-                                setInputValueCloud(newInputValue);
-                            }}
+                            multiple
                             id="cloud"
                             options={optionsCloud}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Controllable" />}
+                            disableCloseOnSelect
+                            onChange={(event, value) => setValueCloud(value)}
+                            placeholder={"choix du cloud"}
+                            getOptionLabel={(option) => option.title}
+                            renderOption={(props, option, {selected}) => (
+                                <li {...props}>
+                                    <Checkbox
+                                        icon={icon}
+                                        checkedIcon={checkedIcon}
+                                        style={{marginRight: 8}}
+                                        checked={selected}
+                                    />
+                                    {option.title}
+                                </li>
+                            )}
+                            style={{width: 500}}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
+                            )}
                         />
 
-                        <Button variant="contained" endIcon={<SendIcon /> } onClick={() => {
+                        <Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
                             requestInfluxForChart()
 
 
@@ -157,7 +219,6 @@ const InfluxDBComponent = () => {
                         </Button></div>
                 </DemoContainer>
             </LocalizationProvider>
-
 
 
         </div>
