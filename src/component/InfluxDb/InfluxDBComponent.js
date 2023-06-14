@@ -20,7 +20,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 
 const optionsMode = [{title: 'Bt'}, {title: 'Cm'}, {title: 'Ma'}, {title: 'Rt'}, {title: 'bo'}, {title: 'cf'}, {title: 'df'}, {title: 'ec'}];
-const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {title: 'Prod'}, {title: 'Fenix'}]
+const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {title: 'Prod'}, {title: 'FENIX'}]
 
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
@@ -68,10 +68,10 @@ const InfluxDBComponent = () => {
         setValueInfluxDataTab(dataInflux)
         setValueInfluxTimeTab(timeInflux)
         console.log(valueMode)
-        console.log(valueMode[0].title)
+
         console.log(valueCloud)
 
-        console.log(valueCloud[0].title)
+
     }
 
 
@@ -123,7 +123,7 @@ const InfluxDBComponent = () => {
                             id="mode"
                             placeholder={"choix du mode"}
                             options={optionsMode}
-                            onChange={(event, value) => setValueMode(value)}
+                            onChange={(event, value) => setValueMode(value[0].title)}
                             disableCloseOnSelect
                             getOptionLabel={(option) => option.title}
                             renderOption={(props, option, {selected}) => (
@@ -148,7 +148,7 @@ const InfluxDBComponent = () => {
                             id="cloud"
                             options={optionsCloud}
                             disableCloseOnSelect
-                            onChange={(event, value) => setValueCloud(value)}
+                            onChange={(event, value) => setValueCloud(value[0].title)}
                             placeholder={"choix du cloud"}
                             getOptionLabel={(option) => option.title}
                             renderOption={(props, option, {selected}) => (
