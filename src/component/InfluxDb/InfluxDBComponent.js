@@ -7,29 +7,30 @@ import {InfluxDB} from "@influxdata/influxdb-client";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import {DateTimePicker} from "@mui/x-date-pickers";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {InputLabel, MenuItem, TextField} from "@mui/material";
-import {Autocomplete, FormControl, FormHelperText} from "@mui/joy";
-import Box from "@mui/material/Box";
+import { TextField} from "@mui/material";
+import {Autocomplete} from "@mui/joy";
+
 const optionsMode = ['Bt','Cm','Ma','Rt','bo','cf','df','ec'];
-const optionsCloud = ['Bt','Cm','Ma','Rt','bo','cf','df','ec'];
+const optionsCloud = ['Deltacalor','GKP','Dev','Prod','Fenix'];
 const InfluxDBComponent = () => {
 
 
     const [valueDebut, setValueDebut] = React.useState();
     const [valueFin, setValueFin] = React.useState();
-    const [valueMode, setValueMode] = React.useState(optionsMode[0]);
-    const [inputValueMode, setInputValueMode] = React.useState('');
 
+    const [valueMode, setValueMode] = React.useState(optionsMode[0]);
     const [valueCloud, setValueCloud] = React.useState(optionsMode[0]);
+
+    const [inputValueMode, setInputValueMode] = React.useState('');
     const [inputValueCloud, setInputValueCloud] = React.useState('');
 
 
-
+    const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState();
+    const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState();
 
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -48,35 +49,50 @@ const InfluxDBComponent = () => {
 
 
 
-    const myQuery = async () => {
+    const requestInfluxForChart = async () => {
         for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
             const o = tableMeta.toObject(values)
             dataInflux.push(o._value)
             timeInflux.push(o._time)
         }
+        setValueInfluxDataTab(dataInflux)
+        setValueInfluxTimeTab(timeInflux)
+        console.log(valueInfluxTimeTab)
+        console.log(valueInfluxDataTab)
     }
-    dataInflux.map(x=> console.log(x))
 
 
-    /** Execute a query and receive line table metadata and rows. */
-    myQuery().then(r => console.log(r))
 
 
-    console.log(timeInflux)
-    console.log(dataInflux)
+
+
+
 
     const dataInfluxRes = {
-        labels: timeInflux,
+        labels: valueInfluxTimeTab,
         datasets: [
             {
-                label: "Resultats",
+                label: "Résultats",
                 backgroundColor: "rgb(255, 99, 132)",
                 borderColor: "rgb(255, 99, 132)",
-                data: dataInflux,
+                data: valueInfluxDataTab,
             },
         ],
     };
-
+    // const data = {
+    //     labels: ['a','a','a','a','a','a','a'],
+    //     datasets: [
+    //         {
+    //             label: 'My First dataset',
+    //             backgroundColor: 'rgba(255,99,132,0.2)',
+    //             borderColor: 'rgba(255,99,132,1)',
+    //             borderWidth: 1,
+    //             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+    //             hoverBorderColor: 'rgba(255,99,132,1)',
+    //             data: [21, 53, 65, 12, 32,1,1]
+    //         }
+    //     ]
+    // };
 
     return (
         <div style={{  borderColor:"red",borderStyle:"solid", justifyContent:"space-between", display:"flex", alignItems:"center",flexDirection:"column"}}>
@@ -133,8 +149,7 @@ const InfluxDBComponent = () => {
                         />
 
                         <Button variant="contained" endIcon={<SendIcon /> } onClick={() => {
-alert(valueMode)
-                            alert(valueCloud)
+                            requestInfluxForChart()
 
 
                         }}>
