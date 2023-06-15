@@ -86,12 +86,14 @@ const InfluxDBComponent = () => {
             },
         ],
     };
-    const handleModeChange = (event, value) => {
-        if (value.length > 0) {
-            setValueMode(value[0].title);
-        } else {
-            setValueMode(null);
-        }
+    const handleModeChange = (event, values) => {
+        const selectedModes = values.map((value) => value.title);
+        setValueMode(selectedModes);
+    };
+
+    const handleCloudChange = (event, values) => {
+        const selectedCloud = values.map((value) => value.title);
+        setValueCloud(selectedCloud);
     };
 
     return (
@@ -154,7 +156,7 @@ const InfluxDBComponent = () => {
                             id="cloud"
                             options={optionsCloud}
                             disableCloseOnSelect
-                            onChange={(event, value) => setValueCloud(value[0].title)}
+                            onChange={handleCloudChange}
                             placeholder={"choix du cloud"}
                             getOptionLabel={(option) => option.title}
                             renderOption={(props, option, {selected}) => (
