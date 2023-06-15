@@ -86,7 +86,13 @@ const InfluxDBComponent = () => {
             },
         ],
     };
-
+    const handleModeChange = (event, value) => {
+        if (value.length > 0) {
+            setValueMode(value[0].title);
+        } else {
+            setValueMode(null);
+        }
+    };
 
     return (
         <div style={{
@@ -123,7 +129,7 @@ const InfluxDBComponent = () => {
                             id="mode"
                             placeholder={"choix du mode"}
                             options={optionsMode}
-                            onChange={(event, value) => setValueMode(value[0].title)}
+                            onChange={handleModeChange}
                             disableCloseOnSelect
                             getOptionLabel={(option) => option.title}
                             renderOption={(props, option, {selected}) => (
