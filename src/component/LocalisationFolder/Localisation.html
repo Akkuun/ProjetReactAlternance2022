@@ -144,6 +144,7 @@
     });
     let count = 0;
     map.on('load', () => {
+        map.resize()
         // Load CSV data
         fetch('Positions.csv')
             .then(response => response.text())
@@ -363,7 +364,7 @@
             }
         });
 </script>
-</script>
+
 
 </body>
 </html>
