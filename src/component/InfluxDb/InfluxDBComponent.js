@@ -43,7 +43,7 @@ const InfluxDBComponent = () => {
     const [inputValueCloud, setInputValueCloud] = React.useState('');
 
 
-    const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState();
+    const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState({});
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState();
 
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
@@ -64,14 +64,6 @@ const InfluxDBComponent = () => {
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
 
 
-
-      //   const fluxQuery = `from(bucket: "StatsWattsType")
-      // |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
-      // |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
-      // |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
-      // |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
-      // |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-      // |> yield(name: "mean")`
         let fluxQuery = `from(bucket: "StatsWattsType")
       |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
       |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
@@ -89,26 +81,31 @@ const InfluxDBComponent = () => {
     |> yield(name: "mean")`;
 
 
-
-
-        for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
-            const o = tableMeta.toObject(values)
-            dataInflux.push(o._value)
-            timeInflux.push(o._time)
+        const modeData = {}; // Object to store data for each mode
+        for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
+            const o = tableMeta.toObject(values);
+            const mode = o.wattsType;
+            const value = o._value;
+            const time = o._time;
+            if (!modeData[mode]) {
+                modeData[mode] = [];
+            }
+            modeData[mode].push({ value, time });
+            timeInflux.push(time); // Add the timestamp to the array
         }
 
-        setValueInfluxDataTab(dataInflux);
+        setValueInfluxDataTab(modeData);
         setValueInfluxTimeTab(timeInflux);
     }
 
 
     const dataInfluxRes = {
         labels: valueInfluxTimeTab,
-        datasets: valueMode.map((mode, index) => ({
+        datasets: Object.keys(valueInfluxDataTab).map((mode, index) => ({
             label: mode,
             backgroundColor: `rgb(${index * 50}, ${index * 100}, ${index * 150})`,
             borderColor: `rgb(${index * 50}, ${index * 100}, ${index * 150})`,
-            data: valueInfluxDataTab,
+            data: valueInfluxDataTab[mode].map((data) => data.value),
         })),
     };
     const handleModeChange = (event, values) => {
