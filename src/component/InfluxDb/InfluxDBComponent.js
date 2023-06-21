@@ -36,8 +36,8 @@ const InfluxDBComponent = () => {
     const [valueDebutRequest, setValueDebutRequest] = React.useState();
     const [valueFinRequest, setValueFinRequest] = React.useState()
 
-    const [valueMode, setValueMode] = React.useState(optionsMode[0]);
-    const [valueCloud, setValueCloud] = React.useState(optionsMode[0]);
+    const [valueMode, setValueMode] = React.useState([]);
+    const [valueCloud, setValueCloud] = React.useState([]);
 
     const [inputValueMode, setInputValueMode] = React.useState('');
     const [inputValueCloud, setInputValueCloud] = React.useState('');
@@ -50,7 +50,7 @@ const InfluxDBComponent = () => {
     let org = `Watts`
     const url = 'http://10.99.3.47:8086'
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-    const [chartDataLoaded, setChartDataLoaded] = useState(false);
+
 
 
 
@@ -65,13 +65,29 @@ const InfluxDBComponent = () => {
 
 
 
-        const fluxQuery = `from(bucket: "StatsWattsType")
+      //   const fluxQuery = `from(bucket: "StatsWattsType")
+      // |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+      // |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
+      // |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
+      // |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
+      // |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+      // |> yield(name: "mean")`
+        let fluxQuery = `from(bucket: "StatsWattsType")
       |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
-      |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
-      |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
-      |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
-      |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-      |> yield(name: "mean")`
+      |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
+        if (valueCloud.length > 0) {
+            const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
+            fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
+        }
+
+        if (valueMode.length > 0) {
+            const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
+            fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
+        }
+
+        fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+    |> yield(name: "mean")`;
+
 
 
 
@@ -83,20 +99,17 @@ const InfluxDBComponent = () => {
 
         setValueInfluxDataTab(dataInflux);
         setValueInfluxTimeTab(timeInflux);
-        setChartDataLoaded(true);
     }
 
 
     const dataInfluxRes = {
         labels: valueInfluxTimeTab,
-        datasets: [
-            {
-                label: "Résultats",
-                backgroundColor: "rgb(255, 99, 132)",
-                borderColor: "rgb(255, 99, 132)",
-                data: valueInfluxDataTab,
-            },
-        ],
+        datasets: valueMode.map((mode, index) => ({
+            label: mode,
+            backgroundColor: `rgb(${index * 50}, ${index * 100}, ${index * 150})`,
+            borderColor: `rgb(${index * 50}, ${index * 100}, ${index * 150})`,
+            data: valueInfluxDataTab,
+        })),
     };
     const handleModeChange = (event, values) => {
         const selectedModes = values.map((value) => value.title);
