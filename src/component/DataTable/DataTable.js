@@ -17,12 +17,10 @@ import {useSnackbar} from "notistack";
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     a.click();
-
     setTimeout(() => {
         URL.revokeObjectURL(url);
     });
@@ -48,14 +46,12 @@ const getJson = (apiRef) => {
     return JSON.stringify(data, null, 2);
 };
 
-
+//function to create a customtoolbar, which diplay the number of user recived in hover
+//add a search bar, the export button
 function CustomToolbar() {
-
     const cookies = new Cookies();
-
     let sizeUser = cookies.get('sizeUser')
     return (
-
         <GridToolbarContainer>
             {/*search feature*/}
             <GridToolbarQuickFilter
@@ -74,12 +70,8 @@ function CustomToolbar() {
                     </div>
 
                 </GridToolbarExportContainer>
-
-
             </Tooltip>
-
         </GridToolbarContainer>
-
     );
 }
 
@@ -89,7 +81,6 @@ function CustomPagination() {
     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
     return (
-
         <Pagination
             color="primary"
             count={pageCount}
@@ -101,9 +92,7 @@ function CustomPagination() {
 
 const JsonExportMenuItem = (props) => {
     const apiRef = useGridApiContext();
-
     const {hideMenu} = props;
-
     return (
         <MenuItem
             onClick={() => {
@@ -123,7 +112,8 @@ const JsonExportMenuItem = (props) => {
     );
 };
 
-
+//component declaration,with rows for the data, columns for the label, loading a boolean
+//to know if all the user are ready to be display and sx for the styles
 const DataTable = ({
                        rows,
                        columns,
@@ -132,26 +122,25 @@ const DataTable = ({
                    }) => {
 
     const [pageSize, setPageSize] = useState(13)
+    //notification obeject
     const {enqueueSnackbar} = useSnackbar()
-
+    //double-click on element to copy the value of a box
     const addToClipboard = (content) => {
         navigator.clipboard.writeText(content.value);
         enqueueSnackbar('Added to clipboard !');
     };
 
-
+    //return a data grid with the passed parameters
     return (
         <DataGrid
             columns={columns}
             rows={rows}
             loading={loading}
             sx={sx}
-
             checkboxSelection={false}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[10, 50, 100]}
-            //on peut envelever la pagination pour envlever les ronds et revenir sur les carré à selectionner
             components={{
                 Toolbar: CustomToolbar
                 , Pagination: CustomPagination,

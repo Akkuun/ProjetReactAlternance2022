@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import HourglassBottomRoundedIcon from '@mui/icons-material/HourglassBottomRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import PanToolRoundedIcon from '@mui/icons-material/PanToolRounded';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -16,7 +15,7 @@ import NightlightRoundedIcon from '@mui/icons-material/NightlightRounded';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
 import NightShelterIcon from '@mui/icons-material/NightShelter';
-
+//bubble component which display main data of a device with parameter
 const DeviceDataBubbleComponent = ({
                                        install_name,
                                        device_name,
@@ -31,7 +30,7 @@ const DeviceDataBubbleComponent = ({
                                        Device_Id,
                                    }) => {
     let ImageCard, IsConnectedImage;
-
+//function which display the right icon for his mode
     function getImageCard() {
         if (mode === 0) {
             ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
@@ -52,28 +51,21 @@ const DeviceDataBubbleComponent = ({
         }
         return ImageCard;
     }
-
+    //change the icon if the device is connected or no
     function getIsconnected() {
         uc === 0 ? IsConnectedImage = <CircleOutlinedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/> : IsConnectedImage =
             <CircleIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
         return IsConnectedImage;
     }
-
-
     return (
-
         <Card sx={{Width: "100%",
             height: "100%",
             maxWidth: "100%",
             borderRadius: 5,
             flex: "80%",
             marginTop: "5%",
-
-
         }}>
             <CardHeader
-
-
                 title={
                     <Typography gutterBottom variant="h5" component="h2" fontSize={40}>
                         {install_name} - {device_name}
@@ -94,9 +86,7 @@ const DeviceDataBubbleComponent = ({
                     width: "100%",
                     justifyContent: "center",
                     marginTop:"5%"
-
                 }}>
-
                     {getImageCard()}
                     <div style={{fontSize: "40%"}}>
                         {getIsconnected()}
@@ -110,19 +100,13 @@ const DeviceDataBubbleComponent = ({
                     </div>
                     <div><PopupWattsType row={rows} device_ID={Device_Id} installation_ID={Installation_Id} a1={a1}/>
                     </div>
-
-
                 </div>
 
                 <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
                     Last update : {last_updated}
                 </Typography>
             </CardContent>
-
         </Card>
     );
-
 }
-
-
 export default DeviceDataBubbleComponent;
