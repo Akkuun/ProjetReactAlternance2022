@@ -6,7 +6,7 @@ import DataTable from "../DataTable/DataTable"
 import {useParams} from "react-router-dom";
 import { getTokenAPI,getListOfUser} from "../../services/Api";
 import Cookies from 'universal-cookie';
-
+// column content of the component
 const columns = [
     {field: 'id', headerName: 'A1', width: 250},
     {field: 'name', headerName: 'Name', width: 250},
@@ -20,7 +20,6 @@ const columns = [
         ],
         width: 225
     }
-
 ];
 
 const userTableStyles = {
@@ -34,30 +33,23 @@ const UserTable = () => {
     //get the current cloud by the cookie
     let {cloud} = useParams();
     let cloud_Name =cloud.toUpperCase();
-
     const getAllUser = async () => {
-        console.log("get all users")
         let tokenResult = await getTokenAPI("user",cloud_Name);
         let userListResult =  getListOfUser(tokenResult,cloud_Name)
-        
         userListResult.then(function (result) {
             const sizeUser = result.data;
             setUsers(sizeUser);
             const cookies = new Cookies();
             cookies.set('sizeUser', sizeUser.length)
-            console.log(cookies.get('sizeUser'));
         })
     }
-    
     const [users, setUsers] = useState([]);
     useEffect(() => {
         getAllUser();
     }, []);
-    
     return (
         <DataTable rows={users} columns={columns} loading={!users.length} sx={userTableStyles} />
     )
-    
 }
 
 

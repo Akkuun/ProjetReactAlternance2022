@@ -42,7 +42,6 @@ const DeviceDataComponent = () => {
     const location = useLocation();
     //function design to get the A1 value
     const a1Handler = async (a1) => {
-
         if (a1.length === 12) {
             setMac("")
             setA1(a1);
@@ -62,19 +61,14 @@ const DeviceDataComponent = () => {
     }
     //function designed to get the MAC value
     const MacHandler = async (mac) => {
-
         if (mac.length === 12) {
             setA1("")
             setMac(mac);
             await GetDataByInput(mac, "mac")
-
         } else {
             setMac("");
         }
-
     }
-
-
     //function designed to get the correct value of the JSON object passed in parameter
     function transformData(configurationResult) {
         let deviceConfigurationData = [];
@@ -154,13 +148,11 @@ const DeviceDataComponent = () => {
         }
 
     }
-
     // State callBack used to force a synchronisation and allow a dynamic refresh
     useEffect(() => {
         ManageDisplay()
         setMac("")
     }, [location]);
-
     //function design to send a request to update data map/array and refresh the current component with ManageDisplay()
     async function DataRefresh(installation_id_param,device_id_param) {
         let dataRefreshed;
@@ -186,9 +178,6 @@ const DeviceDataComponent = () => {
         }, 300000);
         enqueueSnackbar('Data refreshed !');
     }
-
-
-
     //function designed to display nothing if we don't have/received data and erased precedent object from a previous request
     function ManageDisplay() {
         if (mapDevicesData.size > 0) {

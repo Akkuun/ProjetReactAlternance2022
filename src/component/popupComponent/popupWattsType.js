@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton from "@mui/material/IconButton";
-
 import {
     DataGrid,
     gridFilteredSortedRowIdsSelector,
@@ -16,16 +15,12 @@ import {
     gridVisibleColumnFieldsSelector,
     useGridApiContext
 } from "@mui/x-data-grid";
-
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Container, MenuItem, Tooltip} from "@mui/material";
 import moment from "moment/moment";
 import {getDataByDeviceID, getTokenAPI, sendUserConnected} from "../../services/Api";
 import {useSnackbar} from "notistack";
 import {useParams} from "react-router-dom";
-
-
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -39,8 +34,6 @@ const style = {
     p: 4,
 
 };
-
-
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
@@ -49,18 +42,15 @@ const exportBlob = (blob, filename) => {
     a.href = url;
     a.download = filename;
     a.click();
-
     setTimeout(() => {
         URL.revokeObjectURL(url);
     });
 };
-
 //transform data to JSON
 const getJson = (apiRef) => {
     // Select rows and columns
     const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
     const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
-
     // Format the data. Here we only keep the value
     const data = filteredSortedRowIds.map((id) => {
         const row = {};
@@ -69,18 +59,13 @@ const getJson = (apiRef) => {
         });
         return row;
     });
-
     // Stringify with some indentation
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
     return JSON.stringify(data, null, 2);
 };
-
-
 const JsonExportMenuItem = (props) => {
     const apiRef = useGridApiContext();
-
     const {hideMenu} = props;
-
     return (
         <MenuItem
             onClick={() => {
@@ -99,38 +84,24 @@ const JsonExportMenuItem = (props) => {
         </MenuItem>
     );
 };
-
-
 const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
 //obligé de remettre ce paramètre ici car, il passe à null lorsqu'il est en props et impossible de le mettre en tête de fichier
     let {cloud} = useParams();
     let cloud_Name =cloud.toUpperCase();
-
     const [mapWattsType, setMapWattsType] = useState(row)
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     const {enqueueSnackbar} = useSnackbar();
     // ici ce state nous permet d'afficher ou non le datagrid avec nos infos, pour savoir s'il doit etre affiche ou non, on détermine cette valeur via une fonction qui regarde la valeur du props mode
     // si le mode est mac , alors on affiche directement car on ne veut pas de la bulle, sinon on affiche tout
     const [openPopupComponent, setOpenPopupComponent] = React.useState(setOpenComponentByMode);
-
-
-
     async function RefreshHandler() {
-
         let dataRefreshed;
-
         await sendUserConnected(a1, installation_ID, device_ID,cloud_Name);
-
         let token = await getTokenAPI("device",cloud_Name);
-
-
         dataRefreshed = await getDataByDeviceID(token, device_ID,cloud_Name)
-
-
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
-
             added++;
             RowUpdated.push({
                 id: added,
@@ -142,7 +113,6 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
         setMapWattsType(RowUpdated)
         forceUpdate();
         enqueueSnackbar('Data refreshed !');
-
     }
 
 
@@ -162,25 +132,17 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
         {field: 'col3', headerName: 'WattsType', width: 400},
 
     ];
-
     const addToClipboard = (content) => {
         navigator.clipboard.writeText(content.value);
         enqueueSnackbar('Added to clipboard !');
     };
-
-
     const handleOpenPopupComponent = () => {
-
         setOpenPopupComponent(true)
     };
     const handleClosePopupComponent = () => {
-
         setOpenPopupComponent(false);
     }
-
     function CustomToolbar() {
-
-
         return (
             <GridToolbarContainer>
                 {/*search feature*/}
@@ -191,9 +153,7 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
                     }
                     quickFilterFormatter={(quickFilterValues) => quickFilterValues.join(', ')}
                     debounceMs={200} // time before applying the new quick filter value
-
                 />
-
                 <Button onClick={RefreshHandler}>
                     <RefreshIcon/>
                     SEND UC=1
@@ -204,27 +164,17 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
                     <div className="JsonButton">
                         <JsonExportMenuItem/>
                     </div>
-
                 </GridToolbarExportContainer>
             </GridToolbarContainer>
         )
-
     }
 
     function setOpenComponentByMode() {
-
         return mode === "MAC";
-
-
     }
-
     return (
-
         <div style={{height: "60%"}}>
-
-
             {mode === "MAC" ? <div></div> : <IconButton  onClick={handleOpenPopupComponent}> <InfoIcon sx={{height:"15%",width:"15%"}}/> </IconButton>}
-
             <Modal
                 open={openPopupComponent}
                 onClose={handleClosePopupComponent}
