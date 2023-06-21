@@ -50,16 +50,16 @@ const InfluxDBComponent = () => {
     let org = `Watts`
     const url = 'http://10.99.3.47:8086'
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
+    const [chartDataLoaded, setChartDataLoaded] = useState(false);
 
 
-    let dataInflux = []
-    let timeInflux = []
 
 
     const requestInfluxForChart = async () => {
-
-        setValueInfluxDataTab(dataInflux)
-        setValueInfluxTimeTab(timeInflux)
+        let dataInflux = []
+        let timeInflux = []
+        setValueInfluxDataTab([]);
+        setValueInfluxTimeTab([]);
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
 
@@ -81,11 +81,9 @@ const InfluxDBComponent = () => {
             timeInflux.push(o._time)
         }
 
-        console.log(dataInflux)
-        console.log(timeInflux)
-
-        console.log(valueCloud)
-        console.log(valueMode)
+        setValueInfluxDataTab(dataInflux);
+        setValueInfluxTimeTab(timeInflux);
+        setChartDataLoaded(true);
     }
 
 
@@ -119,7 +117,9 @@ const InfluxDBComponent = () => {
             height:"100%", width:"100%"
         }}>
 
-            <Line data={dataInfluxRes}/>
+
+                <Line data={dataInfluxRes} />
+
 
 
 
