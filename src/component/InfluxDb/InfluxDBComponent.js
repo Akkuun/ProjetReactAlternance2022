@@ -65,10 +65,13 @@ const InfluxDBComponent = () => {
         |> yield(name: "mean")`;
         //get the result from the InfluxDB object
         const modeData = {}; // Object to store data for each mode
+        let value;
         for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
             const o = tableMeta.toObject(values);
             const mode = o.wattsType;
-            const value = o._value;
+            if (mode !== "Rt" && mode !== "Cm") {
+                value = ((o._value / 10 - 32) / 1.8).toFixed(2);
+            } else { value = o._value}
             const time = o._time;
             if (!modeData[mode]) {
                 modeData[mode] = [];
