@@ -7,7 +7,7 @@ import {InfluxDB} from "@influxdata/influxdb-client";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import {DateTimePicker} from "@mui/x-date-pickers";
-
+import dayjs from "dayjs";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -33,6 +33,9 @@ const InfluxDBComponent = () => {
     const [valueDebut, setValueDebut] = React.useState();
     const [valueFin, setValueFin] = React.useState();
 
+    const [valueDebutRequest, setValueDebutRequest] = React.useState();
+    const [valueFinRequest, setValueFinRequest] = React.useState()
+
     const [valueMode, setValueMode] = React.useState(optionsMode[0]);
     const [valueCloud, setValueCloud] = React.useState(optionsMode[0]);
 
@@ -48,30 +51,41 @@ const InfluxDBComponent = () => {
     const url = 'http://10.99.3.47:8086'
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
 
-    const fluxQuery = `from(bucket: "StatsWattsType")
-      |> range(start: 2023-04-04T15:48:20Z, stop: 2023-06-12T15:48:20Z)
-      |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
-      |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
-      |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
-      |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-      |> yield(name: "mean")`
+
     let dataInflux = []
     let timeInflux = []
 
 
     const requestInfluxForChart = async () => {
+
+        setValueInfluxDataTab(dataInflux)
+        setValueInfluxTimeTab(timeInflux)
+        const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
+        const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
+
+
+
+        const fluxQuery = `from(bucket: "StatsWattsType")
+      |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+      |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")
+      |> filter(fn: (r) => r["cloud"] == "${valueCloud}")
+      |> filter(fn: (r) => r["wattsType"] == "${valueMode}")
+      |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+      |> yield(name: "mean")`
+
+
+
         for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
             const o = tableMeta.toObject(values)
             dataInflux.push(o._value)
             timeInflux.push(o._time)
         }
-        setValueInfluxDataTab(dataInflux)
-        setValueInfluxTimeTab(timeInflux)
-        console.log(valueMode)
+
+        console.log(dataInflux)
+        console.log(timeInflux)
 
         console.log(valueCloud)
-
-
+        console.log(valueMode)
     }
 
 
@@ -105,7 +119,7 @@ const InfluxDBComponent = () => {
             height:"100%", width:"100%"
         }}>
 
-                <Line data={dataInfluxRes}/>
+            <Line data={dataInfluxRes}/>
 
 
 
@@ -196,6 +210,3 @@ const InfluxDBComponent = () => {
 
 
 export default InfluxDBComponent
-
-
-
