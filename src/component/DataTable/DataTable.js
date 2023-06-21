@@ -12,7 +12,6 @@ import Cookies from "universal-cookie";
 import '../../styleComponent/JsonButton.css';
 import {useSnackbar} from "notistack";
 
-
 //export to JSSON & CSV function
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
@@ -25,13 +24,11 @@ const exportBlob = (blob, filename) => {
         URL.revokeObjectURL(url);
     });
 };
-
 //transform data to JSON
 const getJson = (apiRef) => {
     // Select rows and columns
     const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
     const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
-
     // Format the data. Here we only keep the value
     const data = filteredSortedRowIds.map((id) => {
         const row = {};
@@ -40,12 +37,10 @@ const getJson = (apiRef) => {
         });
         return row;
     });
-
     // Stringify with some indentation
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
     return JSON.stringify(data, null, 2);
 };
-
 //function to create a customtoolbar, which diplay the number of user recived in hover
 //add a search bar, the export button
 function CustomToolbar() {
@@ -74,12 +69,10 @@ function CustomToolbar() {
         </GridToolbarContainer>
     );
 }
-
 function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
     const pageCount = useGridSelector(apiRef, gridPageCountSelector);
-
     return (
         <Pagination
             color="primary"
@@ -89,7 +82,6 @@ function CustomPagination() {
         />
     );
 }
-
 const JsonExportMenuItem = (props) => {
     const apiRef = useGridApiContext();
     const {hideMenu} = props;
@@ -111,7 +103,6 @@ const JsonExportMenuItem = (props) => {
         </MenuItem>
     );
 };
-
 //component declaration,with rows for the data, columns for the label, loading a boolean
 //to know if all the user are ready to be display and sx for the styles
 const DataTable = ({
@@ -129,7 +120,6 @@ const DataTable = ({
         navigator.clipboard.writeText(content.value);
         enqueueSnackbar('Added to clipboard !');
     };
-
     //return a data grid with the passed parameters
     return (
         <DataGrid

@@ -8,8 +8,5 @@ const pageDeviceData = () => {
         </div>
 
     )
-
-
 }
-
 export default pageDeviceData;

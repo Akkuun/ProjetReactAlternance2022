@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-
 import Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -19,8 +18,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
 import LeaderboardTwoToneIcon from '@mui/icons-material/LeaderboardTwoTone';
-
-// creation des objets web par rapport a drawerSections
+// create the list of object ( listiem with his link to ... , his text, style
 const ListItems = ({items, onClick}) =>
     items
         .filter(({hidden}) => !hidden)
@@ -35,20 +33,12 @@ const ListItems = ({items, onClick}) =>
                     <ListItemText>{label}</ListItemText> </Link>
             </ListItem>
         ));
-
+//return the version/date of the project
 function getVersionAndData() {
-    const date = new Date();
-
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-// This arrangement can be altered based on how we want the date's format to appear.
-    let currentDate = `${day}/${month}/${year}`;
     return "V  "+ "3.0" +"     " + "21/06/2023";
 }
 
-// contenu  des boutons pour redirection
+//associate each item data for the menu ( link,lael,icon)
 const DrawerSections = ({classes}) => {
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('Home');
@@ -64,8 +54,6 @@ const DrawerSections = ({classes}) => {
 
         ]
     });
-
-
     const [itemsWattsDev] = useState({
         Clouds: [
             {label: 'Watts Dev', Icon: CloudIcon, lien: '/wattsDev'},
@@ -119,24 +107,20 @@ const DrawerSections = ({classes}) => {
         ],
 
     });
-
-
+    //state for open the menu
     const onClick = (content) => () => {
         setOpen(true);
         setContent(content);
     };
-
     return (
         <Grid container justify='space-between'>
             <Grid item>
                 <Typography>
-
                 </Typography>
             </Grid>
             <Grid item>
                 <Drawer open={open} onClose={() => setOpen(false)}>
                     <List>
-
                         <div>
                             <Accordion>
                                 <AccordionSummary
@@ -213,26 +197,16 @@ const DrawerSections = ({classes}) => {
                                     </Typography>
                                 </AccordionDetails>
                             </Accordion>
-
                             <Accordion>
-
                                     <ListItems items={itemLocalisationGlobale.Clouds} onClick={onClick}/>
-
-
                             </Accordion>
-
                             <Accordion>
-
                                 <ListItems items={itemStatistique.Clouds} onClick={onClick}/>
-
-
                             </Accordion>
-
                         </div>
                     </List>
                     <div style={{paddingTop: "90%", paddingLeft: "5%"}}>{getVersionAndData()}</div>
                 </Drawer>
-
             </Grid>
             <Grid item>
                 <Button onClick={() => setOpen(!open)}>

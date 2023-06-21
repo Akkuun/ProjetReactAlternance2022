@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const json = require('./API_Secret.json')
+//function designed to return the correct token depending on the mode (user/device)
 export async function getTokenAPI(mode,cloud) {
-
-
     let tokenResult;
     switch (mode) {
         case "user":
@@ -18,7 +17,6 @@ export async function getTokenAPI(mode,cloud) {
                 }
             });
             return tokenResult.data["access_token"]
-
         case "device":
             tokenResult = await axios.post(json.clouds[cloud]["Url_token"], {
                 'grant_type': 'client_credentials',
@@ -31,7 +29,6 @@ export async function getTokenAPI(mode,cloud) {
                 }
             });
             return tokenResult.data["access_token"]
-
         default :
             console.log("ERREUR")
     }
@@ -39,10 +36,6 @@ export async function getTokenAPI(mode,cloud) {
 
 // Get the list of installation by a A1
 export async function getListInstallation(token, a1,cloud) {
-    console.log("get install ")
-    console.log(`${json.clouds[cloud]["Url_get_list_installation"]}${a1}`)
-
-
     return await axios.get(`${json.clouds[cloud]["Url_get_list_installation"]}${a1}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -51,7 +44,6 @@ export async function getListInstallation(token, a1,cloud) {
         }
     })
 }
-
 // get the list of room for a specific a1 and installationID
 export async function getListOfRoomByInstallation(token, a1, installID,cloud) {
     console.log()
@@ -63,7 +55,7 @@ export async function getListOfRoomByInstallation(token, a1, installID,cloud) {
         }
     })
 }
-
+// function designed to return all the device data by a device id specified
 export async function getDataByDeviceID(token, deviceID,cloud) {
     return await axios.get(`${json.clouds[cloud]["Url_get_data_by_device_part1"]}${deviceID}/${deviceID}${json.clouds[cloud]["Url_get_data_by_device_part2"]}`, {
         headers: {
@@ -73,9 +65,8 @@ export async function getDataByDeviceID(token, deviceID,cloud) {
         }
     })
 }
-
+//function designed to return the list of the a1 of a specific cloud
 export async function getListOfUser(token,cloud) {
-
     return axios.get(json.clouds[cloud]["Url_get_list_of_user"], {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -84,11 +75,8 @@ export async function getListOfUser(token,cloud) {
         }
     })
 }
-
-
+//function used to send UC=1 to a specific deviceID
 export async function sendUserConnected(a1, installationId, DeviceId,cloud) {
-    console.log("send user connec")
-    console.log(json.clouds[cloud]["Url_send_user_connected"])
     await axios.put( json.clouds[cloud]["Url_send_user_connected"], {
             A1: a1,
             In: installationId,
@@ -103,5 +91,4 @@ export async function sendUserConnected(a1, installationId, DeviceId,cloud) {
         }
     );
     setTimeout(10000);
-
 }

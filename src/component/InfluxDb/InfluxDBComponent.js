@@ -14,15 +14,12 @@ import {Autocomplete} from "@mui/joy";
 import Checkbox from '@mui/material/Checkbox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-
 // option for proposed modes/clouds in input
 const optionsMode = [{title: 'Bt'}, {title: 'Cm'}, {title: 'Ma'}, {title: 'Rt'}, {title: 'bo'}, {title: 'cf'}, {title: 'df'}, {title: 'ec'}];
 const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {title: 'Prod'}, {title: 'FENIX'}]
-
 //icons
 const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
 const checkedIcon = <CheckBoxIcon fontSize="small"/>;
-
 //component rendering
 const InfluxDBComponent = () => {
     //state variables
@@ -41,7 +38,6 @@ const InfluxDBComponent = () => {
     const url = 'http://10.99.3.47:8086'
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-
     // function which get the request parameters and send it to Influx to display in a chart
     const requestInfluxForChart = async () => {
         //clear arrays
@@ -51,26 +47,22 @@ const InfluxDBComponent = () => {
         //get the dates and re-arrange them
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
-
         //Influx query declaration
         let fluxQuery = `from(bucket: "StatsWattsType")
-      |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
-      |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
+         |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+         |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
         //if there are more than 1 mode/cloud, adapt the request to include 2 line in the chart for different mode or
         //have the request with diffrent cloud
         if (valueCloud.length > 0) {
             const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
             fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
         }
-
         if (valueMode.length > 0) {
             const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
             fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
         }
-
         fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-    |> yield(name: "mean")`;
-
+        |> yield(name: "mean")`;
         //get the result from the InfluxDB object
         const modeData = {}; // Object to store data for each mode
         for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
@@ -89,7 +81,6 @@ const InfluxDBComponent = () => {
         setValueInfluxDataTab(modeData);
         setValueInfluxTimeTab(timeInflux);
     }
-
     // chart data
     const dataInfluxRes = {
         labels: valueInfluxTimeTab,
@@ -105,12 +96,10 @@ const InfluxDBComponent = () => {
         const selectedModes = values.map((value) => value.title);
         setValueMode(selectedModes);
     };
-
     const handleCloudChange = (event, values) => {
         const selectedCloud = values.map((value) => value.title);
         setValueCloud(selectedCloud);
     };
-
     return (
         <div style={{
             justifyContent: "space-between",
@@ -119,11 +108,7 @@ const InfluxDBComponent = () => {
             flexDirection: "column",
             height: "100%", width: "100%"
         }}>
-
-
             <Line data={dataInfluxRes}/>
-
-
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
                     <div style={{
@@ -165,7 +150,6 @@ const InfluxDBComponent = () => {
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
                         />
-
                         <Autocomplete
                             multiple
                             id="cloud"
@@ -190,24 +174,14 @@ const InfluxDBComponent = () => {
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
                         />
-
                         <Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
                             requestInfluxForChart()
-
-
                         }}>
                             Envoyer requête
                         </Button></div>
                 </DemoContainer>
             </LocalizationProvider>
-
-
         </div>
-
     )
-
-
 }
-
-
 export default InfluxDBComponent

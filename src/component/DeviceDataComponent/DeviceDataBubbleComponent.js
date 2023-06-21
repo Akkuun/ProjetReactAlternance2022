@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -74,7 +73,6 @@ const DeviceDataBubbleComponent = ({
             <Typography gutterBottom variant="h5" component="h2" fontSize={28}>
                 {Device_Id}
             </Typography>
-
             <CardContent key={keyValue}>
                 <div style={{
                     display: 'flex',
@@ -90,7 +88,6 @@ const DeviceDataBubbleComponent = ({
                     {getImageCard()}
                     <div style={{fontSize: "40%"}}>
                         {getIsconnected()}
-
                     </div>
                     <div style={{
                         fontSize: "70%",
@@ -101,7 +98,6 @@ const DeviceDataBubbleComponent = ({
                     <div><PopupWattsType row={rows} device_ID={Device_Id} installation_ID={Installation_Id} a1={a1}/>
                     </div>
                 </div>
-
                 <Typography variant="body2" color="text.secondary" sx={{marginTop: '5%', fontSize: 30}}>
                     Last update : {last_updated}
                 </Typography>

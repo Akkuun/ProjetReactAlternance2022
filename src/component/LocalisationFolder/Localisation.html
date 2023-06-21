@@ -12,7 +12,6 @@
             margin: 0;
             padding: 0;
         }
-
         #map {
             position: absolute;
             top: 0;
@@ -27,19 +26,16 @@
         margin: 0;
         padding: 0;
     }
-
     #map {
         position: absolute;
         top: 0;
         bottom: 0;
         width: 100%;
     }
-
     .mapboxgl-popup {
         max-width: 400px;
         font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     }
-
     .legend {
         display: flex;
         flex-direction: column;
@@ -54,17 +50,14 @@
         width: 10%;
 
     }
-
     .legend h4 {
         margin: 0 0 20px;
     }
-
     .legend-item {
         display: flex;
         margin-bottom: 5px;
         flex-direction: row;
     }
-
     .legend-item span {
         border-radius: 60%;
         display: flex;
@@ -72,11 +65,8 @@
         height: 20px;
         margin-right: 5px;
         width: 20px;
-
     }
-
     #filter {
-
         background-color: white;
         border-radius: 5px;
         bottom: 45%;
@@ -86,25 +76,18 @@
         position: absolute;
         z-index: 1;
         width: 10%;
-
-
     }
-
-
 </style>
-
 <div id="filter">
     <h4>Cloud filter:</h4>
     <div>
         <input type="checkbox" id="WattsVisionCB" name="WattsVisionCB" onchange="update()" checked>
         <label for="WattsVisionCB">Watts Vision</label>
     </div>
-
     <div>
         <input type="checkbox" id="DeltacalorCB" name="DeltacalorCB" onchange="update()" checked>
         <label for="DeltacalorCB">Deltacalor</label>
     </div>
-
     <div>
         <input type="checkbox" id="DevCB" name="DevCB" onchange="update()" checked>
         <label for="DevCB">Watts Dev</label>
@@ -117,22 +100,16 @@
         <input type="checkbox" id="FenixCB" name="Fenix" onchange="update()" checked>
         <label for="FenixCB">Fenix</label>
     </div>
-
     <b>Top 3  countries</b>
     <table id="csv-table"></table>
 </div>
-
-
-
 <div id="map"></div>
-
 <div class="legend">
     <h4> Clouds</h4>
     <div class="legend-item">
         <span style="background-color:#005DB9;"></span>
         <span>WattsVision</span>
     </div>
-
     <div class="legend-item">
         <span style="background-color:#F18700;"></span>
         <span> Deltacalor</span>
@@ -150,22 +127,13 @@
         <span> WattsProd</span>
     </div>
 </div>
-
-
-
 <script>
-    // TO MAKE THE MAP APPEAR YOU MUST
-    // ADD YOUR ACCESS TOKEN FROM
-    // https://account.mapbox.com
-
     var filters = {
         Deltacalor: true,
         Dev: true,
         WattsProd: true,
         Fenix: true
     };
-
-
     mapboxgl.accessToken = 'pk.eyJ1IjoibWF0aGlzd2F0dHMiLCJhIjoiY2xmODR4dm1rMGFyZjN1bzJ0bmFoYnp2byJ9.f3r7lYmiVTLbQJoBf2oNww';
     const map = new mapboxgl.Map({
         container: 'map',
@@ -174,25 +142,18 @@
         center: [2.3522219, 48.856614],
         zoom: 11.15
     });
-
-
     let count = 0;
-
-
     map.on('load', () => {
         // Load CSV data
         fetch('Positions.csv')
             .then(response => response.text())
             .then(data => {
-
-
                 // Parse CSV data
                 const parsedData = Papa.parse(data, {header: true});
                 const features = [];
                 // Loop through parsed data and convert to GeoJSON format
                 parsedData.data.forEach(row => {
                     count++;
-
                     let color;
                     switch (row.cloud) {
                         case 'WattsVision':
@@ -210,7 +171,6 @@
                         default:
                             color = '#9D1B1B'; // valeur par dÃ©faut pour les autres
                     }
-
                     const feature = {
                         type: 'Feature',
                         properties: {
@@ -222,9 +182,7 @@
                         }
                     };
                     feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriÃ©tÃ© du feature
-
                     features.push(feature);
-
                 });
                 // Add GeoJSON data to the map
                 map.addSource('places', {
@@ -234,7 +192,6 @@
                         features: features
                     }
                 });
-
                 // Add a layer showing the places
                 map.addLayer({
                     id: 'places',
@@ -245,17 +202,13 @@
                         'circle-stroke-color': '#fff',
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
-
                     }
                 });
-
-
                 // Create a popup, but don't add it to the map yet.
                 const popup = new mapboxgl.Popup({
                     closeButton: false,
                     closeOnClick: false
                 });
-
                 // Show popup on mouseenter
                 map.on('mouseenter', 'places', (e) => {
                     // Change the cursor style as a UI indicator.
@@ -273,66 +226,47 @@
                     // based on the feature found.
                     popup.setLngLat(coordinates).setHTML(description).addTo(map);
                 });
-
-
                 // Hide popup on mouseleave
                 map.on('mouseleave', 'places', () => {
                     map.getCanvas().style.cursor = '';
                     popup.remove();
                 });
-
             });
     });
-
     function update() {
-
         filters.WattsVision = document.getElementById("WattsVisionCB").checked;
         filters.Deltacalor = document.getElementById("DeltacalorCB").checked;
         filters.Dev = document.getElementById("DevCB").checked;
         filters.WattsProd = document.getElementById("WattsProdCB").checked;
         filters.Fenix = document.getElementById("FenixCB").checked;
-
-
         var CloudAPrendreEnCompteDansLaMap = new Map();
         if (filters.WattsVision === false) {
             CloudAPrendreEnCompteDansLaMap.set('WattsVision', 0)
-
         } else CloudAPrendreEnCompteDansLaMap.set('WattsVision', 1)
-
         if (filters.Deltacalor === false) {
             CloudAPrendreEnCompteDansLaMap.set('Deltacalor', 0)
-
         } else CloudAPrendreEnCompteDansLaMap.set('Deltacalor', 1)
-
-
         if (filters.Dev === false) {
             CloudAPrendreEnCompteDansLaMap.set('Dev', 0)
-
         } else CloudAPrendreEnCompteDansLaMap.set('Dev', 1)
-
         if (filters.WattsProd === false) {
             CloudAPrendreEnCompteDansLaMap.set('WattsProd', 0)
-
         } else CloudAPrendreEnCompteDansLaMap.set('WattsProd', 1)
         if (filters.Fenix === false) {
             CloudAPrendreEnCompteDansLaMap.set('Fenix', 0)
         } else CloudAPrendreEnCompteDansLaMap.set('Fenix', 1)
-
-
+        // remove the previous layer in case of suer filter changes, so re-creating a map from 0 and display it
         map.removeLayer('places')
         map.removeSource('places')
-
         fetch('Positions.csv')
             .then(response => response.text())
             .then(data => {
-
                 // Parse CSV data
                 const parsedData = Papa.parse(data, {header: true});
                 const features = [];
                 // Loop through parsed data and convert to GeoJSON format
                 parsedData.data.forEach(row => {
                     count++;
-
                     let color;
                     switch (row.cloud) {
                         case 'WattsVision':
@@ -350,7 +284,6 @@
                         default:
                             color = '#9D1B1B'; // valeur par dÃ©faut pour les autres
                     }
-
                     const feature = {
                         type: 'Feature',
                         properties: {
@@ -362,11 +295,8 @@
                         }
                     };
                     feature.properties['marker-color'] = color; // Ajoutez la couleur comme propriÃ©tÃ© du feature
-
-                    // console.log(row.cloud)
                     if(CloudAPrendreEnCompteDansLaMap.get(row.cloud)===1)
                         features.push(feature);
-
                 });
                 // Add GeoJSON data to the map
                 map.addSource('places', {
@@ -376,23 +306,18 @@
                         features: features
                     }
                 });
-
-                // Add a layer showing the places
+                // creation of the map
                 map.addLayer({
                     id: 'places',
                     type: 'circle',
                     source: 'places',
                     paint: {
-                        'circle-color': ['get', 'marker-color'], // Utilisez la propriÃ©tÃ© 'marker-color' pour dÃ©finir la couleur
+                        'circle-color': ['get', 'marker-color'],
                         'circle-stroke-color': '#fff',
                         'circle-radius': 6,
                         'circle-stroke-width': 2,
-
                     }
                 });
-
-
-                // Create a popup, but don't add it to the map yet.
                 const popup = new mapboxgl.Popup({
                     closeButton: false,
                     closeOnClick: false
@@ -414,15 +339,11 @@
                     // based on the feature found.
                     popup.setLngLat(coordinates).setHTML(description).addTo(map);
                 });
-
-
                 // Hide popup on mouseleave
                 map.on('mouseleave', 'places', () => {
                     map.getCanvas().style.cursor = '';
                     popup.remove();
                 });
-
-
             })
     }
     fetch('classement.csv')
@@ -442,8 +363,6 @@
             }
         });
 </script>
-
-
 </script>
 
 </body>

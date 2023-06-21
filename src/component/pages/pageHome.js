@@ -3,9 +3,6 @@ import { Player } from '@lottiefiles/react-lottie-player';
 
 const pageHome = ()=> {
     return (
-
-
-
 <div style={{width: "78%"}}>
         <Player
           loop autoplay  src='https://assets7.lottiefiles.com/packages/lf20_0uwehwnd.json'
@@ -24,10 +21,6 @@ const pageHome = ()=> {
         EAGLE 3000
     </div>
 </div>
-
     )
-
-
 }
-
 export default pageHome;
