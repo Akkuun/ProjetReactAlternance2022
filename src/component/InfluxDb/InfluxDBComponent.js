@@ -89,8 +89,9 @@ const InfluxDBComponent = () => {
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
+
                 break;
-            case "gaps":
+            case "max/min":
 
                 break;
         }
@@ -106,7 +107,7 @@ const InfluxDBComponent = () => {
 
         //get the result from the InfluxDB object
         await sendRequest("mean")
-        await sendRequest("gaps")
+        await sendRequest("max/min")
 
 
     }
@@ -138,6 +139,7 @@ const InfluxDBComponent = () => {
     function transformToDegree(value){
         return (value / 10 - 32) / 1.8
     }
+
 
     return (
         <div style={{
