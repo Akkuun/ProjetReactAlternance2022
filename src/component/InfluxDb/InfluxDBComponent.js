@@ -31,7 +31,7 @@ const InfluxDBComponent = () => {
     const [valueCloud, setValueCloud] = React.useState([]);
     //state for the dataTab/timeTab for the chart
     const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState({});
-    const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState();
+    const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -69,13 +69,15 @@ const InfluxDBComponent = () => {
         for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
             const o = tableMeta.toObject(values);
             const mode = o.wattsType;
-            if (mode !== "Rt" && mode !== "Cm") {
-                value = ((o._value / 10 - 32) / 1.8).toFixed(2);
+            //these modes represent temperature mode, so we don't have to transform them, but for the other we have to do it to have the value in ° for a better understanding
+            if (mode !== "Rt" && mode !== "Cm" && mode!=="Bt") {
+                value = ((o._value / 10 - 32) / 1.8);
             } else { value = o._value}
             const time = o._time;
             if (!modeData[mode]) {
                 modeData[mode] = [];
             }
+            console.log(fluxQuery)
             //push the data to the associated mode
             modeData[mode].push({value, time});
             timeInflux.push(time); // Add the timestamp to the array
@@ -85,8 +87,9 @@ const InfluxDBComponent = () => {
         setValueInfluxTimeTab(timeInflux);
     }
     // chart data
+    const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
     const dataInfluxRes = {
-        labels: valueInfluxTimeTab,
+        labels: uniqueTimeInflux,
         datasets: Object.keys(valueInfluxDataTab).map((mode, index) => ({
             label: mode,
             backgroundColor: `rgb(${index * 50}, ${index * 100}, ${index * 150})`,

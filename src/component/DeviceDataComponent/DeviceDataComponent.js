@@ -159,6 +159,7 @@ const DeviceDataComponent = () => {
         await sendUserConnected(a1, install_id, device_id, cloud_Name);
         let token = await getTokenAPI("device", cloud_Name);
         dataRefreshed = await getDataByDeviceID(token, device_id, cloud_Name)
+
         let RowUpdated = [];
         let added = 0;
         for (const [key, value] of Object.entries(dataRefreshed.data)) {
