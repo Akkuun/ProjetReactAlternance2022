@@ -89,10 +89,8 @@ const InfluxDBComponent = () => {
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
-
                 break;
             case "max/min":
-
                 break;
         }
     }
@@ -139,7 +137,6 @@ const InfluxDBComponent = () => {
     function transformToDegree(value){
         return (value / 10 - 32) / 1.8
     }
-
 
     return (
         <div style={{
