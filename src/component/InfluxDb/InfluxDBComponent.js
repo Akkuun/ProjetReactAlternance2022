@@ -34,6 +34,7 @@ const InfluxDBComponent = () => {
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
 
     const [valueMax, setValueMax] = React.useState();
+    const [valueMin, setValueMin] = React.useState();
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -41,53 +42,60 @@ const InfluxDBComponent = () => {
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
 
-    //Function designed to send Mean Request to InfluxDB, fill all the Map/array for the chart
-    async function sendMeanRequest() {
+    //Function designed to send Request to InfluxDB, fill all the Map/array for the chart, take the mode in parameter to adapt the request
+    async function sendRequest(mode) {
+        let value;
+        let timeInflux = []
+        const modeData = {}; // Object to store data for each mode
+        let tabval = []
+        let max = -Infinity;
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
-        //Influx query declaration
-        let fluxQueryMean = `from(bucket: "StatsWattsType")
-         |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
-         |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
+        let fluxQuery = `from(bucket: "StatsWattsType")
+                 |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+                 |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
         //if there are more than 1 mode/cloud, adapt the request to include 2 line in the chart for different mode or
         //have the request with diffrent cloud
         if (valueCloud.length > 0) {
             const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
-            fluxQueryMean += `\n    |> filter(fn: (r) => ${cloudFilters})`;
+            fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
         }
         if (valueMode.length > 0) {
             const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
-            fluxQueryMean += `\n    |> filter(fn: (r) => ${modeFilters})`;
+            fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
         }
-        fluxQueryMean += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-        |> yield(name: "mean")`;
-        let value;
-        let timeInflux = []
-        const modeData = {}; // Object to store data for each mode
-        for await (const {values, tableMeta} of queryApi.iterateRows(fluxQueryMean)) {
-            const o = tableMeta.toObject(values);
-            const mode = o.wattsType;
-            //these modes represent temperature mode, so we don't have to transform them, but for the other we have to do it to have the value in ° for a better understanding
-            if (mode !== "Rt" && mode !== "Cm" && mode !== "Bt") {
-                value = ((o._value / 10 - 32) / 1.8);
-            } else {
-                value = o._value
-            }
-            const time = o._time;
-            if (!modeData[mode]) {
-                modeData[mode] = [];
-            }
-            //push the data to the associated mode
-            modeData[mode].push({value, time});
-            timeInflux.push(time); // Add the timestamp to the array
-            //states updates
-            setValueInfluxDataTab(modeData);
-            setValueInfluxTimeTab(timeInflux);
-        }
-    }
-    async function sendMaxRequest(RequestInfluxDB){
 
+        switch (mode) {
+            case "mean":
+                fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+                 |> yield(name: "mean")`;
+
+                for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
+                    const o = tableMeta.toObject(values);
+                    const mode = o.wattsType;
+                    const time = o._time;
+                    //these modes represent temperature mode, so we don't have to transform them, but for the other we have to do it to have the value in ° for a better understanding
+                    //if isTemperatureMode return true, it converts the data to the °C format, else jsute keep the value
+                    isTemperatureMode(mode) ? value = transformToDegree(o._value) : value = o._value
+
+                    if (!modeData[mode]) {
+                        modeData[mode] = [];
+                    }
+                    //push the data to the associated mode
+                    modeData[mode].push({value, time});
+                    timeInflux.push(time); // Add the timestamp to the array
+                    //states updates
+
+                }
+                setValueInfluxDataTab(modeData);
+                setValueInfluxTimeTab(timeInflux);
+                break;
+            case "gaps":
+
+                break;
+        }
     }
+
 
     const requestInfluxForChart = async () => {
         //clear arrays
@@ -97,8 +105,8 @@ const InfluxDBComponent = () => {
         //get the dates and re-arrange them
 
         //get the result from the InfluxDB object
-        await sendMeanRequest()
-       // await sendMaxRequest(fluxQueryMax)
+        await sendRequest("mean")
+        await sendRequest("gaps")
 
 
     }
@@ -122,6 +130,15 @@ const InfluxDBComponent = () => {
         const selectedCloud = values.map((value) => value.title);
         setValueCloud(selectedCloud);
     };
+    //functiond designed to return if the current mode is a temperature related mode or representative mode
+    function isTemperatureMode(mode) {
+        return mode !== "Rt" && mode !== "Cm" && mode !== "Bt"
+    }
+
+    function transformToDegree(value){
+        return (value / 10 - 32) / 1.8
+    }
+
     return (
         <div style={{
             justifyContent: "space-between",
@@ -201,8 +218,6 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
-                    <div> Valeur Max : {valueMax} </div>
-                    <div> Valeur Min</div>
                     <div> Moyenne totale</div>
                     <div> écart-type</div>
 
