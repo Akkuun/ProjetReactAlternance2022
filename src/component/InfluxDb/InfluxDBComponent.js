@@ -32,59 +32,75 @@ const InfluxDBComponent = () => {
     //state for the dataTab/timeTab for the chart
     const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState({});
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
+
+    const [valueMax, setValueMax] = React.useState();
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
     const url = 'http://10.99.3.47:8086'
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-    // function which get the request parameters and send it to Influx to display in a chart
-    const requestInfluxForChart = async () => {
-        //clear arrays
-        let timeInflux = []
-        setValueInfluxDataTab([]);
-        setValueInfluxTimeTab([]);
-        //get the dates and re-arrange them
+
+    //Function designed to send Mean Request to InfluxDB, fill all the Map/array for the chart
+    async function sendMeanRequest() {
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         //Influx query declaration
-        let fluxQuery = `from(bucket: "StatsWattsType")
+        let fluxQueryMean = `from(bucket: "StatsWattsType")
          |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
          |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
         //if there are more than 1 mode/cloud, adapt the request to include 2 line in the chart for different mode or
         //have the request with diffrent cloud
         if (valueCloud.length > 0) {
             const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
-            fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
+            fluxQueryMean += `\n    |> filter(fn: (r) => ${cloudFilters})`;
         }
         if (valueMode.length > 0) {
             const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
-            fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
+            fluxQueryMean += `\n    |> filter(fn: (r) => ${modeFilters})`;
         }
-        fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+        fluxQueryMean += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
         |> yield(name: "mean")`;
-        //get the result from the InfluxDB object
-        const modeData = {}; // Object to store data for each mode
         let value;
-        for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
+        let timeInflux = []
+        const modeData = {}; // Object to store data for each mode
+        for await (const {values, tableMeta} of queryApi.iterateRows(fluxQueryMean)) {
             const o = tableMeta.toObject(values);
             const mode = o.wattsType;
             //these modes represent temperature mode, so we don't have to transform them, but for the other we have to do it to have the value in ° for a better understanding
-            if (mode !== "Rt" && mode !== "Cm" && mode!=="Bt") {
+            if (mode !== "Rt" && mode !== "Cm" && mode !== "Bt") {
                 value = ((o._value / 10 - 32) / 1.8);
-            } else { value = o._value}
+            } else {
+                value = o._value
+            }
             const time = o._time;
             if (!modeData[mode]) {
                 modeData[mode] = [];
             }
-            console.log(fluxQuery)
             //push the data to the associated mode
             modeData[mode].push({value, time});
             timeInflux.push(time); // Add the timestamp to the array
+            //states updates
+            setValueInfluxDataTab(modeData);
+            setValueInfluxTimeTab(timeInflux);
         }
-        //states updates
-        setValueInfluxDataTab(modeData);
-        setValueInfluxTimeTab(timeInflux);
+    }
+    async function sendMaxRequest(RequestInfluxDB){
+
+    }
+
+    const requestInfluxForChart = async () => {
+        //clear arrays
+
+        setValueInfluxDataTab([]);
+        setValueInfluxTimeTab([]);
+        //get the dates and re-arrange them
+
+        //get the result from the InfluxDB object
+        await sendMeanRequest()
+       // await sendMaxRequest(fluxQueryMax)
+
+
     }
     // chart data
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
@@ -185,6 +201,11 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
+                    <div> Valeur Max : {valueMax} </div>
+                    <div> Valeur Min</div>
+                    <div> Moyenne totale</div>
+                    <div> écart-type</div>
+
                 </DemoContainer>
             </LocalizationProvider>
         </div>
