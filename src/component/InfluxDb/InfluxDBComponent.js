@@ -1,6 +1,5 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
-import {Chart as ChartJS} from "chart.js/auto";
 import {InfluxDB} from "@influxdata/influxdb-client";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
@@ -35,6 +34,10 @@ const InfluxDBComponent = () => {
 
     const [valueMax, setValueMax] = React.useState();
     const [valueMin, setValueMin] = React.useState();
+
+    const [valueEcartType, setValueEcartType] = React.useState();
+    const [valueMoy, setValueMoy] = React.useState();
+
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -42,12 +45,37 @@ const InfluxDBComponent = () => {
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
 
+    function calculerEcartType(tableau) {
+        // Calculer la moyenne des valeurs du tableau
+        const moyenne = tableau.reduce((acc, valeur) => acc + valeur, 0) / tableau.length;
+
+        // Calculer la somme des carrés des écarts à la moyenne
+        const sommeCarresEcarts = tableau.reduce((acc, valeur) => acc + Math.pow(valeur - moyenne, 2), 0);
+
+        // Calculer la variance
+        const variance = sommeCarresEcarts / tableau.length;
+
+        // Calculer l'écart type (racine carrée de la variance)
+        return Math.sqrt(variance);
+    }
+
+    function calculerMoyenne(tableau){
+        console.log(tableau)
+        let val=0,compt=1;
+        for (let i = 0; i <tableau.length ; i++) {
+            val+=tableau[i]
+            compt++
+        }
+        return val/compt
+    }
+
     //Function designed to send Request to InfluxDB, fill all the Map/array for the chart, take the mode in parameter to adapt the request
     async function sendRequest(mode) {
         let value;
         let timeInflux = []
         const modeData = {}; // Object to store data for each mode
         let tabval = []
+        let tab=[]
         let max = -Infinity;
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
@@ -89,9 +117,16 @@ const InfluxDBComponent = () => {
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
-                break;
-            case "max/min":
-                break;
+                for (let i = 0; i <valueInfluxDataTab[valueMode].length ; i++) {
+                    tab[i]=valueInfluxDataTab[valueMode][i].value
+
+                }
+                setValueEcartType(calculerEcartType(tab).toFixed(2))
+                setValueMoy(calculerMoyenne(tab).toFixed(2))
+
+                return Promise.resolve()
+
+
         }
     }
 
@@ -105,7 +140,6 @@ const InfluxDBComponent = () => {
 
         //get the result from the InfluxDB object
         await sendRequest("mean")
-        await sendRequest("max/min")
 
 
     }
@@ -217,8 +251,8 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
-                    <div> Moyenne totale</div>
-                    <div> écart-type</div>
+                    <div> espérance {valueMoy}</div>
+                    <div> écart-type  {valueEcartType}</div>
 
                 </DemoContainer>
             </LocalizationProvider>
