@@ -33,7 +33,7 @@ const InfluxDBComponent = () => {
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
 
     const [valueEcart, setValueEcart] = React.useState();
-
+    const [valueMoy, setValueMoy] = React.useState();
     const [valueMax, setValueMax] = React.useState();
     const [valueMin, setValueMin] = React.useState();
     //Influx credentials for connection
@@ -86,7 +86,6 @@ const InfluxDBComponent = () => {
                     modeData[mode].push({value, time});
                     timeInflux.push(time); // Add the timestamp to the array
                     //states updates
-                    console.log(modeData[valueMode])
 
                 }
                 let tab=[]
@@ -94,7 +93,7 @@ const InfluxDBComponent = () => {
                     tab[i]=modeData[valueMode][i].value
                 }
                 setValueEcart(calculateStandardDeviation(tab).toFixed(2))
-
+                setValueMoy(calculateMean(tab).toFixed(2))
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
                 break;
@@ -159,7 +158,16 @@ const InfluxDBComponent = () => {
         // Calculer l'écart type en prenant la racine carrée de la variance
         return Math.sqrt(variance);
     }
+    function calculateMean(tab){
+        console.log(tab)
+        let val=0,cpt=0
+        for (let i = 0; i <tab.length ; i++) {
+            val+=tab[i]
+            cpt++
+        }
+        return val/cpt
 
+    }
     return (
         <div style={{
             justifyContent: "space-between",
@@ -239,7 +247,7 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
-                    <div> Moyenne totale  {}</div>
+                    <div> Moyenne totale  {valueMoy}</div>
                     <div> écart-type  {valueEcart}</div>
 
                 </DemoContainer>
