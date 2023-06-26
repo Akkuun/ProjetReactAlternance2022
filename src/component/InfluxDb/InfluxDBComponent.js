@@ -32,12 +32,10 @@ const InfluxDBComponent = () => {
     const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState({});
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
 
+    const [valueEcart, setValueEcart] = React.useState();
+
     const [valueMax, setValueMax] = React.useState();
     const [valueMin, setValueMin] = React.useState();
-
-    const [valueEcartType, setValueEcartType] = React.useState();
-    const [valueMoy, setValueMoy] = React.useState();
-
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -45,37 +43,12 @@ const InfluxDBComponent = () => {
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
 
-    function calculerEcartType(tableau) {
-        // Calculer la moyenne des valeurs du tableau
-        const moyenne = tableau.reduce((acc, valeur) => acc + valeur, 0) / tableau.length;
-
-        // Calculer la somme des carrés des écarts à la moyenne
-        const sommeCarresEcarts = tableau.reduce((acc, valeur) => acc + Math.pow(valeur - moyenne, 2), 0);
-
-        // Calculer la variance
-        const variance = sommeCarresEcarts / tableau.length;
-
-        // Calculer l'écart type (racine carrée de la variance)
-        return Math.sqrt(variance);
-    }
-
-    function calculerMoyenne(tableau){
-        console.log(tableau)
-        let val=0,compt=1;
-        for (let i = 0; i <tableau.length ; i++) {
-            val+=tableau[i]
-            compt++
-        }
-        return val/compt
-    }
-
     //Function designed to send Request to InfluxDB, fill all the Map/array for the chart, take the mode in parameter to adapt the request
     async function sendRequest(mode) {
         let value;
         let timeInflux = []
         const modeData = {}; // Object to store data for each mode
         let tabval = []
-        let tab=[]
         let max = -Infinity;
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
@@ -113,20 +86,20 @@ const InfluxDBComponent = () => {
                     modeData[mode].push({value, time});
                     timeInflux.push(time); // Add the timestamp to the array
                     //states updates
+                    console.log(modeData[valueMode])
 
                 }
+                let tab=[]
+                for (let i = 0; i <modeData[valueMode].length ; i++) {
+                    tab[i]=modeData[valueMode][i].value
+                }
+                setValueEcart(calculateStandardDeviation(tab).toFixed(2))
+
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
-                for (let i = 0; i <valueInfluxDataTab[valueMode].length ; i++) {
-                    tab[i]=valueInfluxDataTab[valueMode][i].value
-
-                }
-                setValueEcartType(calculerEcartType(tab).toFixed(2))
-                setValueMoy(calculerMoyenne(tab).toFixed(2))
-
-                return Promise.resolve()
-
-
+                break;
+            case "max/min":
+                break;
         }
     }
 
@@ -140,6 +113,7 @@ const InfluxDBComponent = () => {
 
         //get the result from the InfluxDB object
         await sendRequest("mean")
+        await sendRequest("max/min")
 
 
     }
@@ -170,6 +144,20 @@ const InfluxDBComponent = () => {
 
     function transformToDegree(value){
         return (value / 10 - 32) / 1.8
+    }
+    function calculateStandardDeviation(values) {
+        // Calculer la moyenne des valeurs
+        const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+
+        // Calculer la somme des carrés des différences par rapport à la moyenne
+        const squaredDifferences = values.map(value => Math.pow(value - mean, 2));
+        const sumSquaredDifferences = squaredDifferences.reduce((sum, value) => sum + value, 0);
+
+        // Calculer la variance en divisant la somme des carrés des différences par le nombre de valeurs
+        const variance = sumSquaredDifferences / values.length;
+
+        // Calculer l'écart type en prenant la racine carrée de la variance
+        return Math.sqrt(variance);
     }
 
     return (
@@ -251,8 +239,8 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
-                    <div> espérance {valueMoy}</div>
-                    <div> écart-type  {valueEcartType}</div>
+                    <div> Moyenne totale  {}</div>
+                    <div> écart-type  {valueEcart}</div>
 
                 </DemoContainer>
             </LocalizationProvider>
