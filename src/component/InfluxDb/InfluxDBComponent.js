@@ -35,6 +35,10 @@ const InfluxDBComponent = () => {
 
     const [valueMax, setValueMax] = React.useState();
     const [valueMin, setValueMin] = React.useState();
+
+    const [valueMoy, setValueMoy] = React.useState();
+    const [valueEcart, setValueEcart] = React.useState();
+
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -89,18 +93,50 @@ const InfluxDBComponent = () => {
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
+                let tabb=[]
+                console.log(modeData[valueMode])
+                for (let i = 0; i < modeData[valueMode].length; i++) {
+                    tabb.push(modeData[valueMode][i].value)
+                }
+                setValueMoy(calculateMean(tabb).toFixed(2))
+                setValueEcart(calculateStandardDeviation(tabb).toFixed(2))
                 break;
             case "max/min":
                 break;
         }
     }
 
+    function calculateMean(tab) {
+        let val = 0, cpt = 0
+        for (let i = 0; i < tab.length; i++) {
+            val += tab[i]
+            cpt++
+        }
+        return val / cpt
 
+    }
+
+    function calculateStandardDeviation(values) {
+        // Calculer la moyenne des valeurs
+        const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+
+        // Calculer la somme des carrés des différences par rapport à la moyenne
+        const squaredDifferences = values.map(value => Math.pow(value - mean, 2));
+        const sumSquaredDifferences = squaredDifferences.reduce((sum, value) => sum + value, 0);
+
+        // Calculer la variance en divisant la somme des carrés des différences par le nombre de valeurs
+        const variance = sumSquaredDifferences / values.length;
+
+        // Calculer l'écart type en prenant la racine carrée de la variance
+        return Math.sqrt(variance);
+    }
     const requestInfluxForChart = async () => {
         //clear arrays
 
         setValueInfluxDataTab([]);
         setValueInfluxTimeTab([]);
+        setValueMoy(0)
+        setValueEcart(0)
         //get the dates and re-arrange them
 
         //get the result from the InfluxDB object
@@ -110,6 +146,7 @@ const InfluxDBComponent = () => {
 
     }
     // chart data
+    console.log(valueMoy)
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
     const dataInfluxRes = {
         labels: uniqueTimeInflux,
@@ -217,8 +254,8 @@ const InfluxDBComponent = () => {
                         }}>
                             Envoyer requête
                         </Button></div>
-                    <div> Moyenne totale</div>
-                    <div> écart-type</div>
+                    <div> Moyenne totale {valueMoy}</div>
+                    <div> écart-type { valueEcart}</div>
 
                 </DemoContainer>
             </LocalizationProvider>
