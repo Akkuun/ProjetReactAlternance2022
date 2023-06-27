@@ -1,5 +1,5 @@
 import React from "react";
-import {Line} from "react-chartjs-2";
+import {Chart, Line, Pie} from "react-chartjs-2";
 import {Chart as ChartJS} from "chart.js/auto";
 import {InfluxDB} from "@influxdata/influxdb-client";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -178,6 +178,36 @@ const InfluxDBComponent = () => {
         return (value / 10 - 32) / 1.8
     }
 
+    const dataP = {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [
+            {
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+    const options = {
+        title: "My Daily Activities",
+    };
+
     return (
         <div style={{
 
@@ -188,9 +218,13 @@ const InfluxDBComponent = () => {
             , height: "30%",
 
         }}>
-            <div style={{width: "80%", height: "40%", alignItems: "center"}}>
-                <Line data={dataInfluxRes}/>
-            </div>
+
+            {(valueMode.includes("Cm") || valueMode.includes("Rt"))&& valueMode.length===1 ? <div style={{width: "30%", height: "20%", alignItems: "center"}}> <Pie data={dataP}/> </div> :
+                <div style={{width: "80%", height: "40%", alignItems: "center"}}> <Line data={dataInfluxRes} /> </div> }
+
+
+
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
                     <div style={{
@@ -267,10 +301,13 @@ const InfluxDBComponent = () => {
 
                 </DemoContainer>
             </LocalizationProvider>
-            <div style={{left:"82%",width:'40%', position:"fixed"}}>
+
+            <div style={{left: "82%", width: '40%', position: "fixed"}}>
                 <NestedList/>
             </div>
+
         </div>
+
     )
 }
 export default InfluxDBComponent
