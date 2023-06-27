@@ -3,7 +3,7 @@ import InfluxDBComponent from "./InfluxDb/InfluxDBComponent";
 
 const pageStatistique = () => {
     return (
-        <div style={{height:"80%",width:"50%", paddingLeft:"25%"}} >
+        <div style={{width:"80%", paddingLeft:"10%"}} >
             <InfluxDBComponent/>
         </div>
     )

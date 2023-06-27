@@ -146,7 +146,7 @@ const InfluxDBComponent = () => {
 
     }
     // chart data
-    console.log(valueMoy)
+    console.log(valueInfluxDataTab)
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
     const dataInfluxRes = {
         labels: uniqueTimeInflux,
@@ -177,19 +177,24 @@ const InfluxDBComponent = () => {
 
     return (
         <div style={{
-            justifyContent: "space-between",
+
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
-            height: "100%", width: "100%"
+            width:"100%"
+            , height:"30%",
+
         }}>
+            <div style={{width:"80%", height:"40%", alignItems:"center"}}>
             <Line data={dataInfluxRes}/>
+            </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
                     <div style={{
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+
                     }}>
                         <DateTimePicker
                             label="Début"
@@ -220,7 +225,7 @@ const InfluxDBComponent = () => {
                                     {option.title}
                                 </li>
                             )}
-                            style={{width: 500}}
+                            style={{}}
                             renderinput={(params) => (
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
@@ -244,7 +249,7 @@ const InfluxDBComponent = () => {
                                     {option.title}
                                 </li>
                             )}
-                            style={{width: 500}}
+                            style={{}}
                             renderinput={(params) => (
                                 <TextField {...params} label="Checkboxes" placeholder="Favorites"/>
                             )}
