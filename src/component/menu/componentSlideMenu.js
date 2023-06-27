@@ -35,7 +35,7 @@ const ListItems = ({items, onClick}) =>
         ));
 //return the version/date of the project
 function getVersionAndData() {
-    return "V  "+ "3.0" +"     " + "21/06/2023";
+    return "V  "+ "3.1" +"     " + "27/06/2023";
 }
 
 //associate each item data for the menu ( link,lael,icon)
