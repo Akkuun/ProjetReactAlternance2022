@@ -14,6 +14,7 @@ import {Autocomplete} from "@mui/joy";
 import Checkbox from '@mui/material/Checkbox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import NestedList from "./NestedList";
 // option for proposed modes/clouds in input
 const optionsMode = [{title: 'Bt'}, {title: 'Cm'}, {title: 'Ma'}, {title: 'Rt'}, {title: 'bo'}, {title: 'cf'}, {title: 'df'}, {title: 'ec'}];
 const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {title: 'Prod'}, {title: 'FENIX'}]
@@ -93,7 +94,7 @@ const InfluxDBComponent = () => {
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
-                let tabb=[]
+                let tabb = []
                 console.log(modeData[valueMode])
                 for (let i = 0; i < modeData[valueMode].length; i++) {
                     tabb.push(modeData[valueMode][i].value)
@@ -130,6 +131,7 @@ const InfluxDBComponent = () => {
         // Calculer l'écart type en prenant la racine carrée de la variance
         return Math.sqrt(variance);
     }
+
     const requestInfluxForChart = async () => {
         //clear arrays
 
@@ -166,12 +168,13 @@ const InfluxDBComponent = () => {
         const selectedCloud = values.map((value) => value.title);
         setValueCloud(selectedCloud);
     };
+
     //functiond designed to return if the current mode is a temperature related mode or representative mode
     function isTemperatureMode(mode) {
         return mode !== "Rt" && mode !== "Cm" && mode !== "Bt"
     }
 
-    function transformToDegree(value){
+    function transformToDegree(value) {
         return (value / 10 - 32) / 1.8
     }
 
@@ -181,12 +184,12 @@ const InfluxDBComponent = () => {
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
-            width:"100%"
-            , height:"30%",
+            width: "100%"
+            , height: "30%",
 
         }}>
-            <div style={{width:"80%", height:"40%", alignItems:"center"}}>
-            <Line data={dataInfluxRes}/>
+            <div style={{width: "80%", height: "40%", alignItems: "center"}}>
+                <Line data={dataInfluxRes}/>
             </div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
@@ -260,10 +263,13 @@ const InfluxDBComponent = () => {
                             Envoyer requête
                         </Button></div>
                     <div> Moyenne totale {valueMoy}</div>
-                    <div> écart-type { valueEcart}</div>
+                    <div> écart-type {valueEcart}</div>
 
                 </DemoContainer>
             </LocalizationProvider>
+            <div style={{left:"82%",width:'40%', position:"fixed"}}>
+                <NestedList/>
+            </div>
         </div>
     )
 }
