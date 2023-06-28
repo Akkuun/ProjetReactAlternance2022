@@ -41,6 +41,7 @@ const InfluxDBComponent = () => {
 
     const [valueChoixGraphPie, setValueChoixGraphPie] = React.useState(false);
 
+
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
     let org = `Watts`
@@ -114,7 +115,50 @@ const InfluxDBComponent = () => {
                     dataRepartition[cloud] = Math.floor(value / 8)
                 }
                 setvalueInfluxDataTabRepartition(dataRepartition)
+                break
+            case "modeRepart":
+                setValueChoixGraphPie(true)
+                let FluxQueryCmValue
+               let FluxQuery;
+                let CmRepartiton=[]
+                let CmList = ["OFF", "eco","auto", "confort", "defrost", "boost", "manual", "sunday"]
+                let FluxQueryBegin = `from(bucket: "StatsWattsType")\n|> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})\n`
+                if (valueCloud.length > 0) {
+                    const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
+                    FluxQueryBegin += `|> filter(fn: (r) => ${cloudFilters})\n`;
+                }
+
+                // for await (const {values, tableMeta} of queryApi.iterateRows(FluxQuery)) {
+                //     //console.log(values)
+                // }
+
+                for (let i = 0; i < CmList.length; i++) {
+                    FluxQueryCmValue  = `|> filter(fn: (r) => r["wattsType"] == "Cm")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
+                    FluxQuery=FluxQueryBegin + FluxQueryCmValue
+                    FluxQuery+=`\n|> count()\n`
+                    for await (const {values, tableMeta} of queryApi.iterateRows(FluxQuery)) {
+                        CmRepartiton[CmList[i]]=values[4]
+                    }
+                }
+                FluxQuery=FluxQueryBegin+"|> filter(fn: (r) => r[\"wattsType\"] == \"Cm\") \n|> count()\n"
+                for await (const {values, tableMeta} of queryApi.iterateRows(FluxQuery)) {
+
+                    //CmRepartiton[CmList[CmList.length]]=values[4]
+
+                }
+                console.log(CmRepartiton)
+
+                setvalueInfluxDataTabRepartition(CmRepartiton)
+
                 break;
+// modele from(bucket: "StatsWattsType")
+//             |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+//             |> filter(fn: (r) => r["cloud"] == "FENIX")
+//
+//
+//             |> filter(fn: (r) => r["wattsType"] == "Cm")
+//             |> filter(fn: (r) => r["_value"] == 6)
+//             |> count()
 
 
         }
@@ -162,7 +206,7 @@ const InfluxDBComponent = () => {
 
     }
     // chart data
-    console.log(valueInfluxDataTab)
+
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
     const dataInfluxRes = {
         labels: uniqueTimeInflux,
@@ -193,6 +237,8 @@ const InfluxDBComponent = () => {
     }
 
     console.log(valueInfluxDataTabRepartition)
+    console.log(Object.keys(valueInfluxDataTabRepartition))
+    console.log(Object.values(valueInfluxDataTabRepartition))
     const dataP = {
         labels: Object.keys(valueInfluxDataTabRepartition),
         datasets: [
@@ -206,12 +252,18 @@ const InfluxDBComponent = () => {
                     'rgba(75, 192, 192, 0.2)',
                     'rgba(153, 102, 255, 0.2)',
                     'rgba(255, 159, 64, 0.2)',
+                    'rgba(153, 65, 18, 0.2)',
+                    'rgba(130, 159, 64, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
                     'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
                 ],
@@ -232,7 +284,7 @@ const InfluxDBComponent = () => {
 
         }}>
 
-            {valueChoixGraphPie===true ?
+            {valueChoixGraphPie === true ?
                 <div style={{width: "30%", height: "20%", alignItems: "center"}}><Pie data={dataP}/></div> :
                 <div style={{width: "80%", height: "40%", alignItems: "center"}}><Line data={dataInfluxRes}/></div>}
 
@@ -314,6 +366,11 @@ const InfluxDBComponent = () => {
                         sendRequest("repart")
                     }}>
                         Répartiton des clouds
+                    </Button></div>
+                    <div><Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
+                        sendRequest("modeRepart")
+                    }}>
+                        Répartiton des modes
                     </Button></div>
 
                 </DemoContainer>
