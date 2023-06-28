@@ -34,11 +34,12 @@ const InfluxDBComponent = () => {
     const [valueInfluxDataTab, setValueInfluxDataTab] = React.useState({});
     const [valueInfluxTimeTab, setValueInfluxTimeTab] = React.useState([]);
 
-    const [valueMax, setValueMax] = React.useState();
-    const [valueMin, setValueMin] = React.useState();
 
     const [valueMoy, setValueMoy] = React.useState();
     const [valueEcart, setValueEcart] = React.useState();
+    const [valueInfluxDataTabRepartition, setvalueInfluxDataTabRepartition] = React.useState({});
+
+    const [valueChoixGraphPie, setValueChoixGraphPie] = React.useState(false);
 
     //Influx credentials for connection
     const token = '5NqNMxecJV6FuXdsGvNH0rizry14lMI0Jqvs8mig23kBAY8I-KDDaLRflhQ5OpFv6cLu4DpmibSlHuYkwa2Awg=='
@@ -49,32 +50,32 @@ const InfluxDBComponent = () => {
 
     //Function designed to send Request to InfluxDB, fill all the Map/array for the chart, take the mode in parameter to adapt the request
     async function sendRequest(mode) {
+        setValueChoixGraphPie(false)
         let value;
         let timeInflux = []
         const modeData = {}; // Object to store data for each mode
-        let tabval = []
-        let max = -Infinity;
+        let tabb = []
+        const dataRepartition = [];
         const formattedValueDebut = dayjs(valueDebut.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueFin.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
-        let fluxQuery = `from(bucket: "StatsWattsType")
-                 |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
-                 |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
-        //if there are more than 1 mode/cloud, adapt the request to include 2 line in the chart for different mode or
-        //have the request with diffrent cloud
-        if (valueCloud.length > 0) {
-            const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
-            fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
-        }
-        if (valueMode.length > 0) {
-            const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
-            fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
-        }
-
         switch (mode) {
             case "mean":
-                fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
-                 |> yield(name: "mean")`;
 
+                let fluxQuery = `from(bucket: "StatsWattsType")
+                 |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+                 |> filter(fn: (r) => r["_measurement"] == "measurementWattsType")`
+                //if there are more than 1 mode/cloud, adapt the request to include 2 line in the chart for different mode or
+                //have the request with diffrent cloud
+                if (valueCloud.length > 0) {
+                    const cloudFilters = valueCloud.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
+                    fluxQuery += `\n    |> filter(fn: (r) => ${cloudFilters})`;
+                }
+                if (valueMode.length > 0) {
+                    const modeFilters = valueMode.map((mode) => `r["wattsType"] == "${mode}"`).join(" or ");
+                    fluxQuery += `\n    |> filter(fn: (r) => ${modeFilters})`;
+                }
+                fluxQuery += `\n    |> aggregateWindow(every: 1d, fn: mean, createEmpty: false)
+            |> yield(name: "mean")`;
                 for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
                     const o = tableMeta.toObject(values);
                     const mode = o.wattsType;
@@ -82,7 +83,6 @@ const InfluxDBComponent = () => {
                     //these modes represent temperature mode, so we don't have to transform them, but for the other we have to do it to have the value in ° for a better understanding
                     //if isTemperatureMode return true, it converts the data to the °C format, else jsute keep the value
                     isTemperatureMode(mode) ? value = transformToDegree(o._value) : value = o._value
-
                     if (!modeData[mode]) {
                         modeData[mode] = [];
                     }
@@ -90,22 +90,37 @@ const InfluxDBComponent = () => {
                     modeData[mode].push({value, time});
                     timeInflux.push(time); // Add the timestamp to the array
                     //states updates
-
                 }
                 setValueInfluxDataTab(modeData);
                 setValueInfluxTimeTab(timeInflux);
-                let tabb = []
-                console.log(modeData[valueMode])
+
                 for (let i = 0; i < modeData[valueMode].length; i++) {
                     tabb.push(modeData[valueMode][i].value)
                 }
                 setValueMoy(calculateMean(tabb).toFixed(2))
                 setValueEcart(calculateStandardDeviation(tabb).toFixed(2))
                 break;
-            case "max/min":
+            case "repart":
+                setValueChoixGraphPie(true)
+                let fluxQueryRepartition = `from(bucket: "StatsWattsType")
+              |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
+              |> group(columns: ["cloud"])
+              |> count()`
+                for await (const {values, tableMeta} of queryApi.iterateRows(fluxQueryRepartition)) {
+                    const o = tableMeta.toObject(values);
+                    const cloud = o.cloud;
+                    const value = o._value
+                    //each week, we send 8 data for each device so to have a good representation of the cloud's repartition we have to divide by 8 to have
+                    dataRepartition[cloud] = Math.floor(value / 8)
+                }
+                setvalueInfluxDataTabRepartition(dataRepartition)
                 break;
+
+
         }
+
     }
+
 
     function calculateMean(tab) {
         let val = 0, cpt = 0
@@ -143,7 +158,6 @@ const InfluxDBComponent = () => {
 
         //get the result from the InfluxDB object
         await sendRequest("mean")
-        await sendRequest("max/min")
 
 
     }
@@ -178,12 +192,13 @@ const InfluxDBComponent = () => {
         return (value / 10 - 32) / 1.8
     }
 
+    console.log(valueInfluxDataTabRepartition)
     const dataP = {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: Object.keys(valueInfluxDataTabRepartition),
         datasets: [
             {
                 label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                data: Object.values(valueInfluxDataTabRepartition),
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -204,9 +219,7 @@ const InfluxDBComponent = () => {
             },
         ],
     };
-    const options = {
-        title: "My Daily Activities",
-    };
+
 
     return (
         <div style={{
@@ -219,10 +232,9 @@ const InfluxDBComponent = () => {
 
         }}>
 
-            {(valueMode.includes("Cm") || valueMode.includes("Rt"))&& valueMode.length===1 ? <div style={{width: "30%", height: "20%", alignItems: "center"}}> <Pie data={dataP}/> </div> :
-                <div style={{width: "80%", height: "40%", alignItems: "center"}}> <Line data={dataInfluxRes} /> </div> }
-
-
+            {valueChoixGraphPie===true ?
+                <div style={{width: "30%", height: "20%", alignItems: "center"}}><Pie data={dataP}/></div> :
+                <div style={{width: "80%", height: "40%", alignItems: "center"}}><Line data={dataInfluxRes}/></div>}
 
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -298,6 +310,11 @@ const InfluxDBComponent = () => {
                         </Button></div>
                     <div> Moyenne totale {valueMoy}</div>
                     <div> écart-type {valueEcart}</div>
+                    <div><Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
+                        sendRequest("repart")
+                    }}>
+                        Répartiton des clouds
+                    </Button></div>
 
                 </DemoContainer>
             </LocalizationProvider>
