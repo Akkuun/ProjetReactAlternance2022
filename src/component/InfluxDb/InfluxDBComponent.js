@@ -141,6 +141,30 @@ const InfluxDBComponent = () => {
                 //State value update
                 setvalueInfluxDataTabRepartition(CmRepartitonDataArray)
                 break;
+            case "modeRtRepart":
+                setValueChoiceGraphPie(true)
+                let FluxQueryRtRepartition
+                let FluxQueryRt;
+                let RtRepartitonDataArray=[]
+                let RtList = ["Bathroom", "Bedroom","DiningRoom", "Entrance", "Garage", "Garden", "Hall", "Kitchen","LivingRoom","Loft","Office","Outbuilding","Terrace","Toilet","Various"]
+                let FluxQueryBeginRt = `from(bucket: "StatsWattsType")\n|> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})\n`
+                // we must adapt the request if various mode are selected
+                if (valueCloudSelected.length > 0) {
+                    const cloudFilters = valueCloudSelected.map((cloud) => `r["cloud"] == "${cloud}"`).join(" or ");
+                    FluxQueryBeginRt += `|> filter(fn: (r) => ${cloudFilters})\n`;
+                }
+                //for each mode, we adapt the requet to ask tne number of device for each mode 1,2,3,4.....
+                for (let i = 0; i < RtList.length; i++) {
+                    FluxQueryRtRepartition  = `|> filter(fn: (r) => r["wattsType"] == "Rt")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
+                    FluxQueryRt=FluxQueryBeginRt + FluxQueryRtRepartition
+                    FluxQueryRt+=`\n|> count()\n`
+                    for await (const {values, tableMeta} of queryApi.iterateRows(FluxQueryRt)) {
+                        RtRepartitonDataArray[RtList[i]]=values[4]
+                    }
+                }
+                //State value update
+                setvalueInfluxDataTabRepartition(RtRepartitonDataArray)
+                break;
         }
     }
     //function design to calculate the Mean of an array value
@@ -167,8 +191,17 @@ const InfluxDBComponent = () => {
         setValueInfluxTimeTab([]);
         setValueAverage(0)
         setValueEcart(0)
-        console.log(valueModeSelected==="Cm" && valueModeSelected.length===1)
-        valueModeSelected[0]==="Cm" && valueModeSelected.length===1? await sendRequest("modeRepart") : await sendRequest("mean")
+        if(valueModeSelected[0]==="Cm" && valueModeSelected.length===1){
+            await sendRequest("modeRepart")
+        }
+        else if (valueModeSelected[0]==="Rt" && valueModeSelected.length===1){
+            await sendRequest("modeRtRepart")
+        }
+        else{
+            await sendRequest("mean")
+        }
+
+
     }
     //we filter the values of vlaueInfluxTimeTab to prevent a bug when x time series are added for each selected mode
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
@@ -319,11 +352,6 @@ const InfluxDBComponent = () => {
                         sendRequest("repart")
                     }}>
                         Répartiton des clouds
-                    </Button></div>
-                    <div><Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
-                        sendRequest("modeRepart")
-                    }}>
-                        Répartiton des modes
                     </Button></div>
                 </DemoContainer>
             </LocalizationProvider>
