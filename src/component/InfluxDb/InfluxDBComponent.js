@@ -167,7 +167,8 @@ const InfluxDBComponent = () => {
         setValueInfluxTimeTab([]);
         setValueAverage(0)
         setValueEcart(0)
-        await sendRequest("mean")
+        console.log(valueModeSelected==="Cm" && valueModeSelected.length===1)
+        valueModeSelected[0]==="Cm" && valueModeSelected.length===1? await sendRequest("modeRepart") : await sendRequest("mean")
     }
     //we filter the values of vlaueInfluxTimeTab to prevent a bug when x time series are added for each selected mode
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
