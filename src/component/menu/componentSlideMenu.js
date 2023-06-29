@@ -35,10 +35,10 @@ const ListItems = ({items, onClick}) =>
         ));
 //return the version/date of the project
 function getVersionAndData() {
-    return "V  "+ "3.1" +"     " + "27/06/2023";
+    return "V  "+ "3.2" +"     " + "29/06/2023";
 }
 
-//associate each item data for the menu ( link,lael,icon)
+//associate each item data for the menu ( link,label,icon)
 const DrawerSections = ({classes}) => {
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState('Home');
@@ -51,7 +51,6 @@ const DrawerSections = ({classes}) => {
             {label: 'User Data', Icon: PersonIcon, lien: '/wattsProd/pageUserData'},
             {label: 'Device Data', Icon: DeviceHubIcon, lien: '/wattsProd/pageDeviceData'},
             {label: 'Localisation Device',Icon: MapTwoToneIcon, lien: '/wattsProd/pageLocalisation'}
-
         ]
     });
     const [itemsWattsDev] = useState({
@@ -98,14 +97,11 @@ const DrawerSections = ({classes}) => {
         Clouds: [
             {label: 'Localisation Device', Icon: CloudIcon, lien: '/ALL/pageLocalisation'},
         ],
-
     });
-
     const [itemStatistique] = useState({
         Clouds: [
             {label: 'Statistiques Device', Icon: LeaderboardTwoToneIcon, lien: '/ALL/pageStatistique'},
         ],
-
     });
     //state for open the menu
     const onClick = (content) => () => {

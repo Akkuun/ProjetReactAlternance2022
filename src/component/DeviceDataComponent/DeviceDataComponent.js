@@ -17,7 +17,6 @@ import DeviceDataBubbleComponent from "./DeviceDataBubbleComponent";
 import {SnackbarProvider, useSnackbar} from 'notistack';
 import {useLocation, useParams} from "react-router-dom";
 import {TextField} from "@mui/material";
-
 //component which create all the other data component
 const DeviceDataComponent = () => {
     //notification object
@@ -34,8 +33,9 @@ const DeviceDataComponent = () => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState(new Map())
     const [a1ValueForUc, setA1ValueForUc] = useState('');
+    //state for component force refresh
     const [, forceUpdate] = useReducer(x => x + 1, 0);
-    // get thr current cloud in the cookies
+    // get the current cloud in the cookies
     let {cloud} = useParams();
     let cloud_Name = cloud.toUpperCase();
     let newMapConfiguration = {};
@@ -69,7 +69,7 @@ const DeviceDataComponent = () => {
             setMac("");
         }
     }
-    //function designed to get the correct value of the JSON object passed in parameter
+    //function designed to transform the data from JSON object
     function transformData(configurationResult) {
         let deviceConfigurationData = [];
         let added = 0;
@@ -87,7 +87,7 @@ const DeviceDataComponent = () => {
     }
     //function designed get the data from the different input (A1 or MAC) and print fill out specific Map/array depending on the mode used
     const GetDataByInput = async (value, mode) => {
-        //erase the previous component for the new request
+        //erase the previous components for the new request
         ManageDisplay()
         let token = await getTokenAPI("device", cloud_Name);
         if (mode === "a1") {
@@ -199,10 +199,7 @@ const DeviceDataComponent = () => {
                     <TextField id="outlined-basic2" label="MAC" variant="outlined"
                                onChange={(e) => MacHandler(e.target.value)}/>
                 </div>
-
                 <SnackbarProvider maxSnack={3}>
-
-
                     {mac.length === 0 && a1.length === 12 ? <div style={{
                         flexDirection: "row",
                         display: "flex",
@@ -210,7 +207,6 @@ const DeviceDataComponent = () => {
                         justifyContent: "space-between",
                         width: "100%",
                         marginLeft: "20%"
-
                     }}>
                         {/*We loop on the installationListe Map which contain all user installation, and on every installation, we use his data to create bubble component*/}
                         {mapDevicesData.length === 0 ? <div></div> :
@@ -275,10 +271,8 @@ const DeviceDataComponent = () => {
                     )
                     }
                 </SnackbarProvider>
-
             </Grid>
         </Grid>
     )
 }
-
 export default DeviceDataComponent
