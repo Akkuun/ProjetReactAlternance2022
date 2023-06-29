@@ -32,8 +32,8 @@ const style = {
     borderRadius: '10px',
     boxShadow: '24',
     p: 4,
-
 };
+//export object
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
@@ -85,15 +85,18 @@ const JsonExportMenuItem = (props) => {
     );
 };
 const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
-//obligé de remettre ce paramètre ici car, il passe à null lorsqu'il est en props et impossible de le mettre en tête de fichier
+    //we must put again this parameter, because is null passed in props and we can't put it ahead of the document
     let {cloud} = useParams();
     let cloud_Name =cloud.toUpperCase();
+    //Data state
     const [mapWattsType, setMapWattsType] = useState(row)
+    //refresh component refresh
     const [, forceUpdate] = useReducer(x => x + 1, 0);
+    //notification object
     const {enqueueSnackbar} = useSnackbar();
-    // ici ce state nous permet d'afficher ou non le datagrid avec nos infos, pour savoir s'il doit etre affiche ou non, on détermine cette valeur via une fonction qui regarde la valeur du props mode
-    // si le mode est mac , alors on affiche directement car on ne veut pas de la bulle, sinon on affiche tout
+    //state for the opening of the datagrid, if the mode selected is MAC we display the component, or we hide it
     const [openPopupComponent, setOpenPopupComponent] = React.useState(setOpenComponentByMode);
+    //function designed to send a request to refresh the current data, so we send UC=1 and read the data received
     async function RefreshHandler() {
         let dataRefreshed;
         await sendUserConnected(a1, installation_ID, device_ID,cloud_Name);
@@ -132,6 +135,7 @@ const Popup = ({row, installation_ID, device_ID, a1, mode}) => {
         {field: 'col3', headerName: 'WattsType', width: 400},
 
     ];
+    //double lick on a element to copy to clipboard
     const addToClipboard = (content) => {
         navigator.clipboard.writeText(content.value);
         enqueueSnackbar('Added to clipboard !');

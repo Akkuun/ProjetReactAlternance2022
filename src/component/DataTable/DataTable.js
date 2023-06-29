@@ -12,7 +12,7 @@ import Cookies from "universal-cookie";
 import '../../styleComponent/JsonButton.css';
 import {useSnackbar} from "notistack";
 
-//export to JSSON & CSV function
+//object designed to export object
 const exportBlob = (blob, filename) => {
     // Save the blob in a json file
     const url = URL.createObjectURL(blob);
@@ -37,12 +37,9 @@ const getJson = (apiRef) => {
         });
         return row;
     });
-    // Stringify with some indentation
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
     return JSON.stringify(data, null, 2);
 };
-//function to create a customtoolbar, which diplay the number of user recived in hover
-//add a search bar, the export button
+//function to create a customtoolbar (search bar,export button), which display the number of user recived in hover
 function CustomToolbar() {
     const cookies = new Cookies();
     let sizeUser = cookies.get('sizeUser')
@@ -69,6 +66,7 @@ function CustomToolbar() {
         </GridToolbarContainer>
     );
 }
+//function design to create a custom pagination
 function CustomPagination() {
     const apiRef = useGridApiContext();
     const page = useGridSelector(apiRef, gridPageSelector);
@@ -82,6 +80,7 @@ function CustomPagination() {
         />
     );
 }
+//Export the date with JSON format
 const JsonExportMenuItem = (props) => {
     const apiRef = useGridApiContext();
     const {hideMenu} = props;
@@ -92,9 +91,7 @@ const JsonExportMenuItem = (props) => {
                 const blob = new Blob([jsonString], {
                     type: 'text/json',
                 });
-
                 exportBlob(blob, 'List_User.json');
-
                 // Hide the export menu after the export
                 hideMenu?.();
             }}
@@ -103,17 +100,16 @@ const JsonExportMenuItem = (props) => {
         </MenuItem>
     );
 };
-//component declaration,with rows for the data, columns for the label, loading a boolean
-//to know if all the user are ready to be display and sx for the styles
+//component declaration,with rows for the data, columns for the label, loading a boolean to know if all the user are ready to be display, sx for the style
 const DataTable = ({
                        rows,
                        columns,
                        loading,
                        sx,
                    }) => {
-
+    //state for the PageSize
     const [pageSize, setPageSize] = useState(13)
-    //notification obeject
+    //notification object
     const {enqueueSnackbar} = useSnackbar()
     //double-click on element to copy the value of a box
     const addToClipboard = (content) => {
