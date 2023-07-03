@@ -10,7 +10,7 @@ import PageStatistique from "./component/pageStatistique";
 function App() {
     return (
         <div className="App">
-            {/*Routes des routeurs avec element pour rediriger l'utilisateur, :cloud est le paramètre qui sera pris dans la redirection*/}
+            {/*Routeur Elements to redirect the user, :cloud is the passed parameter in url */}
             <RouterBreadcrumbs/>
             <Routes>
                 {<Route path="/" element={<PageHome/>}/>}

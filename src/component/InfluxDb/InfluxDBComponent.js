@@ -21,7 +21,7 @@ const optionsCloud = [{title: 'Deltacalor'}, {title: 'GKP'}, {title: 'Dev'}, {ti
 //icons
 const icon = <CheckBoxOutlineBlankIcon fontSize="small"/>;
 const checkedIcon = <CheckBoxIcon fontSize="small"/>;
-//component rendering
+//GOAL: Print all stats data in a diagram depend on the user' passed request
 const InfluxDBComponent = () => {
     //state variables
     //state for date range of the measure
@@ -46,6 +46,7 @@ const InfluxDBComponent = () => {
     const url = 'http://10.99.3.47:8086'
     // InfluxAPI object for communications
     const queryApi = new InfluxDB({url, token}).getQueryApi(org)
+
     //Function designed to send Request to InfluxDB, fill all the Map/array for the chart, take the mode in parameter to adapt the request
     async function sendRequest(mode) {
         setValueChoiceGraphPie(false)
@@ -58,7 +59,7 @@ const InfluxDBComponent = () => {
         const formattedValueDebut = dayjs(valuesStartMeasure.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         const formattedValueFin = dayjs(valueEndMeasure.$d).format("YYYY-MM-DDTHH:mm:ss[Z]").toString();
         switch (mode) {
-            //case temparature measurement
+            //case temparature measurement mode, linear diagram
             case "mean":
                 let fluxQuery = `from(bucket: "StatsWattsType")
                  |> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})
@@ -102,6 +103,7 @@ const InfluxDBComponent = () => {
                 setValueAverage(calculateMean(AverageArrayValue).toFixed(2))
                 setValueEcart(calculateStandardDeviation(AverageArrayValue).toFixed(2))
                 break;
+            //case for general cloud repartition
             case "repart":
                 setValueChoiceGraphPie(true)
                 let fluxQueryRepartition = `from(bucket: "StatsWattsType")
@@ -117,12 +119,13 @@ const InfluxDBComponent = () => {
                 }
                 setvalueInfluxDataTabRepartition(dataRepartitionForPieChart)
                 break
+            //case for data repartition diagram for non temperature mode (Cm : Current mode, Rt : Room type)
             case "modeRepart":
                 setValueChoiceGraphPie(true)
                 let FluxQueryCmRepartition
                 let FluxQuery;
-                let CmRepartitonDataArray=[]
-                let CmList = ["OFF", "eco","auto", "confort", "defrost", "boost", "manual", "sunday"]
+                let CmRepartitonDataArray = []
+                let CmList = ["OFF", "eco", "auto", "confort", "defrost", "boost", "manual", "sunday"]
                 let FluxQueryBegin = `from(bucket: "StatsWattsType")\n|> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})\n`
                 // we must adapt the request if various mode are selected
                 if (valueCloudSelected.length > 0) {
@@ -131,11 +134,11 @@ const InfluxDBComponent = () => {
                 }
                 //for each mode, we adapt the requet to ask tne number of device for each mode 1,2,3,4.....
                 for (let i = 0; i < CmList.length; i++) {
-                    FluxQueryCmRepartition  = `|> filter(fn: (r) => r["wattsType"] == "Cm")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
-                    FluxQuery=FluxQueryBegin + FluxQueryCmRepartition
-                    FluxQuery+=`\n|> count()\n`
+                    FluxQueryCmRepartition = `|> filter(fn: (r) => r["wattsType"] == "Cm")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
+                    FluxQuery = FluxQueryBegin + FluxQueryCmRepartition
+                    FluxQuery += `\n|> count()\n`
                     for await (const {values, tableMeta} of queryApi.iterateRows(FluxQuery)) {
-                        CmRepartitonDataArray[CmList[i]]=values[4]
+                        CmRepartitonDataArray[CmList[i]] = values[4]
                     }
                 }
                 //State value update
@@ -145,8 +148,8 @@ const InfluxDBComponent = () => {
                 setValueChoiceGraphPie(true)
                 let FluxQueryRtRepartition
                 let FluxQueryRt;
-                let RtRepartitonDataArray=[]
-                let RtList = ["Bathroom", "Bedroom","DiningRoom", "Entrance", "Garage", "Garden", "Hall", "Kitchen","LivingRoom","Loft","Office","Outbuilding","Terrace","Toilet","Various"]
+                let RtRepartitonDataArray = []
+                let RtList = ["Bathroom", "Bedroom", "DiningRoom", "Entrance", "Garage", "Garden", "Hall", "Kitchen", "LivingRoom", "Loft", "Office", "Outbuilding", "Terrace", "Toilet", "Various"]
                 let FluxQueryBeginRt = `from(bucket: "StatsWattsType")\n|> range(start: ${formattedValueDebut}, stop: ${formattedValueFin})\n`
                 // we must adapt the request if various mode are selected
                 if (valueCloudSelected.length > 0) {
@@ -155,11 +158,11 @@ const InfluxDBComponent = () => {
                 }
                 //for each mode, we adapt the requet to ask tne number of device for each mode 1,2,3,4.....
                 for (let i = 0; i < RtList.length; i++) {
-                    FluxQueryRtRepartition  = `|> filter(fn: (r) => r["wattsType"] == "Rt")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
-                    FluxQueryRt=FluxQueryBeginRt + FluxQueryRtRepartition
-                    FluxQueryRt+=`\n|> count()\n`
+                    FluxQueryRtRepartition = `|> filter(fn: (r) => r["wattsType"] == "Rt")\n|> filter(fn: (r) => r["_value"] == ${i}) \n`
+                    FluxQueryRt = FluxQueryBeginRt + FluxQueryRtRepartition
+                    FluxQueryRt += `\n|> count()\n`
                     for await (const {values, tableMeta} of queryApi.iterateRows(FluxQueryRt)) {
-                        RtRepartitonDataArray[RtList[i]]=values[4]
+                        RtRepartitonDataArray[RtList[i]] = values[4]
                     }
                 }
                 //State value update
@@ -167,6 +170,7 @@ const InfluxDBComponent = () => {
                 break;
         }
     }
+
     //function design to calculate the Mean of an array value
     function calculateMean(tab) {
         let val = 0, cpt = 0
@@ -176,6 +180,7 @@ const InfluxDBComponent = () => {
         }
         return val / cpt
     }
+
     //function designed to calculate the standard deviation of an array values
     function calculateStandardDeviation(values) {
         const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -184,6 +189,7 @@ const InfluxDBComponent = () => {
         const variance = sumSquaredDifferences / values.length;
         return Math.sqrt(variance);
     }
+
     //function design to send InfluxDB request for temperature modes
     const requestInfluxForChart = async () => {
         //clear arrays
@@ -191,19 +197,17 @@ const InfluxDBComponent = () => {
         setValueInfluxTimeTab([]);
         setValueAverage(0)
         setValueEcart(0)
-        if(valueModeSelected[0]==="Cm" && valueModeSelected.length===1){
+        if (valueModeSelected[0] === "Cm" && valueModeSelected.length === 1) {
             await sendRequest("modeRepart")
-        }
-        else if (valueModeSelected[0]==="Rt" && valueModeSelected.length===1){
+        } else if (valueModeSelected[0] === "Rt" && valueModeSelected.length === 1) {
             await sendRequest("modeRtRepart")
-        }
-        else{
+        } else {
             await sendRequest("mean")
         }
 
 
     }
-    //we filter the values of vlaueInfluxTimeTab to prevent a bug when x time series are added for each selected mode
+    //we filter the values of valueInfluxTimeTab to prevent a bug when x time series are added for each selected mode
     const uniqueTimeInflux = valueInfluxTimeTab.filter((time, index) => valueInfluxTimeTab.indexOf(time) === index);
     //data for Line Chart
     const dataInfluxRes = {
@@ -224,14 +228,17 @@ const InfluxDBComponent = () => {
         const selectedCloud = values.map((value) => value.title);
         setValueCloudSelected(selectedCloud);
     };
+
     //function designed to return if the current mode is a temperature related mode or representative mode
     function isTemperatureMode(mode) {
         return mode !== "Rt" && mode !== "Cm" && mode !== "Bt"
     }
+
     //function design to transform the passed value in degree
     function transformToDegree(value) {
         return (value / 10 - 32) / 1.8
     }
+
     //chart Pie values
     const dataP = {
         labels: Object.keys(valueInfluxDataTabRepartition),
