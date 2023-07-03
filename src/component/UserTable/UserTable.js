@@ -37,10 +37,10 @@ const UserTable = () => {
         let tokenResult = await getTokenAPI("user",cloud_Name);
         let userListResult =  getListOfUser(tokenResult,cloud_Name)
         userListResult.then(function (result) {
-            const sizeUser = result.data;
-            setUsers(sizeUser);
+            const userData = result.data;
+            setUsers(userData);
             const cookies = new Cookies();
-            cookies.set('sizeUser', sizeUser.length)
+            cookies.set('sizeUser', userData.length)
         })
     }
     const [users, setUsers] = useState([]);

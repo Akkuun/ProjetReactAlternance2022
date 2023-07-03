@@ -14,8 +14,9 @@ import NightlightRoundedIcon from '@mui/icons-material/NightlightRounded';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PopupWattsType from "../popupComponent/popupWattsType";
 import NightShelterIcon from '@mui/icons-material/NightShelter';
-//bubble component which display main data on a bubble, installation name, device name, mode of the device, temperature received, uc to know if the
-//device is connected, KeyValue for his index, rows object whitch contains all the other data, a1 user id, installation id, device id
+
+//GOAL : display main data on a bubble component
+//ENTRIES : installation name, device name, mode of the device, temperature received, uc to know if the device is connected, KeyValue for his index, rows object whitch contains all the other data, a1 user id, installation id, device id
 const DeviceDataBubbleComponent = ({
                                        install_name,
                                        device_name,
@@ -30,7 +31,7 @@ const DeviceDataBubbleComponent = ({
                                        Device_Id,
                                    }) => {
     let ImageCard, IsConnectedImage;
-//function which display the right icon depending
+//function which display the right icon depending on the mode
     function getImageCard() {
         if (mode === 0) {
             ImageCard = <CancelRoundedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>
@@ -51,7 +52,7 @@ const DeviceDataBubbleComponent = ({
         }
         return ImageCard;
     }
-    //change the icon if the device is connected or no
+    //change the icon if the device is connected or no (circleOutlinedIcon if not connected or CircleIcon)
     function getIsconnected() {
         uc === 0 ? IsConnectedImage = <CircleOutlinedIcon fontSize={"22%"} sx={{marginTop: "6%"}}/> : IsConnectedImage =
             <CircleIcon fontSize={"22%"} sx={{marginTop: "6%"}}/>

@@ -33,7 +33,7 @@ const DeviceDataComponent = () => {
     const [mapWattsTypeForUc, setMapWattsTypeForUc] = useState('')
     const [ucValue, setUcValue] = useState(new Map())
     const [a1ValueForUc, setA1ValueForUc] = useState('');
-    //state for component force refresh
+    //state for component force refresh function
     const [, forceUpdate] = useReducer(x => x + 1, 0);
     // get the current cloud in the cookies
     let {cloud} = useParams();

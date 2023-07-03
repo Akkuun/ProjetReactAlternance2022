@@ -100,7 +100,8 @@ const JsonExportMenuItem = (props) => {
         </MenuItem>
     );
 };
-//component declaration,with rows for the data, columns for the label, loading a boolean to know if all the user are ready to be display, sx for the style
+//Entries :  rows for the data,columns for labels, loading a boolean to know if all the user are ready to be displayed, sx for object style
+//GOAL : display all the entries data in a DataGrid Object
 const DataTable = ({
                        rows,
                        columns,
