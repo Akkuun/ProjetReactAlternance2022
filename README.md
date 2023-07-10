@@ -1,32 +1,9 @@
-# WebAppAzureManagement
+# ProjetReactAlternance2022
+Repo Git concernant le projet réalisé durant toute la première année d'alternance dans la formation d'ingénieur Data Engineering à TELECOM Saint Etienne chez Watts Electronics. 
 
-WebApp permettant de gérer les clouds Azure d'Exakis (Watts, Fenix, Devex, Deltacalor, GKP).
-
-test des runners ggg
-
-Notes :
-
-- Pour la fonctionnalité de récupérer les A1 depuis une MAC donnée, le A1 est null 
-dans les twins, il faut noter qu'il aurait été préférable d'avoir la donnée directement dans les twins
-  (on peut forcer cette dernière en ajotuant l'A1 dans les twins desired)
-
-#Stratégie
+Le projet est un outil de visualisation de données/statistiques d'appareil IOT connectés à des clouds Microsoft Azure.
 
 
-- Pour le refresh des data, envoyer un Uc =1 , attendre 15 sec et lire les data du device, idée : demander tout les wattysType pour un certain device et mettre à jour le tableau listinstallation, 
-implémenter une fonction de loading pour montrer que ça a bien mis à jour (peut être comme le copier collé le théo)
+Tout le détail du projet ce trouve dans le [WIKI](https://github.com/Akkuun/ProjetReactAlternance2022/wiki).
 
 
-
-- pour le User connected lire connectionState dans les twins du device ( 2 méthodes , soit boucle (pas ouf car trop de requête) ou toutes les X mins on fait une requête pour demander l'état de la variable
-) soit uniquement quad on demande un refresh
-
-#Ouverture du projet
-
-Pour ouvrir le projet, il faut l'ouvrir dans un onglet internet avec la séricurité du navigateur désactivé :
-
-- Windows + R 
-
-- tapez chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security
-
-- tapez dans la barre de recherche http://10.99.3.47/
