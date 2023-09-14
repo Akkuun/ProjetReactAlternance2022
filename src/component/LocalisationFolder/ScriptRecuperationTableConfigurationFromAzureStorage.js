@@ -1,7 +1,7 @@
 const {TableClient, AzureNamedKeyCredential} = require("@azure/data-tables");
 const fs = require("fs");
 const {InfluxDB, Point} = require('@influxdata/influxdb-client')
-const token = 'SN12c-NOIptEN7rTWtFcnCLPkw2yxTNyDV6OFf4t-g0wmHg3AJhzrH0M9AXFX0qKpFwv9GpRhTVe2uTzhsr1eg=='
+const token = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 const url = 'http://10.99.3.47:8086'
 const client = new InfluxDB({url: url, token: token})
 
